@@ -41,7 +41,7 @@ const Sidebar = () => {
 
           <div className='flex w-full items-center gap-2'>
             <li className='flex-1'>
-              <Link href='chars'>
+              <Link href='/chars'>
                 <div className='flex flex-1 items-center gap-2'>
                   <RiCoinLine className='h-5 w-5' />
                   Characters

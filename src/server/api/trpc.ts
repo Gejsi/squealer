@@ -1,11 +1,20 @@
-import { type CreateNextContextOptions } from '@trpc/server/adapters/next'
-import { getAuth } from '@clerk/nextjs/server'
-import type { SignedInAuthObject, SignedOutAuthObject } from '@clerk/nextjs/api'
-
+import type { CreateNextContextOptions } from '@trpc/server/adapters/next'
+import { clerkClient, getAuth } from '@clerk/nextjs/server'
+import type {
+  SignedInAuthObject,
+  SignedOutAuthObject,
+  User,
+} from '@clerk/nextjs/api'
 import { prisma } from '../db'
 
 interface AuthContext {
   auth: SignedInAuthObject | SignedOutAuthObject
+}
+
+declare global {
+  interface UserPublicMetadata {
+    role: 'regular' | 'premium'
+  }
 }
 
 /**
@@ -25,7 +34,19 @@ const createInnerTRPCContext = ({ auth }: AuthContext) => {
  * @link https://trpc.io/docs/context
  */
 export const createTRPCContext = async (opts: CreateNextContextOptions) => {
-  return createInnerTRPCContext({ auth: getAuth(opts.req) })
+  const auth = getAuth(opts.req)
+
+  if (auth.userId) {
+    const user = await clerkClient.users.getUser(auth.userId)
+
+    // add 'regular' role by default for all users
+    if (!user.publicMetadata.role)
+      clerkClient.users.updateUserMetadata(auth.userId, {
+        publicMetadata: { role: 'regular' },
+      })
+  }
+
+  return createInnerTRPCContext({ auth })
 }
 
 /**
@@ -43,15 +64,43 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
 })
 
 const isAuthed = t.middleware(({ next, ctx }) => {
-  if (!ctx.auth.userId) throw new TRPCError({ code: 'UNAUTHORIZED' })
+  if (!ctx.auth.userId || !ctx.auth.user)
+    throw new TRPCError({
+      code: 'UNAUTHORIZED',
+      message: 'Only authenticated users can access this feature.',
+    })
 
   return next({
     ctx: {
-      auth: ctx.auth,
+      ...ctx,
+      // infers that `user` is non-nullable to downstream resolvers
+      auth: { ...ctx.auth, user: ctx.auth.user },
     },
   })
 })
 
-export const createTRPCRouter = t.router
+const isPremium = t.middleware(({ next, ctx }) => {
+  if (!ctx.auth.userId || !ctx.auth.user)
+    throw new TRPCError({
+      code: 'UNAUTHORIZED',
+      message: 'Only authenticated users can access this feature.',
+    })
+
+  if (ctx.auth.user.publicMetadata.role !== 'premium')
+    throw new TRPCError({
+      code: 'FORBIDDEN',
+      message: 'Only premium users can access this feature.',
+    })
+
+  return next({
+    ctx: {
+      ...ctx,
+      auth: { ...ctx.auth, user: ctx.auth.user },
+    },
+  })
+})
+
+export const createRouter = t.router
 export const publicProcedure = t.procedure
-export const protectedProcedure = t.procedure.use(isAuthed)
+export const authedProcedure = publicProcedure.use(isAuthed)
+export const premiumProcedure = authedProcedure.use(isPremium)
