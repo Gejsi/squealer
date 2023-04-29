@@ -1,10 +1,6 @@
 import type { CreateNextContextOptions } from '@trpc/server/adapters/next'
 import { clerkClient, getAuth } from '@clerk/nextjs/server'
-import type {
-  SignedInAuthObject,
-  SignedOutAuthObject,
-  User,
-} from '@clerk/nextjs/api'
+import type { SignedInAuthObject, SignedOutAuthObject } from '@clerk/nextjs/api'
 import { prisma } from '../db'
 
 interface AuthContext {
@@ -36,14 +32,11 @@ const createInnerTRPCContext = ({ auth }: AuthContext) => {
 export const createTRPCContext = async (opts: CreateNextContextOptions) => {
   const auth = getAuth(opts.req)
 
-  if (auth.userId) {
-    const user = await clerkClient.users.getUser(auth.userId)
-
+  if (auth.userId && !('role' in (auth.sessionClaims as any).public_metadata)) {
     // add 'regular' role by default for all users
-    if (!user.publicMetadata.role)
-      clerkClient.users.updateUserMetadata(auth.userId, {
-        publicMetadata: { role: 'regular' },
-      })
+    clerkClient.users.updateUserMetadata(auth.userId, {
+      publicMetadata: { role: 'regular' },
+    })
   }
 
   return createInnerTRPCContext({ auth })

@@ -11,10 +11,11 @@ export const sidebarAtom = atom(false)
 
 const Sidebar = () => {
   const [, setSidebarOpen] = useAtom(sidebarAtom)
-  const { isSignedIn } = useUser()
+  const { isSignedIn, user } = useUser()
   const router = useRouter()
 
   const handleClick = (): void => {
+    console.log(user?.publicMetadata)
     if (!isSignedIn) {
       router.push('/sign-in')
       return
