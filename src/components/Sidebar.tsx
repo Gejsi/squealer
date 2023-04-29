@@ -9,6 +9,9 @@ import {
 } from 'react-icons/md'
 import { BiCommand } from 'react-icons/bi'
 import { GiBirdTwitter } from 'react-icons/gi'
+import { UserButton } from '@clerk/nextjs'
+import { dark } from '@clerk/themes'
+import { RiCoinLine } from 'react-icons/ri'
 
 export const sidebarAtom = atom(false)
 
@@ -33,15 +36,14 @@ const Sidebar = () => {
 
           <div className='flex w-full items-center gap-2'>
             <li className='flex-1'>
-              <Link href='/me'>
-                <img className='w-7 rounded-full' alt='Avatar' />
+              <Link href='chars'>
+                <div className='flex flex-1 items-center gap-2'>
+                  <RiCoinLine className='h-5 w-5' />
+                  Characters
+                </div>
+                <span>500</span>
               </Link>
             </li>
-            <div className='tooltip' data-tip='Logout'>
-              <button className='btn-icon'>
-                <MdLogout className='h-6 w-6' />
-              </button>
-            </div>
           </div>
         </nav>
         <button className='btn-primary btn gap-2 normal-case'>

@@ -20,7 +20,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
           checked={sidebarState}
           readOnly
         />
-        <main className='drawer-content p-4 pt-0 lg:p-8 lg:pt-0'>
+        <main className='drawer-content p-4 pt-0 lg:p-16 lg:pt-0'>
           {children}
         </main>
         <Sidebar />
