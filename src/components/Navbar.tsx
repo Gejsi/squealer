@@ -1,13 +1,7 @@
 import { useAtom } from 'jotai'
 import { sidebarAtom } from './Sidebar'
 import { MdMenu } from 'react-icons/md'
-import {
-  SignIn,
-  SignInButton,
-  SignOutButton,
-  UserButton,
-  useUser,
-} from '@clerk/nextjs'
+import { UserButton, useUser } from '@clerk/nextjs'
 import { dark } from '@clerk/themes'
 import Link from 'next/link'
 
@@ -44,7 +38,7 @@ const Navbar = ({ title }: { title: string }) => {
             }}
           />
         ) : (
-          <Link href='/sign-in' className='btn'>
+          <Link href='/sign-in' className='btn-sm btn'>
             Sign in
           </Link>
         )}

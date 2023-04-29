@@ -1,3 +1,66 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  html {
+    @apply motion-safe:scroll-smooth;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply capitalize;
+  }
+
+  .btn-icon {
+    @apply btn-ghost btn-square btn;
+  }
+
+  .btn-group > .btn-icon {
+    @apply rounded-none;
+  }
+
+  .btn-group > .btn-icon:first-of-type {
+    @apply rounded-l-lg;
+  }
+
+  .btn-group > .btn-icon:last-of-type {
+    @apply rounded-r-lg;
+  }
+
+  .dropdown-container {
+    @apply rounded-box origin-[var(--radix-dropdown-menu-content-transform-origin)] animate-scaleIn border-2 border-base-content/40 bg-base-content/5 p-2 backdrop-blur-md;
+  }
+
+  .dropdown-item {
+    @apply outline-none;
+  }
+
+  .dropdown-item span {
+    @apply rounded-md;
+  }
+
+  .dropdown-item:focus span {
+    @apply active;
+  }
+
+  /* some of these "!important"s may be unnecessary */
+  .notification {
+    @apply !select-none !gap-2 !border-[1px] !border-base-content/40 !bg-base-content/5 !p-4 !text-current !backdrop-blur-sm !transition-colors hover:!bg-base-content/10;
+  }
+
+  .notification div {
+    @apply !m-0;
+  }
+}
+
+@layer utilities {
+  .auto-fit {
+    @apply grid-cols-[repeat(auto-fit,_minmax(18rem,_1fr))];
+  }
+
+  .auto-fill {
+    @apply grid-cols-[repeat(auto-fill,_minmax(18rem,_1fr))];
+  }
+}

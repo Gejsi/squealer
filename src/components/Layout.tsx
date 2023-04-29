@@ -2,6 +2,7 @@ import { useAtom } from 'jotai'
 import { ReactNode } from 'react'
 import Sidebar, { sidebarAtom } from './Sidebar'
 import Head from 'next/head'
+import { Toaster } from 'react-hot-toast'
 
 const Layout = ({ children }: { children: ReactNode }) => {
   const [sidebarState] = useAtom(sidebarAtom)
@@ -24,6 +25,13 @@ const Layout = ({ children }: { children: ReactNode }) => {
           {children}
         </main>
         <Sidebar />
+
+        <Toaster
+          position='bottom-right'
+          containerClassName='!inset-4 md:!inset-8'
+          gutter={16}
+          toastOptions={{ className: 'notification' }}
+        />
       </div>
     </>
   )

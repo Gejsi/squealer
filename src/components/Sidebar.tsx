@@ -1,22 +1,27 @@
 import { atom, useAtom } from 'jotai'
 import Link from 'next/link'
-import {
-  MdDashboard,
-  MdKeyboard,
-  MdLogout,
-  MdSettings,
-  MdToday,
-} from 'react-icons/md'
+import { MdDashboard, MdKeyboard, MdSettings, MdToday } from 'react-icons/md'
 import { BiCommand } from 'react-icons/bi'
 import { GiBirdTwitter } from 'react-icons/gi'
-import { UserButton } from '@clerk/nextjs'
-import { dark } from '@clerk/themes'
 import { RiCoinLine } from 'react-icons/ri'
+import { useUser } from '@clerk/nextjs'
+import { useRouter } from 'next/router'
 
 export const sidebarAtom = atom(false)
 
 const Sidebar = () => {
   const [, setSidebarOpen] = useAtom(sidebarAtom)
+  const { isSignedIn } = useUser()
+  const router = useRouter()
+
+  const handleClick = (): void => {
+    if (!isSignedIn) {
+      router.push('/sign-in')
+      return
+    }
+
+    console.log('button clicked')
+  }
 
   return (
     <aside className='drawer-side'>
@@ -46,7 +51,7 @@ const Sidebar = () => {
             </li>
           </div>
         </nav>
-        <button className='btn-primary btn gap-2 normal-case'>
+        <button className='btn-primary btn gap-2' onClick={handleClick}>
           <MdKeyboard className='h-6 w-6' />
           Write Squeal
         </button>
