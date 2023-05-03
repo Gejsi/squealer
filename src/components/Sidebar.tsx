@@ -7,13 +7,7 @@ import { RiCoinLine } from 'react-icons/ri'
 import { useUser } from '@clerk/nextjs'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
-import {
-  Modal,
-  ModalClose,
-  ModalContent,
-  ModalDescription,
-  ModalTitle,
-} from './Modal'
+import SquealDialog from './editor/SquealDialog'
 
 export const sidebarAtom = atom(false)
 
@@ -106,29 +100,10 @@ const Sidebar = () => {
         </ul>
       </aside>
 
-      <Modal open={dialogOpen} onOpenChange={(open) => setDialogOpen(open)}>
-        <ModalContent>
-          <ModalTitle>Write a new squeal</ModalTitle>
-          <ModalDescription>
-            Lorem ipsum dolor sit amet, qui minim labore adipisicing minim sint
-            cillum sint consectetur cupidatat.
-          </ModalDescription>
-
-          <div className='modal-action'>
-            <ModalClose>
-              <button className='btn-ghost btn'>Cancel</button>
-            </ModalClose>
-            <ModalClose>
-              <button
-                className='btn-primary btn'
-                onClick={() => console.log('clicked error')}
-              >
-                Create
-              </button>
-            </ModalClose>
-          </div>
-        </ModalContent>
-      </Modal>
+      <SquealDialog
+        open={dialogOpen}
+        onOpenChange={(state) => setDialogOpen(state)}
+      />
     </>
   )
 }

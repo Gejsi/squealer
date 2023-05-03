@@ -17,7 +17,7 @@ export const ModalContent = forwardRef<
   <Portal>
     <div className='modal modal-open modal-bottom animate-fadeIn md:modal-middle'>
       <Content
-        className='modal-box z-[101] animate-slideUp'
+        className='modal-box z-[101] !max-w-3xl animate-slideUp'
         ref={forwardedRef}
         {...props}
       >
@@ -44,7 +44,7 @@ export const ModalTitle = forwardRef<
   ElementRef<typeof Title>,
   ComponentProps<typeof Title>
 >(({ ...props }, forwardedRef) => (
-  <Title className='mb-4 text-2xl' {...props} ref={forwardedRef} />
+  <Title className='mb-4 text-center text-2xl' {...props} ref={forwardedRef} />
 ))
 
 ModalTitle.displayName = 'ModalTitle'
