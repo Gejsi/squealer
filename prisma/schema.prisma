@@ -1,17 +1,62 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
-model Example {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+// TODO: remember to put squeals and chars quota
+// as users' private metadata
+
+model Squeal {
+  id        String     @id @default(cuid())
+  content   String
+  createdAt DateTime   @default(now())
+  author    Author     @relation(fields: [authorId], references: [userId])
+  authorId  String
+  mentions  Mention[]
+  receivers Receiver[]
+
+  @@index([authorId])
+  @@map("squeals")
+}
+
+model Author {
+  userId String @id
+
+  squeal    Squeal[]
+  channel   Channel? @relation(fields: [channelId], references: [id])
+  channelId String?
+
+  @@index([channelId])
+  @@map("authors")
+}
+
+model Channel {
+  id     String   @id @default(cuid())
+  name   String
+  owners Author[]
+
+  @@map("channels")
+}
+
+model Receiver {
+  id       Int     @id @default(autoincrement())
+  squeal   Squeal? @relation(fields: [squealId], references: [id])
+  squealId String?
+
+  @@index([squealId])
+  @@map("receivers")
+}
+
+model Mention {
+  id       Int     @id @default(autoincrement())
+  squeal   Squeal? @relation(fields: [squealId], references: [id])
+  squealId String?
+
+  @@index([squealId])
+  @@map("mentions")
 }

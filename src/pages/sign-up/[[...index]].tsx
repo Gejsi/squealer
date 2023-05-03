@@ -11,7 +11,13 @@ const SignUpPage = () => (
         path='/sign-up'
         routing='path'
         signInUrl='/sign-in'
-        appearance={{ baseTheme: dark }}
+        appearance={{
+          baseTheme: dark,
+          elements: {
+            rootBox: 'w-full lg:w-2/5 flex justify-center',
+            card: 'w-full',
+          },
+        }}
       />
     </div>
   </>

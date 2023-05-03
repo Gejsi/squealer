@@ -10,6 +10,6 @@ export const exampleRouter = createRouter({
       }
     }),
   getAll: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.example.findMany()
+    return ctx.prisma.squeal.findMany()
   }),
 })
