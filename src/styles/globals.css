@@ -51,7 +51,7 @@
 
   /* some of these "!important"s may be unnecessary */
   .notification {
-    @apply !select-none !gap-2 !border-[1px] !border-base-content/40 !bg-base-content/5 !p-4 !text-current !backdrop-blur-sm !transition-colors hover:!bg-base-content/10;
+    @apply !select-none !gap-2 !border-[1px] !border-base-content/40 !bg-base-content/5 !p-4 !text-current !backdrop-blur-md !transition-colors hover:!bg-base-content/10;
   }
 
   .notification div {
@@ -63,6 +63,14 @@
   .ProseMirror.prose p.is-empty::before {
     content: attr(data-placeholder);
     @apply pointer-events-none absolute opacity-40;
+  }
+
+  .ProseMirror.prose img {
+    @apply w-1/2 cursor-pointer;
+  }
+
+  .ProseMirror.prose img.ProseMirror-selectednode {
+    @apply outline outline-2 outline-offset-2 outline-[hsla(var(--p)/.4)];
   }
 
   .auto-fit {

@@ -1,6 +1,7 @@
 import CharacterCount from '@tiptap/extension-character-count'
 import Placeholder from '@tiptap/extension-placeholder'
 import Typography from '@tiptap/extension-typography'
+import Image from '@tiptap/extension-image'
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Toolbar from './Toolbar'
@@ -29,6 +30,7 @@ const Editor = () => {
           placeholder: 'Write something quirky...',
           showOnlyWhenEditable: false,
         }),
+        Image,
       ],
       editorProps: {
         attributes: {
