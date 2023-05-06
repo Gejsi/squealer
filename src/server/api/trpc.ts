@@ -2,6 +2,8 @@ import type { CreateNextContextOptions } from '@trpc/server/adapters/next'
 import { clerkClient, getAuth } from '@clerk/nextjs/server'
 import type { SignedInAuthObject, SignedOutAuthObject } from '@clerk/nextjs/api'
 import { prisma } from '../db'
+import { initTRPC, TRPCError } from '@trpc/server'
+import superjson from 'superjson'
 
 interface AuthContext {
   auth: SignedInAuthObject | SignedOutAuthObject
@@ -10,12 +12,13 @@ interface AuthContext {
 declare global {
   interface UserPublicMetadata {
     role: 'regular' | 'premium'
+    quota: number
+    quotaLimit: number
   }
 }
 
 /**
- * This helper generates the "internals" for a tRPC context. If you need to use
- * it, you can export it from here
+ * This helper generates the "internals" for a tRPC context.
  */
 const createInnerTRPCContext = ({ auth }: AuthContext) => {
   return {
@@ -25,17 +28,25 @@ const createInnerTRPCContext = ({ auth }: AuthContext) => {
 }
 
 /**
- * This is the actual context you'll use in your router. It will be used to
+ * This is the actual context used in the router. It will be used to
  * process every request that goes through your tRPC endpoint
  * @link https://trpc.io/docs/context
  */
 export const createTRPCContext = async (opts: CreateNextContextOptions) => {
   const auth = getAuth(opts.req)
 
-  if (auth.userId && !('role' in (auth.sessionClaims as any).public_metadata)) {
-    // add 'regular' role by default for all users
+  const publicMetadata: UserPublicMetadata = (auth.sessionClaims as any)
+    .public_metadata
+
+  if (
+    auth.userId &&
+    (!('role' in publicMetadata) ||
+      !('quota' in publicMetadata) ||
+      !('quotaLimit' in publicMetadata))
+  ) {
+    // add 'regular' role by default for all users and a quota of characters
     clerkClient.users.updateUserMetadata(auth.userId, {
-      publicMetadata: { role: 'regular' },
+      publicMetadata: { role: 'regular', quota: 500, quotaLimit: 500 },
     })
   }
 
@@ -46,9 +57,6 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
  * This is where the trpc api is initialized, connecting the context and
  * transformer
  */
-import { initTRPC, TRPCError } from '@trpc/server'
-import superjson from 'superjson'
-
 const t = initTRPC.context<typeof createTRPCContext>().create({
   transformer: superjson,
   errorFormatter({ shape }) {

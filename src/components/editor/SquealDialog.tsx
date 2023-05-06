@@ -1,8 +1,13 @@
-import type { ComponentProps } from 'react'
+import { ComponentProps, useState } from 'react'
 import { Modal, ModalClose, ModalContent, ModalTitle } from '../Modal'
 import Editor from './Editor'
+import { useAtom } from 'jotai'
+import { publicMetadataAtom } from '../Layout'
 
 const SquealDialog = (props: ComponentProps<typeof Modal>) => {
+  const [publicMetadata] = useAtom(publicMetadataAtom)
+  const [charsNum, setCharsNum] = useState(0)
+
   return (
     <Modal {...props}>
       <ModalContent>
@@ -26,7 +31,12 @@ const SquealDialog = (props: ComponentProps<typeof Modal>) => {
 
           <div className='divider' />
 
-          <Editor />
+          <div className='form-control'>
+            <Editor />
+            <label className='label justify-end'>
+              <span className='label-text-alt'>/ {publicMetadata.quota}</span>
+            </label>
+          </div>
         </div>
 
         <div className='modal-action'>

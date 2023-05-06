@@ -4,6 +4,7 @@ import { MdMenu } from 'react-icons/md'
 import { UserButton, useUser } from '@clerk/nextjs'
 import { dark } from '@clerk/themes'
 import Link from 'next/link'
+import { publicMetadataAtom } from './Layout'
 
 const MenuButton = () => {
   const [, setSidebarOpen] = useAtom(sidebarAtom)
@@ -22,6 +23,7 @@ const MenuButton = () => {
 
 const Navbar = ({ title }: { title: string }) => {
   const { isSignedIn } = useUser()
+  const [publicMetadata] = useAtom(publicMetadataAtom)
 
   return (
     <nav className='sticky top-0 z-10 mb-4 bg-base-100 pt-4'>
@@ -30,13 +32,18 @@ const Navbar = ({ title }: { title: string }) => {
         <h1 className='flex-1 text-2xl font-medium md:text-4xl'>{title}</h1>
 
         {isSignedIn ? (
-          <UserButton
-            afterSignOutUrl='/'
-            appearance={{
-              baseTheme: dark,
-              userProfile: { baseTheme: dark },
-            }}
-          />
+          <>
+            <Link href='/settings' className='hidden sm:inline-flex'>
+              <span className='badge capitalize'>{publicMetadata.role}</span>
+            </Link>
+            <UserButton
+              afterSignOutUrl='/'
+              appearance={{
+                baseTheme: dark,
+                userProfile: { baseTheme: dark },
+              }}
+            />
+          </>
         ) : (
           <Link href='/sign-in' className='btn-sm btn'>
             Sign in

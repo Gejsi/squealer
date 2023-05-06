@@ -12,7 +12,7 @@ import {
   MdFormatStrikethrough,
 } from 'react-icons/md'
 import { BiCodeBlock } from 'react-icons/bi'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { useAutoAnimate } from '@formkit/auto-animate/react'
 import { isImage } from '../../utils/misc'
 import { toast } from 'react-hot-toast'
@@ -30,7 +30,7 @@ const Toolbar = ({ editor }: { editor: Editor | null }) => {
     const url = imageInputRef.current?.value
 
     if (!url || !isImage(url)) {
-      toast.error('Provide a valid image url.', { position: 'top-right' })
+      toast.error('Provide a valid image url.')
       return
     }
 

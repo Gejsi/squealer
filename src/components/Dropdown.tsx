@@ -38,6 +38,7 @@ export const DropdownContent = ({ children }: { children: ReactNode }) => (
 
 DropdownContent.displayName = 'DropdownContent'
 
+// TODO: use cn also here
 export const DropdownItem = forwardRef<
   ElementRef<typeof Item>,
   ComponentProps<typeof Item>

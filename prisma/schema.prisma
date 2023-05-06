@@ -8,9 +8,6 @@ datasource db {
   relationMode = "prisma"
 }
 
-// TODO: remember to put squeals and chars quota
-// as users' private metadata
-
 model Squeal {
   id        String     @id @default(cuid())
   content   String

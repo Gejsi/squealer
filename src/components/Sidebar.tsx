@@ -8,6 +8,7 @@ import { useUser } from '@clerk/nextjs'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import SquealDialog from './editor/SquealDialog'
+import { publicMetadataAtom } from './Layout'
 
 export const sidebarAtom = atom(false)
 
@@ -16,6 +17,7 @@ const Sidebar = () => {
   const { isSignedIn } = useUser()
   const router = useRouter()
   const [dialogOpen, setDialogOpen] = useState(false)
+  const [publicMetadata] = useAtom(publicMetadataAtom)
 
   const handleClick = (): void => {
     if (!isSignedIn) {
@@ -46,12 +48,14 @@ const Sidebar = () => {
 
             <div className='flex w-full items-center gap-2'>
               <li className='flex-1'>
-                <Link href='/chars'>
+                <Link href='/settings'>
                   <div className='flex flex-1 items-center gap-2'>
                     <RiCoinLine className='h-5 w-5' />
-                    Characters
+                    Quota
                   </div>
-                  <span>500</span>
+                  <span>
+                    {publicMetadata.quota} / {publicMetadata.quotaLimit}
+                  </span>
                 </Link>
               </li>
             </div>

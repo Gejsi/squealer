@@ -6,6 +6,10 @@
   html {
     @apply motion-safe:scroll-smooth;
   }
+
+  input {
+    @apply placeholder:text-[hsl(var(--bc))] placeholder:opacity-40;
+  }
 }
 
 @layer components {
