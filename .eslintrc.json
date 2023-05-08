@@ -3,6 +3,10 @@
   "parserOptions": {
     "project": "./tsconfig.json"
   },
+  "globals": {
+    "globalThis": false,
+    "UserPublicMetadata": false
+  },
   "plugins": ["@typescript-eslint"],
   "extends": [
     "next/core-web-vitals",

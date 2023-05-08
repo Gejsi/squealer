@@ -1,68 +1,9 @@
-import { type NextPage } from 'next'
-import { api } from '../utils/api'
-import Navbar from '../components/Navbar'
+import type { Page } from './_app'
 
-const Home: NextPage = () => {
-  const hello = api.example.hello.useQuery({ text: 'from tRPC' })
-
-  return (
-    <>
-      <Navbar title='Feed' />
-
-      <h1 className='text-6xl'>Squealer</h1>
-      <h1 className='text-6xl'>Squealer</h1>
-      <h1 className='text-6xl'>Squealer</h1>
-      <h1 className='text-6xl'>Squealer</h1>
-      <h1 className='text-6xl'>Squealer</h1>
-      <h1 className='text-6xl'>Squealer</h1>
-      <h1 className='text-6xl'>Squealer</h1>
-      <h1 className='text-6xl'>Squealer</h1>
-      <h1 className='text-6xl'>Squealer</h1>
-      <h1 className='text-6xl'>Squealer</h1>
-      <h1 className='text-6xl'>Squealer</h1>
-      <h1 className='text-6xl'>Squealer</h1>
-      <h1 className='text-6xl'>Squealer</h1>
-      <h1 className='text-6xl'>Squealer</h1>
-      <h1 className='text-6xl'>Squealer</h1>
-      <h1 className='text-6xl'>Squealer</h1>
-      <h1 className='text-6xl'>Squealer</h1>
-      <h1 className='text-6xl'>Squealer</h1>
-      <h1 className='text-6xl'>Squealer</h1>
-      <h1 className='text-6xl'>Squealer</h1>
-      <h1 className='text-6xl'>Squealer</h1>
-      <h1 className='text-6xl'>Squealer</h1>
-      <h1 className='text-6xl'>Squealer</h1>
-      <h1 className='text-6xl'>Squealer</h1>
-      <h1 className='text-6xl'>Squealer</h1>
-      <h1 className='text-6xl'>Squealer</h1>
-      <h1 className='text-6xl'>Squealer</h1>
-      <h1 className='text-6xl'>Squealer</h1>
-      <h1 className='text-6xl'>Squealer</h1>
-      <h1 className='text-6xl'>Squealer</h1>
-      <h1 className='text-6xl'>Squealer</h1>
-      <h1 className='text-6xl'>Squealer</h1>
-      <h1 className='text-6xl'>Squealer</h1>
-      <h1 className='text-6xl'>Squealer</h1>
-      <h1 className='text-6xl'>Squealer</h1>
-      <h1 className='text-6xl'>Squealer</h1>
-      <h1 className='text-6xl'>Squealer</h1>
-      <h1 className='text-6xl'>Squealer</h1>
-      <h1 className='text-6xl'>Squealer</h1>
-      <h1 className='text-6xl'>Squealer</h1>
-      <h1 className='text-6xl'>Squealer</h1>
-      <h1 className='text-6xl'>Squealer</h1>
-      <h1 className='text-6xl'>Squealer</h1>
-      <h1 className='text-6xl'>Squealer</h1>
-      <h1 className='text-6xl'>Squealer</h1>
-      <h1 className='text-6xl'>Squealer</h1>
-      <h1 className='text-6xl'>Squealer</h1>
-      <h1 className='text-6xl'>Squealer</h1>
-      <h1 className='text-6xl'>Squealer</h1>
-      <h1 className='text-6xl'>Squealer</h1>
-      <h1 className='text-6xl'>Squealer</h1>
-      <h1 className='text-6xl'>Squealer</h1>
-    </>
-  )
+const Home: Page = () => {
+  return <h1 className='text-6xl'>Home page</h1>
 }
+
+Home.title = 'Feed'
 
 export default Home
