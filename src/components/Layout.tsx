@@ -42,7 +42,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
         <Sidebar />
 
         <Toaster
-          position='top-right'
+          position='bottom-right'
           containerClassName='!inset-4 md:!inset-8'
           gutter={16}
           toastOptions={{ className: 'notification' }}

@@ -30,7 +30,7 @@ const Toolbar = ({ editor }: { editor: Editor | null }) => {
     const url = imageInputRef.current?.value
 
     if (!url || !isImage(url)) {
-      toast.error('Provide a valid image url.')
+      toast.error('Provide a valid image url.', { position: 'top-right' })
       return
     }
 

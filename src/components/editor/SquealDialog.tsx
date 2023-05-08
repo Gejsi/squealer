@@ -1,4 +1,4 @@
-import { ComponentProps, useState } from 'react'
+import { ComponentProps } from 'react'
 import { Modal, ModalClose, ModalContent, ModalTitle } from '../Modal'
 import Editor from './Editor'
 import { useAtom } from 'jotai'
@@ -6,7 +6,6 @@ import { publicMetadataAtom } from '../Layout'
 
 const SquealDialog = (props: ComponentProps<typeof Modal>) => {
   const [publicMetadata] = useAtom(publicMetadataAtom)
-  const [charsNum, setCharsNum] = useState(0)
 
   return (
     <Modal {...props}>

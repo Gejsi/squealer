@@ -4,17 +4,10 @@ import type { SignedInAuthObject, SignedOutAuthObject } from '@clerk/nextjs/api'
 import { prisma } from '../db'
 import { initTRPC, TRPCError } from '@trpc/server'
 import superjson from 'superjson'
+import { ZodError } from 'zod'
 
 interface AuthContext {
   auth: SignedInAuthObject | SignedOutAuthObject
-}
-
-declare global {
-  interface UserPublicMetadata {
-    role: 'regular' | 'premium'
-    quota: number
-    quotaLimit: number
-  }
 }
 
 /**
@@ -40,11 +33,12 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
 
   if (
     auth.userId &&
+    publicMetadata &&
     (!('role' in publicMetadata) ||
       !('quota' in publicMetadata) ||
       !('quotaLimit' in publicMetadata))
   ) {
-    // add 'regular' role by default for all users and a quota of characters
+    // add 'regular' role and some quota of characters by default for all users
     clerkClient.users.updateUserMetadata(auth.userId, {
       publicMetadata: { role: 'regular', quota: 500, quotaLimit: 500 },
     })
@@ -59,13 +53,23 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
  */
 const t = initTRPC.context<typeof createTRPCContext>().create({
   transformer: superjson,
-  errorFormatter({ shape }) {
-    return shape
+  errorFormatter(opts) {
+    const { shape, error } = opts
+    return {
+      ...shape,
+      data: {
+        ...shape.data,
+        zodError:
+          error.code === 'BAD_REQUEST' && error.cause instanceof ZodError
+            ? error.cause.flatten()
+            : null,
+      },
+    }
   },
 })
 
 const isAuthed = t.middleware(({ next, ctx }) => {
-  if (!ctx.auth.userId || !ctx.auth.user)
+  if (!ctx.auth.userId)
     throw new TRPCError({
       code: 'UNAUTHORIZED',
       message: 'Only authenticated users can access this feature.',
@@ -74,20 +78,19 @@ const isAuthed = t.middleware(({ next, ctx }) => {
   return next({
     ctx: {
       ...ctx,
-      // infers that `user` is non-nullable to downstream resolvers
-      auth: { ...ctx.auth, user: ctx.auth.user },
+      auth: ctx.auth,
     },
   })
 })
 
 const isPremium = t.middleware(({ next, ctx }) => {
-  if (!ctx.auth.userId || !ctx.auth.user)
+  if (!ctx.auth.userId)
     throw new TRPCError({
       code: 'UNAUTHORIZED',
       message: 'Only authenticated users can access this feature.',
     })
 
-  if (ctx.auth.user.publicMetadata.role !== 'premium')
+  if (ctx.auth.user && ctx.auth.user.publicMetadata.role !== 'premium')
     throw new TRPCError({
       code: 'FORBIDDEN',
       message: 'Only premium users can access this feature.',
@@ -96,7 +99,7 @@ const isPremium = t.middleware(({ next, ctx }) => {
   return next({
     ctx: {
       ...ctx,
-      auth: { ...ctx.auth, user: ctx.auth.user },
+      auth: ctx.auth,
     },
   })
 })
