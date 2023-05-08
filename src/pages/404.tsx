@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import type { Page } from './_app'
 import ErrorTemplate from '../components/ErrorTemplate'
 

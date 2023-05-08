@@ -1,5 +1,4 @@
-import { z } from 'zod'
-import { createRouter, publicProcedure, authedProcedure } from '../trpc'
+import { createRouter, authedProcedure } from '../trpc'
 import { clerkClient } from '@clerk/nextjs/server'
 import { userMetadataSchema } from '../../../schemas/user-metadata'
 

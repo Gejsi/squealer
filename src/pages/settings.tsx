@@ -7,10 +7,6 @@ import { api } from '../utils/api'
 import { toast } from 'react-hot-toast'
 import useZodForm from '../hooks/use-zod-form'
 import { userMetadataSchema } from '../schemas/user-metadata'
-import { SubmitHandler } from 'react-hook-form'
-import { twMerge } from 'tailwind-merge'
-import clsx from 'clsx'
-import { useCallback } from 'react'
 import { cn } from '../utils/misc'
 
 const Settings: Page = () => {
@@ -39,10 +35,6 @@ const Settings: Page = () => {
     defaultValues: { ...publicMetadata },
   })
 
-  const handleSave: SubmitHandler<UserPublicMetadata> = (data) => {
-    metadataMutation.mutate(data)
-  }
-
   return (
     <>
       <div className='alert alert-info mb-4 shadow-lg'>
@@ -68,7 +60,7 @@ const Settings: Page = () => {
 
       <form
         className='rounded-box flex flex-col gap-2 border-2 border-solid border-base-content/30 p-4 md:p-8'
-        onSubmit={submitForm(handleSave)}
+        onSubmit={submitForm((data) => metadataMutation.mutate(data))}
       >
         <div className='flex flex-col gap-2 md:flex-row md:items-center'>
           <div className='flex flex-1 flex-col'>

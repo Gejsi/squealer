@@ -1,4 +1,4 @@
-import { ComponentProps } from 'react'
+import type { ComponentProps } from 'react'
 import { Modal, ModalClose, ModalContent, ModalTitle } from '../Modal'
 import Editor from './Editor'
 import { useAtom } from 'jotai'
