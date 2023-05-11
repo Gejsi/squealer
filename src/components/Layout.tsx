@@ -7,8 +7,8 @@ import { useUser } from '@clerk/nextjs'
 
 export const publicMetadataAtom = atom<UserPublicMetadata>({
   role: 'regular',
-  quota: 500,
-  quotaLimit: 500,
+  quota: 0,
+  quotaLimit: 0,
 })
 
 const Layout = ({ children }: { children: ReactNode }) => {
@@ -18,6 +18,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (user?.publicMetadata) setPublicMetadata(user.publicMetadata)
+    else setPublicMetadata((prev) => ({ ...prev, quota: 0, quotaLimit: 0 }))
   }, [user?.publicMetadata, setPublicMetadata])
 
   return (

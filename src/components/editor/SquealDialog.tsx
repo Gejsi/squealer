@@ -1,11 +1,24 @@
-import type { ComponentProps } from 'react'
+import { type ComponentProps, useState } from 'react'
 import { Modal, ModalClose, ModalContent, ModalTitle } from '../Modal'
 import Editor from './Editor'
 import { useAtom } from 'jotai'
 import { publicMetadataAtom } from '../Layout'
+import { toast } from 'react-hot-toast'
+import { squealDialogAtom } from '../Sidebar'
 
 const SquealDialog = (props: ComponentProps<typeof Modal>) => {
   const [publicMetadata] = useAtom(publicMetadataAtom)
+  const [editorLength, setEditorLength] = useState(0)
+  const [, setDialogOpen] = useAtom(squealDialogAtom)
+
+  const handleCreate = (): void => {
+    if (editorLength === 0) {
+      toast.error('Cannot create an empty squeal.', { position: 'top-right' })
+      return
+    }
+
+    setDialogOpen(false)
+  }
 
   return (
     <Modal {...props}>
@@ -31,9 +44,20 @@ const SquealDialog = (props: ComponentProps<typeof Modal>) => {
           <div className='divider' />
 
           <div className='form-control'>
-            <Editor />
-            <label className='label justify-end'>
-              <span className='label-text-alt'>/ {publicMetadata.quota}</span>
+            <Editor
+              onUpdate={({ editor }) =>
+                setEditorLength(() =>
+                  editor.storage.characterCount.characters()
+                )
+              }
+            />
+            <label className='label'>
+              <span className='label-text-alt'>
+                Daily quota remaining: {publicMetadata.quota - editorLength}
+              </span>
+              <span className='label-text-alt'>
+                {editorLength} / {publicMetadata.quota}
+              </span>
             </label>
           </div>
         </div>
@@ -42,14 +66,9 @@ const SquealDialog = (props: ComponentProps<typeof Modal>) => {
           <ModalClose>
             <button className='btn-ghost btn'>Cancel</button>
           </ModalClose>
-          <ModalClose>
-            <button
-              className='btn-primary btn'
-              onClick={() => console.log('created')}
-            >
-              Create
-            </button>
-          </ModalClose>
+          <button className='btn-primary btn' onClick={handleCreate}>
+            Create
+          </button>
         </div>
       </ModalContent>
     </Modal>

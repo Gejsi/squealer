@@ -1,25 +1,36 @@
 import { atom, useAtom } from 'jotai'
 import Link from 'next/link'
-import { MdDashboard, MdKeyboard, MdSettings, MdToday } from 'react-icons/md'
-import { BiCommand } from 'react-icons/bi'
+import {
+  MdAllInbox,
+  MdKeyboard,
+  MdSentimentSatisfiedAlt,
+  MdShuffle,
+  MdToday,
+} from 'react-icons/md'
+import { BiCoinStack } from 'react-icons/bi'
 import { GiBirdTwitter } from 'react-icons/gi'
-import { RiCoinLine } from 'react-icons/ri'
 import { useUser } from '@clerk/nextjs'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { useEffect } from 'react'
 import SquealDialog from './editor/SquealDialog'
 import { publicMetadataAtom } from './Layout'
 
 export const sidebarAtom = atom(false)
+export const squealDialogAtom = atom(false)
 
 const Sidebar = () => {
   const [, setSidebarOpen] = useAtom(sidebarAtom)
   const { isSignedIn } = useUser()
   const router = useRouter()
-  const [dialogOpen, setDialogOpen] = useState(false)
+  const [dialogOpen, setDialogOpen] = useAtom(squealDialogAtom)
   const [publicMetadata] = useAtom(publicMetadataAtom)
 
-  const handleClick = (): void => {
+  // close sidebar when route changes
+  useEffect(() => {
+    setSidebarOpen(false)
+  }, [router.asPath, setSidebarOpen])
+
+  const handleClick = () => {
     if (!isSignedIn) {
       router.push('/sign-in')
       return
@@ -50,7 +61,7 @@ const Sidebar = () => {
               <li className='flex-1'>
                 <Link href='/settings'>
                   <div className='flex flex-1 items-center gap-2'>
-                    <RiCoinLine className='h-5 w-5' />
+                    <BiCoinStack className='h-6 w-6' />
                     Quota
                   </div>
                   <span>
@@ -68,38 +79,45 @@ const Sidebar = () => {
           <div className='divider' />
 
           <li className='menu-title'>
-            <span className='uppercase'>Sections</span>
+            <span className='uppercase'>Public channels</span>
           </li>
 
           <li>
-            <Link href='/decks'>
-              <MdDashboard className='h-6 w-6' />
-              Decks
+            <Link href='/all'>
+              <MdAllInbox className='h-6 w-6' />
+              All squeals
             </Link>
           </li>
           <li>
-            <Link href='/question'>
+            <Link href='/controversial'>
+              <MdSentimentSatisfiedAlt className='h-6 w-6' />
+              Controversial
+            </Link>
+          </li>
+          <li>
+            <Link href='/news'>
               <MdToday className='h-6 w-6' />
-              Today's question
+              News
             </Link>
           </li>
           <li>
-            <Link href='/settings'>
-              <MdSettings className='h-6 w-6' />
-              Settings
+            <Link href='/random'>
+              <MdShuffle className='h-6 w-6' />
+              Random
             </Link>
-          </li>
-          <li>
-            <button>
-              <BiCommand className='h-5 w-5' />
-              Shortcuts
-            </button>
           </li>
 
           <div className='divider' />
 
           <li className='menu-title'>
-            <span className='uppercase'>Folders</span>
+            <span className='uppercase'>Private channels</span>
+          </li>
+
+          <li>
+            <Link href='/random'>
+              <MdShuffle className='h-6 w-6' />
+              Random
+            </Link>
           </li>
         </ul>
       </aside>

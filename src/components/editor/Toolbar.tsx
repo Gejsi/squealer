@@ -1,6 +1,4 @@
 import type { Editor } from '@tiptap/react'
-import { twMerge } from 'tailwind-merge'
-import { clsx } from 'clsx'
 import {
   MdAddPhotoAlternate,
   MdCode,
@@ -10,12 +8,15 @@ import {
   MdFormatListNumbered,
   MdFormatQuote,
   MdFormatStrikethrough,
+  MdMap,
 } from 'react-icons/md'
+import { BsYoutube } from 'react-icons/bs'
 import { BiCodeBlock } from 'react-icons/bi'
-import { useCallback, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { useAutoAnimate } from '@formkit/auto-animate/react'
-import { isImage } from '../../utils/misc'
+import { cn, isImage, isValidYoutubeUrl } from '../../utils/misc'
 import { toast } from 'react-hot-toast'
+import useDebouncedCallback from '../../hooks/use-debounced-callback'
 
 const VerticalDivider = () => (
   <div className='w-[0.125rem] bg-base-content/30' />
@@ -23,72 +24,129 @@ const VerticalDivider = () => (
 
 const Toolbar = ({ editor }: { editor: Editor | null }) => {
   const [showImageInput, setShowImageInput] = useState(false)
+  const [showYoutubeInput, setShowYoutubeInput] = useState(false)
   const imageInputRef = useRef<HTMLInputElement>(null)
+  const youtubeInputRef = useRef<HTMLInputElement>(null)
   const [autoAnimate] = useAutoAnimate()
 
-  const addImage = useCallback(() => {
+  const addImage = useDebouncedCallback(() => {
     const url = imageInputRef.current?.value
 
     if (!url || !isImage(url)) {
-      toast.error('Provide a valid image url.', { position: 'top-right' })
+      toast.error('Provide a valid image:\ncheck the URL extension.', {
+        position: 'top-right',
+      })
       return
     }
 
     editor && editor.chain().focus().setImage({ src: url }).run()
     setShowImageInput(false)
-  }, [editor])
+  }, 500)
+
+  const addYoutubeVideo = useDebouncedCallback(() => {
+    const url = youtubeInputRef.current?.value
+
+    if (!url || !isValidYoutubeUrl(url)) {
+      toast.error('Provide a valid youtube URL.', {
+        position: 'top-right',
+      })
+      return
+    }
+
+    editor && editor.chain().focus().setYoutubeVideo({ src: url }).run()
+    setShowYoutubeInput(false)
+  }, 500)
 
   if (!editor) return null
 
+  const handleLocation = () => {
+    toast.loading('Getting your current location.', {
+      id: 'location',
+    })
+
+    if ('geolocation' in navigator) {
+      // geolocation is available
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords
+          toast.success('Got your location', { id: 'location' })
+          console.log(`Latitude: ${latitude}, Longitude: ${longitude}`)
+          console.log(editor.commands.setLocation({ latitude, longitude }))
+        },
+        () => {
+          toast.error('Something went wrong while getting current location.', {
+            id: 'location',
+          })
+        }
+      )
+    } else {
+      toast.error('Geolocation is not available', {
+        id: 'location',
+      })
+    }
+  }
+
   return (
-    <div className='mb-2 flex flex-col gap-2'>
+    <div className='mb-4 flex flex-col gap-2'>
+      <div className='form-control w-full' ref={autoAnimate}>
+        {showImageInput && (
+          <input
+            ref={imageInputRef}
+            type='text'
+            placeholder='Image url'
+            className='input-bordered input-info input w-full'
+            onChange={addImage}
+            onBlur={() => setShowImageInput(false)}
+          />
+        )}
+
+        {showYoutubeInput && (
+          <input
+            ref={youtubeInputRef}
+            type='text'
+            placeholder='Youtube video url'
+            className='input-bordered input-info input w-full'
+            onChange={addYoutubeVideo}
+            onBlur={() => setShowYoutubeInput(false)}
+          />
+        )}
+      </div>
+
       <div className='flex flex-1 flex-nowrap overflow-y-auto'>
         <div className='btn-group flex-nowrap rounded-lg bg-base-content/10'>
           <button
             onClick={() => editor.chain().focus().toggleBold().run()}
             disabled={!editor.can().chain().focus().toggleBold().run()}
-            className={twMerge(
-              'btn-icon',
-              clsx({
-                'btn-active': editor?.isActive('bold'),
-              })
-            )}
+            className={cn('btn-icon', {
+              'btn-active': editor?.isActive('bold'),
+            })}
           >
             <MdFormatBold className='h-6 w-6' />
           </button>
           <button
             onClick={() => editor.chain().focus().toggleItalic().run()}
             disabled={!editor.can().chain().focus().toggleItalic().run()}
-            className={twMerge(
-              'btn-icon',
-              clsx({
-                'btn-active': editor?.isActive('italic'),
-              })
-            )}
+            className={cn('btn-icon', {
+              'btn-active': editor?.isActive('italic'),
+            })}
           >
             <MdFormatItalic className='h-6 w-6' />
           </button>
           <button
             onClick={() => editor.chain().focus().toggleStrike().run()}
             disabled={!editor.can().chain().focus().toggleStrike().run()}
-            className={twMerge(
-              'btn-icon',
-              clsx({
-                'btn-active': editor?.isActive('strike'),
-              })
-            )}
+            className={cn('btn-icon', {
+              'btn-active': editor?.isActive('strike'),
+            })}
           >
             <MdFormatStrikethrough className='h-6 w-6' />
           </button>
           <button
             onClick={() => editor.chain().focus().toggleCode().run()}
             disabled={!editor.can().chain().focus().toggleCode().run()}
-            className={twMerge(
-              'btn-icon',
-              clsx({
-                'btn-active': editor?.isActive('code'),
-              })
-            )}
+            className={cn('btn-icon', {
+              'btn-active': editor?.isActive('code'),
+            })}
           >
             <MdCode className='h-6 w-6' />
           </button>
@@ -97,45 +155,33 @@ const Toolbar = ({ editor }: { editor: Editor | null }) => {
 
           <button
             onClick={() => editor.chain().focus().toggleBulletList().run()}
-            className={twMerge(
-              'btn-icon',
-              clsx({
-                'btn-active': editor?.isActive('bulletList'),
-              })
-            )}
+            className={cn('btn-icon', {
+              'btn-active': editor?.isActive('bulletList'),
+            })}
           >
             <MdFormatListBulleted className='h-6 w-6' />
           </button>
           <button
             onClick={() => editor.chain().focus().toggleOrderedList().run()}
-            className={twMerge(
-              'btn-icon',
-              clsx({
-                'btn-active': editor?.isActive('orderedList'),
-              })
-            )}
+            className={cn('btn-icon', {
+              'btn-active': editor?.isActive('orderedList'),
+            })}
           >
             <MdFormatListNumbered className='h-6 w-6' />
           </button>
           <button
             onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-            className={twMerge(
-              'btn-icon',
-              clsx({
-                'btn-active': editor?.isActive('codeBlock'),
-              })
-            )}
+            className={cn('btn-icon', {
+              'btn-active': editor?.isActive('codeBlock'),
+            })}
           >
             <BiCodeBlock className='h-6 w-6' />
           </button>
           <button
             onClick={() => editor.chain().focus().toggleBlockquote().run()}
-            className={twMerge(
-              'btn-icon',
-              clsx({
-                'btn-active': editor?.isActive('blockquote'),
-              })
-            )}
+            className={cn('btn-icon', {
+              'btn-active': editor?.isActive('blockquote'),
+            })}
           >
             <MdFormatQuote className='h-6 w-6' />
           </button>
@@ -144,29 +190,26 @@ const Toolbar = ({ editor }: { editor: Editor | null }) => {
 
           <button
             onClick={() => setShowImageInput((prev) => !prev)}
-            className={twMerge(
-              'btn-icon',
-              clsx({
-                'btn-active': editor?.isActive('image'),
-              })
-            )}
+            className={cn('btn-icon', {
+              'btn-active': editor?.isActive('image'),
+            })}
           >
             <MdAddPhotoAlternate className='h-6 w-6' />
           </button>
-        </div>
-      </div>
 
-      <div className='form-control w-full' ref={autoAnimate}>
-        {showImageInput && (
-          <input
-            ref={imageInputRef}
-            type='text'
-            placeholder='Image url'
-            className='input-bordered input w-full'
-            onChange={addImage}
-            onBlur={() => setShowImageInput(false)}
-          />
-        )}
+          <button onClick={handleLocation} className={cn('btn-icon')}>
+            <MdMap className='h-6 w-6' />
+          </button>
+
+          <button
+            onClick={() => setShowYoutubeInput((prev) => !prev)}
+            className={cn('btn-icon', {
+              'btn-active': editor?.isActive('youtube'),
+            })}
+          >
+            <BsYoutube className='h-5 w-5' />
+          </button>
+        </div>
       </div>
     </div>
   )

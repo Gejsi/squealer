@@ -4,6 +4,6 @@ const Home: Page = () => {
   return <h1 className='text-6xl'>Home page</h1>
 }
 
-Home.title = 'Feed'
+Home.title = 'Home'
 
 export default Home

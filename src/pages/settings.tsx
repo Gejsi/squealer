@@ -1,4 +1,5 @@
 import { MdInfoOutline, MdSave } from 'react-icons/md'
+import Image from 'next/image'
 import type { Page } from './_app'
 import { useUser } from '@clerk/nextjs'
 import { useAtom } from 'jotai'
@@ -49,8 +50,15 @@ const Settings: Page = () => {
 
       <div className='my-4 flex flex-col items-center gap-2'>
         <div className='avatar'>
-          <div className='w-28 rounded-full'>
-            <img src={user?.profileImageUrl} alt='User profile picture' />
+          <div className='relative w-28'>
+            {user?.profileImageUrl && (
+              <Image
+                src={user?.profileImageUrl}
+                alt='User profile picture'
+                fill
+                className='rounded-full'
+              />
+            )}
           </div>
         </div>
         <p className='text-lg font-medium'>
@@ -84,7 +92,7 @@ const Settings: Page = () => {
 
         <div className='flex flex-col gap-2 md:flex-row md:items-center'>
           <div className='flex flex-1 flex-col'>
-            <label htmlFor='role'>Change currently used quota</label>
+            <label htmlFor='quota'>Change currently used quota</label>
             <span className='text-sm text-error'>
               {errors.quota && errors.quota.message}
             </span>
@@ -105,7 +113,7 @@ const Settings: Page = () => {
 
         <div className='flex flex-col gap-2 md:flex-row md:items-center'>
           <div className='flex flex-1 flex-col'>
-            <label htmlFor='role'>Change quota limit</label>
+            <label htmlFor='quotaLimit'>Change quota limit</label>
             <span className='text-sm text-error'>
               {errors.quotaLimit && errors.quotaLimit.message}
             </span>
@@ -122,7 +130,9 @@ const Settings: Page = () => {
           />
         </div>
 
-        <div className='mt-4 flex justify-center'>
+        <div className='divider' />
+
+        <div className='flex justify-center'>
           <button
             className={cn('btn gap-2', { loading: metadataMutation.isLoading })}
           >
@@ -135,6 +145,6 @@ const Settings: Page = () => {
   )
 }
 
-Settings.title = 'My profile'
+Settings.title = 'Settings'
 
 export default Settings

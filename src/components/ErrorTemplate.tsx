@@ -18,7 +18,7 @@ const ErrorTemplate = ({
         <p className='text-lg'>({statusCode})</p>
         <h1 className='mb-8 text-xl font-bold md:text-3xl'>
           {statusCode === 500
-            ? 'Interal Server Error. Please, try again later.'
+            ? 'Internal Server Error. Please, try again later.'
             : message}
         </h1>
         <Link href='/' className='btn'>

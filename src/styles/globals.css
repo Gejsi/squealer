@@ -69,12 +69,14 @@
     @apply pointer-events-none absolute opacity-40;
   }
 
-  .ProseMirror.prose img {
-    @apply w-1/2 cursor-pointer;
+  .ProseMirror.prose img,
+  .ProseMirror.prose iframe {
+    @apply h-full w-2/5 cursor-pointer;
   }
 
-  .ProseMirror.prose img.ProseMirror-selectednode {
-    @apply outline outline-2 outline-offset-2 outline-[hsla(var(--p)/.4)];
+  .ProseMirror.prose img.ProseMirror-selectednode,
+  .ProseMirror.prose .ProseMirror-selectednode iframe {
+    @apply outline outline-2 outline-offset-2 outline-[hsla(var(--bc)/.8)];
   }
 
   .auto-fit {

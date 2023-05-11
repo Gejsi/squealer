@@ -15,7 +15,7 @@ export const ModalContent = forwardRef<
   ComponentProps<typeof Content>
 >(({ children, ...props }, forwardedRef) => (
   <Portal>
-    <div className='modal modal-open modal-bottom z-30 animate-fadeIn md:modal-middle'>
+    <div className='modal modal-open modal-bottom z-30 animate-fadeIn overflow-hidden md:modal-middle'>
       <Content
         className='modal-box z-20 !max-w-3xl animate-slideUp'
         ref={forwardedRef}
