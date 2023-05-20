@@ -5,11 +5,11 @@ import { userMetadataSchema } from '../../../schemas/user-metadata'
 export const userMetadataRouter = createRouter({
   updateUserMetadata: authedProcedure
     .input(userMetadataSchema)
-    .mutation(({ ctx, input }) => {
-      clerkClient.users.updateUserMetadata(ctx.auth.userId, {
+    .mutation(async ({ ctx, input }) => {
+      const user = await clerkClient.users.updateUserMetadata(ctx.auth.userId, {
         publicMetadata: { ...input },
       })
 
-      return input
+      return user.publicMetadata
     }),
 })

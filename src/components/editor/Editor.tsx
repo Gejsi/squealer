@@ -5,11 +5,11 @@ import Image from '@tiptap/extension-image'
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Toolbar from './Toolbar'
-import Location from './Location'
 import { useAtom } from 'jotai'
 import { publicMetadataAtom } from '../Layout'
 import type { EditorOptions } from '@tiptap/core'
 import Youtube from '@tiptap/extension-youtube'
+import Link from '@tiptap/extension-link'
 
 const Editor = ({ onUpdate }: { onUpdate?: EditorOptions['onUpdate'] }) => {
   const [publicMetadata] = useAtom(publicMetadataAtom)
@@ -37,8 +37,12 @@ const Editor = ({ onUpdate }: { onUpdate?: EditorOptions['onUpdate'] }) => {
           showOnlyWhenEditable: false,
         }),
         Image,
+        Link.configure({
+          HTMLAttributes: {
+            class: 'link',
+          },
+        }),
         Youtube,
-        Location,
       ],
       editorProps: {
         attributes: {

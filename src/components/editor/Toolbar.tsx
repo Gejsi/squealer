@@ -12,7 +12,7 @@ import {
 } from 'react-icons/md'
 import { BsYoutube } from 'react-icons/bs'
 import { BiCodeBlock } from 'react-icons/bi'
-import { useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { useAutoAnimate } from '@formkit/auto-animate/react'
 import { cn, isImage, isValidYoutubeUrl } from '../../utils/misc'
 import { toast } from 'react-hot-toast'
@@ -57,9 +57,7 @@ const Toolbar = ({ editor }: { editor: Editor | null }) => {
     setShowYoutubeInput(false)
   }, 500)
 
-  if (!editor) return null
-
-  const handleLocation = () => {
+  const addLocation = useCallback(() => {
     toast.loading('Getting your current location.', {
       id: 'location',
     })
@@ -69,9 +67,21 @@ const Toolbar = ({ editor }: { editor: Editor | null }) => {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords
-          toast.success('Got your location', { id: 'location' })
-          console.log(`Latitude: ${latitude}, Longitude: ${longitude}`)
-          console.log(editor.commands.setLocation({ latitude, longitude }))
+          toast.success('Your location has been found.', { id: 'location' })
+
+          const locationContent = `Your location (${latitude} ${longitude}).`
+          editor
+            ?.chain()
+            .focus()
+            .insertContent(locationContent, { updateSelection: true })
+            .setTextSelection({
+              from: editor.state.selection.from,
+              to: locationContent.length + 1,
+            })
+            .setLink({
+              href: `https://www.latlong.net/c/?lat=${latitude}&long=${longitude}`,
+            })
+            .run()
         },
         () => {
           toast.error('Something went wrong while getting current location.', {
@@ -80,11 +90,13 @@ const Toolbar = ({ editor }: { editor: Editor | null }) => {
         }
       )
     } else {
-      toast.error('Geolocation is not available', {
+      toast.error('Geolocation is not available.', {
         id: 'location',
       })
     }
-  }
+  }, [editor])
+
+  if (!editor) return null
 
   return (
     <div className='mb-4 flex flex-col gap-2'>
@@ -197,7 +209,12 @@ const Toolbar = ({ editor }: { editor: Editor | null }) => {
             <MdAddPhotoAlternate className='h-6 w-6' />
           </button>
 
-          <button onClick={handleLocation} className={cn('btn-icon')}>
+          <button
+            onClick={addLocation}
+            className={cn('btn-icon', {
+              'btn-active': editor?.isActive('link'),
+            })}
+          >
             <MdMap className='h-6 w-6' />
           </button>
 
