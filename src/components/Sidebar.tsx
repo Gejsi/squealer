@@ -1,17 +1,12 @@
+import { useUser } from '@clerk/nextjs'
 import { atom, useAtom } from 'jotai'
 import Link from 'next/link'
-import {
-  MdAllInbox,
-  MdKeyboard,
-  MdSentimentSatisfiedAlt,
-  MdShuffle,
-  MdToday,
-} from 'react-icons/md'
-import { BiCoinStack } from 'react-icons/bi'
-import { GiBirdTwitter } from 'react-icons/gi'
-import { useUser } from '@clerk/nextjs'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
+import { TbDiamond } from 'react-icons/tb'
+import { GiBirdTwitter } from 'react-icons/gi'
+import { GiAxeSword } from 'react-icons/gi'
+import { MdAllInbox, MdKeyboard, MdShuffle, MdToday } from 'react-icons/md'
 import SquealDialog from './editor/SquealDialog'
 import { publicMetadataAtom } from './Layout'
 
@@ -48,7 +43,7 @@ const Sidebar = () => {
           className='drawer-overlay'
           onClick={() => setSidebarOpen(false)}
         />
-        <ul className='menu w-64 space-y-2 overflow-y-auto bg-base-200 p-4'>
+        <ul className='menu w-72 space-y-2 overflow-y-auto bg-base-200 p-4'>
           <nav className='flex flex-col items-center'>
             <Link href='/' className='flex items-center gap-2'>
               <GiBirdTwitter className='h-6 w-6' />
@@ -56,21 +51,22 @@ const Sidebar = () => {
             </Link>
 
             <div className='divider mb-0' />
-
-            <div className='flex w-full items-center gap-2'>
-              <li className='flex-1'>
-                <Link href='/settings'>
-                  <div className='flex flex-1 items-center gap-2'>
-                    <BiCoinStack className='h-6 w-6' />
-                    Quota
-                  </div>
-                  <span>
-                    {publicMetadata.quota} / {publicMetadata.quotaLimit}
-                  </span>
-                </Link>
-              </li>
-            </div>
           </nav>
+
+          <div className='flex w-full items-center gap-2'>
+            <li className='flex-1'>
+              <Link href='/settings'>
+                <div className='flex flex-1 items-center gap-2'>
+                  <TbDiamond className='h-6 w-6' />
+                  Daily Quota
+                </div>
+                <span>
+                  {publicMetadata.quota} / {publicMetadata.dailyQuotaLimit}
+                </span>
+              </Link>
+            </li>
+          </div>
+
           <button className='btn-primary btn gap-2' onClick={handleClick}>
             <MdKeyboard className='h-6 w-6' />
             Write Squeal
@@ -90,7 +86,7 @@ const Sidebar = () => {
           </li>
           <li>
             <Link href='/controversial'>
-              <MdSentimentSatisfiedAlt className='h-6 w-6' />
+              <GiAxeSword className='h-6 w-6' />
               Controversial
             </Link>
           </li>

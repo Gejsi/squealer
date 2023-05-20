@@ -18,6 +18,10 @@ const config = {
         protocol: 'https',
         hostname: '**.clerk.dev',
       },
+      {
+        protocol: 'https',
+        hostname: '**.githubusercontent.com',
+      },
     ],
   },
 }

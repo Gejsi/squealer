@@ -1,18 +1,18 @@
-import CharacterCount from '@tiptap/extension-character-count'
-import Placeholder from '@tiptap/extension-placeholder'
-import Typography from '@tiptap/extension-typography'
-import Image from '@tiptap/extension-image'
-import { useEditor, EditorContent } from '@tiptap/react'
-import StarterKit from '@tiptap/starter-kit'
-import Toolbar from './Toolbar'
-import { useAtom } from 'jotai'
-import { publicMetadataAtom } from '../Layout'
-import type { EditorOptions } from '@tiptap/core'
-import Youtube from '@tiptap/extension-youtube'
-import Link from '@tiptap/extension-link'
+import CharacterCount from "@tiptap/extension-character-count";
+import Placeholder from "@tiptap/extension-placeholder";
+import Typography from "@tiptap/extension-typography";
+import Image from "@tiptap/extension-image";
+import { useEditor, EditorContent } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import Toolbar from "./Toolbar";
+import { useAtom } from "jotai";
+import { publicMetadataAtom } from "../Layout";
+import type { EditorOptions } from "@tiptap/core";
+import Youtube from "@tiptap/extension-youtube";
+import Link from "@tiptap/extension-link";
 
-const Editor = ({ onUpdate }: { onUpdate?: EditorOptions['onUpdate'] }) => {
-  const [publicMetadata] = useAtom(publicMetadataAtom)
+const Editor = ({ onUpdate }: { onUpdate?: EditorOptions["onUpdate"] }) => {
+  const [publicMetadata] = useAtom(publicMetadataAtom);
 
   const editor = useEditor(
     {
@@ -24,7 +24,7 @@ const Editor = ({ onUpdate }: { onUpdate?: EditorOptions['onUpdate'] }) => {
           dropcursor: false,
           code: {
             HTMLAttributes: {
-              class: 'rounded-xl text-info bg-base-content/10 p-[0.5ch]',
+              class: "rounded-xl text-info bg-base-content/10 p-[0.5ch]",
             },
           },
         }),
@@ -33,13 +33,13 @@ const Editor = ({ onUpdate }: { onUpdate?: EditorOptions['onUpdate'] }) => {
         }),
         Typography,
         Placeholder.configure({
-          placeholder: 'Write something quirky...',
+          placeholder: "Write something quirky...",
           showOnlyWhenEditable: false,
         }),
         Image,
         Link.configure({
           HTMLAttributes: {
-            class: 'link',
+            class: "link",
           },
         }),
         Youtube,
@@ -47,30 +47,30 @@ const Editor = ({ onUpdate }: { onUpdate?: EditorOptions['onUpdate'] }) => {
       editorProps: {
         attributes: {
           class:
-            'prose outline-none max-h-72 overflow-y-auto textarea textarea-bordered text-base',
-          spellcheck: 'false',
+            "prose outline-none max-h-72 overflow-y-auto textarea textarea-bordered text-base",
+          spellcheck: "false",
         },
       },
       content: {
-        type: 'doc',
+        type: "doc",
         content: [
           {
-            type: 'paragraph',
-            text: 'Write something quirky...',
+            type: "paragraph",
+            text: "Write something quirky...",
           },
         ],
       },
       onUpdate,
     },
     []
-  )
+  );
 
   return (
     <>
       <Toolbar editor={editor} />
       <EditorContent editor={editor} />
     </>
-  )
-}
+  );
+};
 
-export default Editor
+export default Editor;

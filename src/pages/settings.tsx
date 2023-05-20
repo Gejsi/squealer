@@ -1,14 +1,14 @@
-import { MdInfoOutline, MdSave } from 'react-icons/md'
-import Image from 'next/image'
-import type { Page } from './_app'
 import { useUser } from '@clerk/nextjs'
 import { useAtom } from 'jotai'
-import { publicMetadataAtom } from '../components/Layout'
-import { api } from '../utils/api'
+import Image from 'next/image'
 import { toast } from 'react-hot-toast'
+import { MdInfoOutline, MdSave } from 'react-icons/md'
+import { publicMetadataAtom } from '../components/Layout'
 import useZodForm from '../hooks/use-zod-form'
-import { userMetadataSchema } from '../schemas/user-metadata'
+import { DAILY_LIMIT, userMetadataSchema } from '../schemas/user-metadata'
+import { api } from '../utils/api'
 import { cn } from '../utils/misc'
+import type { Page } from './_app'
 
 const Settings: Page = () => {
   const { user } = useUser()
@@ -92,7 +92,7 @@ const Settings: Page = () => {
 
         <div className='flex flex-col gap-2 md:flex-row md:items-center'>
           <div className='flex flex-1 flex-col'>
-            <label htmlFor='quota'>Change currently used quota</label>
+            <label htmlFor='quota'>Change currently used daily quota</label>
             <span className='text-sm text-error'>
               {errors.quota && errors.quota.message}
             </span>
@@ -102,8 +102,8 @@ const Settings: Page = () => {
             className='input-bordered input'
             id='quota'
             type='number'
-            min='-1'
-            max='1000'
+            min='0'
+            max={DAILY_LIMIT}
             size={7}
             {...register('quota', { valueAsNumber: true })}
           />
@@ -113,20 +113,60 @@ const Settings: Page = () => {
 
         <div className='flex flex-col gap-2 md:flex-row md:items-center'>
           <div className='flex flex-1 flex-col'>
-            <label htmlFor='quotaLimit'>Change quota limit</label>
+            <label htmlFor='dailyQuotaLimit'>Change daily quota limit</label>
             <span className='text-sm text-error'>
-              {errors.quotaLimit && errors.quotaLimit.message}
+              {errors.dailyQuotaLimit && errors.dailyQuotaLimit.message}
             </span>
           </div>
 
           <input
             className='input-bordered input'
-            id='quotaLimit'
+            id='dailyQuotaLimit'
             type='number'
             min='0'
-            max='1000'
+            max={DAILY_LIMIT}
             size={7}
-            {...register('quotaLimit', { valueAsNumber: true })}
+            {...register('dailyQuotaLimit', { valueAsNumber: true })}
+          />
+        </div>
+
+        <div className='flex flex-col gap-2 md:flex-row md:items-center'>
+          <div className='flex flex-1 flex-col'>
+            <label htmlFor='weeklyQuotaLimit'>Change weekly quota limit</label>
+            <span className='text-sm text-error'>
+              {errors.weeklyQuotaLimit && errors.weeklyQuotaLimit.message}
+            </span>
+          </div>
+
+          <input
+            className='input-bordered input'
+            id='weeklyQuotaLimit'
+            type='number'
+            min='0'
+            max={1000000}
+            size={7}
+            {...register('weeklyQuotaLimit', { valueAsNumber: true })}
+          />
+        </div>
+
+        <div className='flex flex-col gap-2 md:flex-row md:items-center'>
+          <div className='flex flex-1 flex-col'>
+            <label htmlFor='monthlyQuotaLimit'>
+              Change monthly quota limit
+            </label>
+            <span className='text-sm text-error'>
+              {errors.monthlyQuotaLimit && errors.monthlyQuotaLimit.message}
+            </span>
+          </div>
+
+          <input
+            className='input-bordered input'
+            id='monthlyQuotaLimit'
+            type='number'
+            min='0'
+            max={1000000}
+            size={7}
+            {...register('monthlyQuotaLimit', { valueAsNumber: true })}
           />
         </div>
 
