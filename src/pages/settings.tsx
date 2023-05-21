@@ -5,7 +5,12 @@ import { toast } from 'react-hot-toast'
 import { MdInfoOutline, MdSave } from 'react-icons/md'
 import { publicMetadataAtom } from '../components/Layout'
 import useZodForm from '../hooks/use-zod-form'
-import { DAILY_LIMIT, userMetadataSchema } from '../schemas/user-metadata'
+import {
+  DAILY_LIMIT,
+  MONTHLY_LIMIT,
+  WEEKLY_LIMIT,
+  userMetadataSchema,
+} from '../schemas/user-metadata'
 import { api } from '../utils/api'
 import { cn } from '../utils/misc'
 import type { Page } from './_app'
@@ -143,7 +148,7 @@ const Settings: Page = () => {
             id='weeklyQuotaLimit'
             type='number'
             min='0'
-            max={1000000}
+            max={WEEKLY_LIMIT}
             size={7}
             {...register('weeklyQuotaLimit', { valueAsNumber: true })}
           />
@@ -164,7 +169,7 @@ const Settings: Page = () => {
             id='monthlyQuotaLimit'
             type='number'
             min='0'
-            max={1000000}
+            max={MONTHLY_LIMIT}
             size={7}
             {...register('monthlyQuotaLimit', { valueAsNumber: true })}
           />

@@ -100,30 +100,6 @@ const Toolbar = ({ editor }: { editor: Editor | null }) => {
 
   return (
     <div className='mb-4 flex flex-col gap-2'>
-      <div className='form-control w-full' ref={autoAnimate}>
-        {showImageInput && (
-          <input
-            ref={imageInputRef}
-            type='text'
-            placeholder='Image url'
-            className='input-bordered input-info input w-full'
-            onChange={addImage}
-            onBlur={() => setShowImageInput(false)}
-          />
-        )}
-
-        {showYoutubeInput && (
-          <input
-            ref={youtubeInputRef}
-            type='text'
-            placeholder='Youtube video url'
-            className='input-bordered input-info input w-full'
-            onChange={addYoutubeVideo}
-            onBlur={() => setShowYoutubeInput(false)}
-          />
-        )}
-      </div>
-
       <div className='flex flex-1 flex-nowrap overflow-y-auto'>
         <div className='btn-group flex-nowrap rounded-lg bg-base-content/10'>
           <button
@@ -227,6 +203,30 @@ const Toolbar = ({ editor }: { editor: Editor | null }) => {
             <BsYoutube className='h-5 w-5' />
           </button>
         </div>
+      </div>
+
+      <div className='form-control w-full' ref={autoAnimate}>
+        {showImageInput && (
+          <input
+            ref={imageInputRef}
+            type='text'
+            placeholder='Image url'
+            className='input-bordered input-info input w-full'
+            onChange={addImage}
+            onBlur={() => setShowImageInput(false)}
+          />
+        )}
+
+        {showYoutubeInput && (
+          <input
+            ref={youtubeInputRef}
+            type='text'
+            placeholder='Youtube video url'
+            className='input-bordered input-info input w-full'
+            onChange={addYoutubeVideo}
+            onBlur={() => setShowYoutubeInput(false)}
+          />
+        )}
       </div>
     </div>
   )
