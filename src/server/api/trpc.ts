@@ -26,8 +26,7 @@ const createInnerTRPCContext = ({ auth }: AuthContext) => {
  * @link https://trpc.io/docs/context
  */
 export const createTRPCContext = async (opts: CreateNextContextOptions) => {
-  const auth = getAuth(opts.req)
-  return createInnerTRPCContext({ auth })
+  return createInnerTRPCContext({ auth: getAuth(opts.req) })
 }
 
 /**
@@ -73,9 +72,9 @@ const isPremium = t.middleware(({ next, ctx }) => {
       message: 'Only authenticated users can access this feature.',
     })
 
-  if (ctx.auth.user && ctx.auth.user.publicMetadata.role !== 'premium')
+  if (ctx.auth.user && ctx.auth.user.privateMetadata.role !== 'Premium')
     throw new TRPCError({
-      code: 'FORBIDDEN',
+      code: 'UNAUTHORIZED',
       message: 'Only premium users can access this feature.',
     })
 

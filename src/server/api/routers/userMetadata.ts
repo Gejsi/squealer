@@ -4,6 +4,7 @@ import {
   userMetadataSchema,
 } from '../../../schemas/user-metadata'
 import { Prisma } from '@prisma/client'
+import { clerkClient } from '@clerk/nextjs/server'
 
 const commonSelector = Prisma.validator<Prisma.UserSelect>()({
   role: true,
@@ -26,6 +27,10 @@ export const userMetadataRouter = createRouter({
         data: { id: ctx.auth.userId },
       })
     }
+
+    await clerkClient.users.updateUserMetadata(ctx.auth.userId, {
+      privateMetadata: { role: userMetadata.role },
+    })
 
     return userMetadata as UserMetadata
   }),

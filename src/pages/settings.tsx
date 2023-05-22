@@ -3,7 +3,7 @@ import { useAtom } from 'jotai'
 import Image from 'next/image'
 import { toast } from 'react-hot-toast'
 import { MdInfoOutline, MdSave } from 'react-icons/md'
-import { publicMetadataAtom } from '../components/Layout'
+import { userMetadataAtom } from '../components/Layout'
 import useZodForm from '../hooks/use-zod-form'
 import {
   DAILY_LIMIT,
@@ -17,7 +17,7 @@ import type { Page } from './_app'
 
 const Settings: Page = () => {
   const { user } = useUser()
-  const [publicMetadata, setPublicMetadata] = useAtom(publicMetadataAtom)
+  const [userMetadata, setUserMetadata] = useAtom(userMetadataAtom)
   const utils = api.useContext()
   const metadataMutation = api.userMetadata.update.useMutation({
     onError() {
@@ -25,7 +25,7 @@ const Settings: Page = () => {
     },
     onSuccess(data) {
       toast.success('Settings saved.')
-      setPublicMetadata(data)
+      setUserMetadata(data)
     },
     onSettled() {
       utils.userMetadata.get.invalidate()
@@ -38,7 +38,7 @@ const Settings: Page = () => {
     formState: { errors },
   } = useZodForm({
     schema: userMetadataSchema,
-    defaultValues: { ...publicMetadata },
+    defaultValues: { ...userMetadata },
   })
 
   return (
@@ -77,7 +77,7 @@ const Settings: Page = () => {
       >
         <div className='flex flex-col gap-2 md:flex-row md:items-center'>
           <div className='flex flex-1 flex-col'>
-            <label htmlFor='role'>Change user role</label>
+            <label htmlFor='role'>User role</label>
             <span className='text-sm text-error'>
               {errors.role && errors.role.message}
             </span>
@@ -97,7 +97,7 @@ const Settings: Page = () => {
 
         <div className='flex flex-col gap-2 md:flex-row md:items-center'>
           <div className='flex flex-1 flex-col'>
-            <label htmlFor='quota'>Change currently used daily quota</label>
+            <label htmlFor='quota'>Currently used quota</label>
             <span className='text-sm text-error'>
               {errors.quota && errors.quota.message}
             </span>
@@ -118,7 +118,7 @@ const Settings: Page = () => {
 
         <div className='flex flex-col gap-2 md:flex-row md:items-center'>
           <div className='flex flex-1 flex-col'>
-            <label htmlFor='dailyQuotaLimit'>Change daily quota limit</label>
+            <label htmlFor='dailyQuotaLimit'>Daily quota limit</label>
             <span className='text-sm text-error'>
               {errors.dailyQuotaLimit && errors.dailyQuotaLimit.message}
             </span>
@@ -137,7 +137,7 @@ const Settings: Page = () => {
 
         <div className='flex flex-col gap-2 md:flex-row md:items-center'>
           <div className='flex flex-1 flex-col'>
-            <label htmlFor='weeklyQuotaLimit'>Change weekly quota limit</label>
+            <label htmlFor='weeklyQuotaLimit'>Weekly quota limit</label>
             <span className='text-sm text-error'>
               {errors.weeklyQuotaLimit && errors.weeklyQuotaLimit.message}
             </span>
@@ -156,9 +156,7 @@ const Settings: Page = () => {
 
         <div className='flex flex-col gap-2 md:flex-row md:items-center'>
           <div className='flex flex-1 flex-col'>
-            <label htmlFor='monthlyQuotaLimit'>
-              Change monthly quota limit
-            </label>
+            <label htmlFor='monthlyQuotaLimit'>Monthly quota limit</label>
             <span className='text-sm text-error'>
               {errors.monthlyQuotaLimit && errors.monthlyQuotaLimit.message}
             </span>

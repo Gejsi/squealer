@@ -2,12 +2,12 @@ import { type ComponentProps, useState } from 'react'
 import { Modal, ModalClose, ModalContent, ModalTitle } from '../Modal'
 import Editor from './Editor'
 import { useAtom } from 'jotai'
-import { publicMetadataAtom } from '../Layout'
+import { userMetadataAtom } from '../Layout'
 import { toast } from 'react-hot-toast'
 import { squealDialogAtom } from '../Sidebar'
 
 const SquealDialog = (props: ComponentProps<typeof Modal>) => {
-  const [publicMetadata] = useAtom(publicMetadataAtom)
+  const [userMetadata] = useAtom(userMetadataAtom)
   const [editorLength, setEditorLength] = useState(0)
   const [, setDialogOpen] = useAtom(squealDialogAtom)
 
@@ -36,10 +36,10 @@ const SquealDialog = (props: ComponentProps<typeof Modal>) => {
             />
             <label className='label'>
               <span className='label-text-alt'>
-                Daily quota remaining: {publicMetadata.quota - editorLength}
+                Ruota remaining: {userMetadata.quota - editorLength}
               </span>
               <span className='label-text-alt'>
-                {editorLength} / {publicMetadata.quota}
+                {editorLength} / {userMetadata.quota}
               </span>
             </label>
           </div>

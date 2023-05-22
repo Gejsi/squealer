@@ -1,30 +1,38 @@
 import { atom, useAtom } from 'jotai'
 import Head from 'next/head'
-import type { ReactNode } from 'react'
+import { type ReactNode, useEffect } from 'react'
 import { Toaster } from 'react-hot-toast'
 import Sidebar, { sidebarAtom } from './Sidebar'
 import type { UserMetadata } from '../schemas/user-metadata'
 import { api } from '../utils/api'
+import { useUser } from '@clerk/nextjs'
 
-export const publicMetadataAtom = atom<UserMetadata>({
+const initialMetadata = {
   role: 'Regular',
   quota: 0,
   dailyQuotaLimit: 0,
   weeklyQuotaLimit: 0,
   monthlyQuotaLimit: 0,
-})
+} as const
+
+export const userMetadataAtom = atom<UserMetadata>(initialMetadata)
 
 const Layout = ({ children }: { children: ReactNode }) => {
   const [sidebarState] = useAtom(sidebarAtom)
-  const [, setPublicMetadata] = useAtom(publicMetadataAtom)
+  const [, setUserMetadata] = useAtom(userMetadataAtom)
+  const { isSignedIn } = useUser()
 
   api.userMetadata.get.useQuery(undefined, {
     retry: false,
     refetchOnWindowFocus: false,
     onSuccess(data) {
-      setPublicMetadata(data)
+      setUserMetadata(data)
     },
   })
+
+  useEffect(() => {
+    if (!isSignedIn) setUserMetadata(initialMetadata)
+  }, [isSignedIn, setUserMetadata])
 
   return (
     <>

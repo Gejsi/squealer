@@ -8,7 +8,7 @@ import { GiBirdTwitter } from 'react-icons/gi'
 import { GiAxeSword } from 'react-icons/gi'
 import { MdAllInbox, MdKeyboard, MdShuffle, MdToday } from 'react-icons/md'
 import SquealDialog from './editor/SquealDialog'
-import { publicMetadataAtom } from './Layout'
+import { userMetadataAtom } from './Layout'
 
 export const sidebarAtom = atom(false)
 export const squealDialogAtom = atom(false)
@@ -18,7 +18,7 @@ const Sidebar = () => {
   const { isSignedIn } = useUser()
   const router = useRouter()
   const [dialogOpen, setDialogOpen] = useAtom(squealDialogAtom)
-  const [publicMetadata] = useAtom(publicMetadataAtom)
+  const [userMetadata] = useAtom(userMetadataAtom)
 
   // close sidebar when route changes
   useEffect(() => {
@@ -61,7 +61,7 @@ const Sidebar = () => {
                   Daily Quota
                 </div>
                 <span className='text-sm'>
-                  {publicMetadata.quota} / {publicMetadata.dailyQuotaLimit}
+                  {userMetadata.quota} / {userMetadata.dailyQuotaLimit}
                 </span>
               </Link>
             </li>

@@ -6,13 +6,13 @@ import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Toolbar from './Toolbar'
 import { useAtom } from 'jotai'
-import { publicMetadataAtom } from '../Layout'
+import { userMetadataAtom } from '../Layout'
 import type { EditorOptions } from '@tiptap/core'
 import Youtube from '@tiptap/extension-youtube'
 import Link from '@tiptap/extension-link'
 
 const Editor = ({ onUpdate }: { onUpdate?: EditorOptions['onUpdate'] }) => {
-  const [publicMetadata] = useAtom(publicMetadataAtom)
+  const [userMetadata] = useAtom(userMetadataAtom)
 
   const editor = useEditor(
     {
@@ -29,11 +29,11 @@ const Editor = ({ onUpdate }: { onUpdate?: EditorOptions['onUpdate'] }) => {
           },
         }),
         CharacterCount.configure({
-          limit: publicMetadata.quota,
+          limit: userMetadata.quota,
         }),
         Typography,
         Placeholder.configure({
-          placeholder: 'Write something quirky...',
+          placeholder: 'Keep squealing...',
           showOnlyWhenEditable: false,
         }),
         Image,
@@ -47,7 +47,7 @@ const Editor = ({ onUpdate }: { onUpdate?: EditorOptions['onUpdate'] }) => {
       editorProps: {
         attributes: {
           class:
-            'prose outline-none max-h-72 overflow-y-auto textarea textarea-bordered text-base',
+            'prose outline-none max-h-72 min-h-[6rem] overflow-y-auto textarea textarea-bordered text-base',
           spellcheck: 'false',
         },
       },
@@ -56,7 +56,7 @@ const Editor = ({ onUpdate }: { onUpdate?: EditorOptions['onUpdate'] }) => {
         content: [
           {
             type: 'paragraph',
-            text: 'Write something quirky...',
+            text: 'Keep squealing...',
           },
         ],
       },
