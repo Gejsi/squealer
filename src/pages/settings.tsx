@@ -5,7 +5,12 @@ import { toast } from 'react-hot-toast'
 import { MdInfoOutline, MdSave } from 'react-icons/md'
 import { publicMetadataAtom } from '../components/Layout'
 import useZodForm from '../hooks/use-zod-form'
-import { DAILY_LIMIT, userMetadataSchema } from '../schemas/user-metadata'
+import {
+  DAILY_LIMIT,
+  MONTHLY_LIMIT,
+  WEEKLY_LIMIT,
+  userMetadataSchema,
+} from '../schemas/user-metadata'
 import { api } from '../utils/api'
 import { cn } from '../utils/misc'
 import type { Page } from './_app'
@@ -14,7 +19,7 @@ const Settings: Page = () => {
   const { user } = useUser()
   const [publicMetadata, setPublicMetadata] = useAtom(publicMetadataAtom)
   const utils = api.useContext()
-  const metadataMutation = api.userMetadata.updateUserMetadata.useMutation({
+  const metadataMutation = api.userMetadata.update.useMutation({
     onError() {
       toast.error('Unable to save settings.')
     },
@@ -23,7 +28,7 @@ const Settings: Page = () => {
       setPublicMetadata(data)
     },
     onSettled() {
-      utils.userMetadata.invalidate()
+      utils.userMetadata.get.invalidate()
     },
   })
 
@@ -79,12 +84,12 @@ const Settings: Page = () => {
           </div>
 
           <select
-            className='select-bordered select capitalize'
+            className='select-bordered select'
             id='role'
             {...register('role')}
           >
-            <option>regular</option>
-            <option>premium</option>
+            <option>Regular</option>
+            <option>Premium</option>
           </select>
         </div>
 
@@ -143,7 +148,7 @@ const Settings: Page = () => {
             id='weeklyQuotaLimit'
             type='number'
             min='0'
-            max={1000000}
+            max={WEEKLY_LIMIT}
             size={7}
             {...register('weeklyQuotaLimit', { valueAsNumber: true })}
           />
@@ -164,7 +169,7 @@ const Settings: Page = () => {
             id='monthlyQuotaLimit'
             type='number'
             min='0'
-            max={1000000}
+            max={MONTHLY_LIMIT}
             size={7}
             {...register('monthlyQuotaLimit', { valueAsNumber: true })}
           />

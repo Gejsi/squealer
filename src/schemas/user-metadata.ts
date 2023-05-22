@@ -6,7 +6,7 @@ export const MONTHLY_LIMIT = WEEKLY_LIMIT * 4 - 5000
 
 export const userMetadataSchema = z
   .object({
-    role: z.enum(['regular', 'premium'], {
+    role: z.enum(['Regular', 'Premium'], {
       errorMap: () => ({ message: 'User can be either regular or premium.' }),
     }),
     quota: z.number().int().min(0).max(DAILY_LIMIT),
@@ -30,9 +30,4 @@ export const userMetadataSchema = z
     path: ['monthlyQuotaLimit'],
   })
 
-type Metadata = z.infer<typeof userMetadataSchema>
-
-declare global {
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  interface UserPublicMetadata extends Metadata {}
-}
+export type UserMetadata = z.infer<typeof userMetadataSchema>

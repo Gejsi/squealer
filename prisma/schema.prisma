@@ -8,44 +8,72 @@ datasource db {
   relationMode = "prisma"
 }
 
-model Squeal {
-  id        String     @id @default(cuid())
-  content   String
-  createdAt DateTime   @default(now())
-  author    Author     @relation(fields: [authorId], references: [userId])
-  authorId  String
-  mentions  Mention[]
+model User {
+  id String @id
+
+  squeals   Squeal[]
   receivers Receiver[]
 
+  role              UserRole @default(Regular)
+  quota             Int      @default(3000)
+  dailyQuotaLimit   Int      @default(3000)
+  weeklyQuotaLimit  Int      @default(20000)
+  monthlyQuotaLimit Int      @default(75000)
+
+  @@map("users")
+}
+
+enum UserRole {
+  Regular
+  Premium
+}
+
+model Squeal {
+  id        String   @id @default(cuid())
+  content   Json
+  createdAt DateTime @default(now())
+
+  author     User       @relation(fields: [authorId], references: [id])
+  authorId   String
+  mentions   Mention[]
+  receiver   Receiver   @relation(fields: [receiverId], references: [id])
+  receiverId String
+  channel    Channel    @relation(fields: [channelId], references: [id])
+  channelId  String
+  reactions  Reaction[]
+
+  @@index([channelId])
   @@index([authorId])
+  @@index([receiverId])
   @@map("squeals")
 }
 
-model Author {
-  userId String @id
-
-  squeal    Squeal[]
-  channel   Channel? @relation(fields: [channelId], references: [id])
-  channelId String?
-
-  @@index([channelId])
-  @@map("authors")
-}
-
 model Channel {
-  id     String   @id @default(cuid())
-  name   String
-  owners Author[]
+  id        String      @id @default(cuid())
+  name      String
+  ownerId   String
+  type      ChannelType
+  squeals   Squeal[]
+  receivers Receiver[]
 
   @@map("channels")
 }
 
-model Receiver {
-  id       Int     @id @default(autoincrement())
-  squeal   Squeal? @relation(fields: [squealId], references: [id])
-  squealId String?
+enum ChannelType {
+  Private
+  Public
+}
 
-  @@index([squealId])
+model Receiver {
+  id        String   @id @default(cuid())
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    String?
+  channel   Channel? @relation(fields: [channelId], references: [id])
+  channelId String?
+  Squeal    Squeal[]
+
+  @@index([userId])
+  @@index([channelId])
   @@map("receivers")
 }
 
@@ -56,4 +84,20 @@ model Mention {
 
   @@index([squealId])
   @@map("mentions")
+}
+
+model Reaction {
+  userId   String
+  squeal   Squeal       @relation(fields: [squealId], references: [id])
+  squealId String
+  type     ReactionType
+
+  @@id([userId, squealId])
+  @@index([squealId])
+  @@map("reactions")
+}
+
+enum ReactionType {
+  Like
+  Dislike
 }

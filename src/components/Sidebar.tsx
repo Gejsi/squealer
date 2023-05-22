@@ -60,7 +60,7 @@ const Sidebar = () => {
                   <TbDiamond className='h-6 w-6' />
                   Daily Quota
                 </div>
-                <span>
+                <span className='text-sm'>
                   {publicMetadata.quota} / {publicMetadata.dailyQuotaLimit}
                 </span>
               </Link>
