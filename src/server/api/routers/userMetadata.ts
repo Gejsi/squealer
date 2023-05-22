@@ -1,15 +1,49 @@
 import { createRouter, authedProcedure } from '../trpc'
-import { clerkClient } from '@clerk/nextjs/server'
-import { userMetadataSchema } from '../../../schemas/user-metadata'
+import {
+  type UserMetadata,
+  userMetadataSchema,
+} from '../../../schemas/user-metadata'
+import { Prisma } from '@prisma/client'
+
+const commonSelector = Prisma.validator<Prisma.UserSelect>()({
+  role: true,
+  quota: true,
+  dailyQuotaLimit: true,
+  weeklyQuotaLimit: true,
+  monthlyQuotaLimit: true,
+})
 
 export const userMetadataRouter = createRouter({
-  updateUserMetadata: authedProcedure
+  get: authedProcedure.query(async ({ ctx }) => {
+    let userMetadata
+    userMetadata = await ctx.prisma.user.findUnique({
+      where: { id: ctx.auth.userId },
+      select: commonSelector,
+    })
+
+    if (!userMetadata) {
+      userMetadata = await ctx.prisma.user.create({
+        data: { id: ctx.auth.userId },
+      })
+    }
+
+    return userMetadata as UserMetadata
+  }),
+  update: authedProcedure
     .input(userMetadataSchema)
     .mutation(async ({ ctx, input }) => {
-      const user = await clerkClient.users.updateUserMetadata(ctx.auth.userId, {
-        publicMetadata: { ...input },
+      const userMetadata = await ctx.prisma.user.update({
+        where: { id: ctx.auth.userId },
+        data: {
+          role: input.role,
+          quota: input.quota,
+          dailyQuotaLimit: input.dailyQuotaLimit,
+          weeklyQuotaLimit: input.weeklyQuotaLimit,
+          monthlyQuotaLimit: input.monthlyQuotaLimit,
+        },
+        select: commonSelector,
       })
 
-      return user.publicMetadata
+      return userMetadata
     }),
 })

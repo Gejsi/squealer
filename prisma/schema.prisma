@@ -9,10 +9,18 @@ datasource db {
 }
 
 model User {
-  id       String     @id
-  role     UserRole
-  squeals  Squeal[]
-  Receiver Receiver[]
+  id String @id
+
+  squeals   Squeal[]
+  receivers Receiver[]
+
+  role              UserRole @default(Regular)
+  quota             Int      @default(3000)
+  dailyQuotaLimit   Int      @default(3000)
+  weeklyQuotaLimit  Int      @default(20000)
+  monthlyQuotaLimit Int      @default(75000)
+
+  @@map("users")
 }
 
 enum UserRole {
@@ -41,12 +49,12 @@ model Squeal {
 }
 
 model Channel {
-  id       String      @id @default(cuid())
-  name     String
-  ownerId  String
-  type     ChannelType
-  Squeal   Squeal[]
-  Receiver Receiver[]
+  id        String      @id @default(cuid())
+  name      String
+  ownerId   String
+  type      ChannelType
+  squeals   Squeal[]
+  receivers Receiver[]
 
   @@map("channels")
 }
@@ -66,6 +74,7 @@ model Receiver {
 
   @@index([userId])
   @@index([channelId])
+  @@map("receivers")
 }
 
 model Mention {
@@ -85,6 +94,7 @@ model Reaction {
 
   @@id([userId, squealId])
   @@index([squealId])
+  @@map("reactions")
 }
 
 enum ReactionType {

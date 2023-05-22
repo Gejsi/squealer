@@ -19,7 +19,7 @@ const Settings: Page = () => {
   const { user } = useUser()
   const [publicMetadata, setPublicMetadata] = useAtom(publicMetadataAtom)
   const utils = api.useContext()
-  const metadataMutation = api.userMetadata.updateUserMetadata.useMutation({
+  const metadataMutation = api.userMetadata.update.useMutation({
     onError() {
       toast.error('Unable to save settings.')
     },
@@ -28,7 +28,7 @@ const Settings: Page = () => {
       setPublicMetadata(data)
     },
     onSettled() {
-      utils.userMetadata.invalidate()
+      utils.userMetadata.get.invalidate()
     },
   })
 
@@ -84,12 +84,12 @@ const Settings: Page = () => {
           </div>
 
           <select
-            className='select-bordered select capitalize'
+            className='select-bordered select'
             id='role'
             {...register('role')}
           >
-            <option>regular</option>
-            <option>premium</option>
+            <option>Regular</option>
+            <option>Premium</option>
           </select>
         </div>
 

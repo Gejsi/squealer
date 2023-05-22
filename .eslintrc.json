@@ -4,8 +4,7 @@
     "project": "./tsconfig.json"
   },
   "globals": {
-    "globalThis": false,
-    "UserPublicMetadata": false
+    "globalThis": false
   },
   "plugins": ["@typescript-eslint"],
   "extends": [

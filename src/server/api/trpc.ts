@@ -1,15 +1,10 @@
 import type { SignedInAuthObject, SignedOutAuthObject } from '@clerk/nextjs/api'
-import { clerkClient, getAuth } from '@clerk/nextjs/server'
+import { getAuth } from '@clerk/nextjs/server'
 import { initTRPC, TRPCError } from '@trpc/server'
 import type { CreateNextContextOptions } from '@trpc/server/adapters/next'
 import superjson from 'superjson'
 import { ZodError } from 'zod'
 import { prisma } from '../db'
-import {
-  DAILY_LIMIT,
-  MONTHLY_LIMIT,
-  WEEKLY_LIMIT,
-} from '../../schemas/user-metadata'
 
 interface AuthContext {
   auth: SignedInAuthObject | SignedOutAuthObject
@@ -32,31 +27,6 @@ const createInnerTRPCContext = ({ auth }: AuthContext) => {
  */
 export const createTRPCContext = async (opts: CreateNextContextOptions) => {
   const auth = getAuth(opts.req)
-
-  const publicMetadata: UserPublicMetadata = (auth.sessionClaims as any)
-    .public_metadata
-
-  if (
-    auth.userId &&
-    publicMetadata &&
-    (!('role' in publicMetadata) ||
-      !('quota' in publicMetadata) ||
-      !('dailyQuotaLimit' in publicMetadata) ||
-      !('weeklyQuotaLimit' in publicMetadata) ||
-      !('monthlyQuotaLimit' in publicMetadata))
-  ) {
-    // add 'regular' role and some quota of characters by default for all users
-    await clerkClient.users.updateUserMetadata(auth.userId, {
-      publicMetadata: {
-        role: 'regular',
-        quota: 500,
-        dailyQuotaLimit: DAILY_LIMIT,
-        weeklyQuotaLimit: WEEKLY_LIMIT,
-        monthlyQuotaLimit: MONTHLY_LIMIT,
-      },
-    })
-  }
-
   return createInnerTRPCContext({ auth })
 }
 
