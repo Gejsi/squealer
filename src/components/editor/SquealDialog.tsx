@@ -25,25 +25,19 @@ const SquealDialog = (props: ComponentProps<typeof Modal>) => {
       <ModalContent>
         <ModalTitle>Write a new squeal</ModalTitle>
 
-        <div className='flex flex-col'>
-          <div className='form-control'>
-            <Editor
-              onUpdate={({ editor }) =>
-                setEditorLength(() =>
-                  editor.storage.characterCount.characters()
-                )
-              }
-            />
-            <label className='label'>
-              <span className='label-text-alt'>
-                Ruota remaining: {userMetadata.quota - editorLength}
-              </span>
-              <span className='label-text-alt'>
-                {editorLength} / {userMetadata.quota}
-              </span>
-            </label>
-          </div>
-        </div>
+        <Editor
+          onUpdate={({ editor }) =>
+            setEditorLength(() => editor.storage.characterCount.characters())
+          }
+        />
+        <label className='label'>
+          <span className='label-text-alt'>
+            Ruota remaining: {userMetadata.quota - editorLength}
+          </span>
+          <span className='label-text-alt'>
+            {editorLength} / {userMetadata.quota}
+          </span>
+        </label>
 
         <div className='modal-action'>
           <ModalClose>

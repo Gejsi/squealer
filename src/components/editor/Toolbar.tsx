@@ -69,18 +69,12 @@ const Toolbar = ({ editor }: { editor: Editor | null }) => {
           const { latitude, longitude } = position.coords
           toast.success('Your location has been found.', { id: 'location' })
 
-          const locationContent = `Your location (${latitude} ${longitude}).`
           editor
             ?.chain()
             .focus()
-            .insertContent(locationContent, { updateSelection: true })
-            .setTextSelection({
-              from: editor.state.selection.from,
-              to: locationContent.length + 1,
-            })
-            .setLink({
-              href: `https://www.latlong.net/c/?lat=${latitude}&long=${longitude}`,
-            })
+            .insertContent(
+              `<location lat="${latitude}" long="${longitude}"></location>`
+            )
             .run()
         },
         () => {

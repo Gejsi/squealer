@@ -10,6 +10,7 @@ import { userMetadataAtom } from '../Layout'
 import type { EditorOptions } from '@tiptap/core'
 import Youtube from '@tiptap/extension-youtube'
 import Link from '@tiptap/extension-link'
+import Location from './Location'
 
 const Editor = ({ onUpdate }: { onUpdate?: EditorOptions['onUpdate'] }) => {
   const [userMetadata] = useAtom(userMetadataAtom)
@@ -43,11 +44,12 @@ const Editor = ({ onUpdate }: { onUpdate?: EditorOptions['onUpdate'] }) => {
           },
         }),
         Youtube,
+        Location,
       ],
       editorProps: {
         attributes: {
           class:
-            'prose outline-none max-h-72 min-h-[6rem] overflow-y-auto textarea textarea-bordered text-base',
+            'prose outline-none max-h-96 min-h-[6rem] overflow-y-auto textarea textarea-bordered text-base',
           spellcheck: 'false',
         },
       },
