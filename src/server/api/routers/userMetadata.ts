@@ -28,6 +28,7 @@ export const userMetadataRouter = createRouter({
       })
     }
 
+    // makes the premium middleware work without re-fetching the current user
     await clerkClient.users.updateUserMetadata(ctx.auth.userId, {
       privateMetadata: { role: userMetadata.role },
     })

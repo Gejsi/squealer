@@ -26,6 +26,7 @@ specifiers:
   '@trpc/next': ^10.19.1
   '@trpc/react-query': ^10.16.0
   '@trpc/server': ^10.9.0
+  '@types/leaflet': ^1.9.3
   '@types/node': ^18.11.18
   '@types/prettier': ^2.7.2
   '@types/react': ^18.0.35
@@ -40,6 +41,7 @@ specifiers:
   eslint-config-prettier: ^8.8.0
   eslint-plugin-react-hooks: ^4.6.0
   jotai: ^2.0.4
+  leaflet: ^1.9.4
   next: 13.2.4
   postcss: ^8.4.14
   prettier: ^2.8.1
@@ -50,6 +52,7 @@ specifiers:
   react-hook-form: ^7.43.9
   react-hot-toast: ^2.4.1
   react-icons: ^4.8.0
+  react-leaflet: ^4.2.1
   superjson: 1.12.2
   tailwind-merge: ^1.12.0
   tailwindcss: ^3.2.6
@@ -82,18 +85,21 @@ dependencies:
   '@trpc/server': 10.21.2
   daisyui: 2.51.6_zmwpaxxolxfsc5pnrezed2bx24
   jotai: 2.0.4_react@18.2.0
+  leaflet: 1.9.4
   next: 13.2.4_3j7hb26pwgm6spbxoejtjx6xja
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
   react-hook-form: 7.43.9_react@18.2.0
   react-hot-toast: 2.4.1_s7mghcr6idhb4d5ook54gl4n44
   react-icons: 4.8.0_react@18.2.0
+  react-leaflet: 4.2.1_p7e52lah55xmyywv7f3e7owrmy
   superjson: 1.12.2
   zod: 3.21.4
 
 devDependencies:
   '@clerk/themes': 1.6.3_react@18.2.0
   '@tailwindcss/typography': 0.5.9_tailwindcss@3.3.2
+  '@types/leaflet': 1.9.3
   '@types/node': 18.16.1
   '@types/prettier': 2.7.2
   '@types/react': 18.2.0
@@ -1179,6 +1185,18 @@ packages:
       '@babel/runtime': 7.21.0
     dev: false
 
+  /@react-leaflet/core/2.1.0_p7e52lah55xmyywv7f3e7owrmy:
+    resolution: {integrity: sha512-Qk7Pfu8BSarKGqILj4x7bCSZ1pjuAPZ+qmRwH5S7mDS91VSbVVsJSrW4qA+GPrro8t69gFYVMWb1Zc4yFmPiVg==}
+    peerDependencies:
+      leaflet: ^1.9.0
+      react: ^18.0.0
+      react-dom: ^18.0.0
+    dependencies:
+      leaflet: 1.9.4
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+    dev: false
+
   /@remirror/core-constants/2.0.1:
     resolution: {integrity: sha512-ZR4aihtnnT9lMbhh5DEbsriJRlukRXmLZe7HmM+6ufJNNUDoazc75UX26xbgQlNUqgAqMcUdGFAnPc1JwgAdLQ==}
     dependencies:
@@ -1677,6 +1695,10 @@ packages:
       '@types/serve-static': 1.15.1
     dev: false
 
+  /@types/geojson/7946.0.10:
+    resolution: {integrity: sha512-Nmh0K3iWQJzniTuPRcJn5hxXkfB1T1pgB89SBig5PlJQU5yocazeu4jATJlaA0GYFKWMqDdvYemoSnF2pXgLVA==}
+    dev: true
+
   /@types/json-schema/7.0.11:
     resolution: {integrity: sha512-wOuvG1SN4Us4rez+tylwwwCV1psiNVOkJeM3AUWUNWg/jDQY2+HE/444y5gc+jBmRqASOm2Oeh5c1axHobwRKQ==}
     dev: true
@@ -1688,6 +1710,12 @@ packages:
   /@types/keygrip/1.0.2:
     resolution: {integrity: sha512-GJhpTepz2udxGexqos8wgaBx4I/zWIDPh/KOGEwAqtuGDkOUJu5eFvwmdBX4AmB8Odsr+9pHCQqiAqDL/yKMKw==}
     dev: false
+
+  /@types/leaflet/1.9.3:
+    resolution: {integrity: sha512-Caa1lYOgKVqDkDZVWkto2Z5JtVo09spEaUt2S69LiugbBpoqQu92HYFMGUbYezZbnBkyOxMNPXHSgRrRY5UyIA==}
+    dependencies:
+      '@types/geojson': 7946.0.10
+    dev: true
 
   /@types/mime/1.3.2:
     resolution: {integrity: sha512-YATxVxgRqNH6nHEIsvg6k2Boc1JHI9ZbH5iWFFv/MTkchz3b1ieGDa5T0a9RznNdI0KhVbdbWSN+KWWrQZRxTw==}
@@ -3479,6 +3507,10 @@ packages:
       language-subtag-registry: 0.3.22
     dev: true
 
+  /leaflet/1.9.4:
+    resolution: {integrity: sha512-nxS1ynzJOmOlHp+iL3FyWqK89GtNL8U8rvlMOsQdTTssxZwCXh8N2NB3GDQOL+YR3XnWyZAxwQixURb+FA74PA==}
+    dev: false
+
   /levn/0.4.1:
     resolution: {integrity: sha512-+bT2uH4E5LGE7h/n3evcS/sQlJXCpIp6ym8OWJ5eV6+67Dsql/LaaT7qJBAt2rzfoa/5QBGBhxDix1dMt2kQKQ==}
     engines: {node: '>= 0.8.0'}
@@ -4247,6 +4279,19 @@ packages:
   /react-is/16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
     dev: true
+
+  /react-leaflet/4.2.1_p7e52lah55xmyywv7f3e7owrmy:
+    resolution: {integrity: sha512-p9chkvhcKrWn/H/1FFeVSqLdReGwn2qmiobOQGO3BifX+/vV/39qhY8dGqbdcPh1e6jxh/QHriLXr7a4eLFK4Q==}
+    peerDependencies:
+      leaflet: ^1.9.0
+      react: ^18.0.0
+      react-dom: ^18.0.0
+    dependencies:
+      '@react-leaflet/core': 2.1.0_p7e52lah55xmyywv7f3e7owrmy
+      leaflet: 1.9.4
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+    dev: false
 
   /react-remove-scroll-bar/2.3.4_3mjolpizrsjgnt7s4ahgoveqvu:
     resolution: {integrity: sha512-63C4YQBUt0m6ALadE9XV56hV8BgJWDmmTPY758iIJjfQKt2nYwoUrPk0LXRXcB/yIj82T1/Ixfdpdk68LwIB0A==}
