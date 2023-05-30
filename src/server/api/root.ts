@@ -1,8 +1,8 @@
 import { createRouter } from './trpc'
-import { userMetadataRouter } from './routers/userMetadata'
+import { userRouter } from './routers/user'
 
 export const appRouter = createRouter({
-  userMetadata: userMetadataRouter,
+  user: userRouter,
 })
 
 // export type definition of API

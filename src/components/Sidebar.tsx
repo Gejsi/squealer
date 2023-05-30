@@ -6,7 +6,14 @@ import { useEffect } from 'react'
 import { TbDiamond } from 'react-icons/tb'
 import { GiBirdTwitter } from 'react-icons/gi'
 import { GiAxeSword } from 'react-icons/gi'
-import { MdAllInbox, MdKeyboard, MdShuffle, MdToday } from 'react-icons/md'
+import {
+  MdAllInbox,
+  MdKeyboard,
+  MdNotifications,
+  MdPerson,
+  MdShuffle,
+  MdToday,
+} from 'react-icons/md'
 import SquealDialog from './editor/SquealDialog'
 import { userMetadataAtom } from './Layout'
 
@@ -66,6 +73,20 @@ const Sidebar = () => {
               </Link>
             </li>
           </div>
+
+          <li>
+            <Link href='/users'>
+              <MdPerson className='h-6 w-6' />
+              Users
+            </Link>
+          </li>
+
+          <li>
+            <Link href='/notifications'>
+              <MdNotifications className='h-6 w-6' />
+              Notifications
+            </Link>
+          </li>
 
           <button className='btn-primary btn gap-2' onClick={handleClick}>
             <MdKeyboard className='h-6 w-6' />

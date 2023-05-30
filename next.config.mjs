@@ -22,6 +22,10 @@ const config = {
         protocol: 'https',
         hostname: '**.githubusercontent.com',
       },
+      {
+        protocol: 'https',
+        hostname: '**.gravatar.**',
+      },
     ],
   },
 }

@@ -5,6 +5,7 @@ import {
 } from '../../../schemas/user-metadata'
 import { Prisma } from '@prisma/client'
 import { clerkClient } from '@clerk/nextjs/server'
+import { ClerkUser, FullUser } from '../../../types/user'
 
 const commonSelector = Prisma.validator<Prisma.UserSelect>()({
   role: true,
@@ -14,8 +15,8 @@ const commonSelector = Prisma.validator<Prisma.UserSelect>()({
   monthlyQuotaLimit: true,
 })
 
-export const userMetadataRouter = createRouter({
-  get: authedProcedure.query(async ({ ctx }) => {
+export const userRouter = createRouter({
+  getMetadata: authedProcedure.query(async ({ ctx }) => {
     let userMetadata
     userMetadata = await ctx.prisma.user.findUnique({
       where: { id: ctx.auth.userId },
@@ -35,7 +36,7 @@ export const userMetadataRouter = createRouter({
 
     return userMetadata as UserMetadata
   }),
-  update: authedProcedure
+  updateMetadata: authedProcedure
     .input(userMetadataSchema)
     .mutation(async ({ ctx, input }) => {
       const userMetadata = await ctx.prisma.user.update({
@@ -52,4 +53,19 @@ export const userMetadataRouter = createRouter({
 
       return userMetadata
     }),
+  getAll: authedProcedure.query(async ({ ctx }) => {
+    const dbUsers = await ctx.prisma.user.findMany()
+    const clerkUsers = await clerkClient.users.getUserList()
+
+    // merge the info from the database with the info from clerk
+    const mergedUsers: FullUser[] = dbUsers.map((dbUser) => {
+      const clerkUser = clerkUsers.find(
+        (user) => user.id === dbUser.id
+      ) as ClerkUser
+
+      return { ...dbUser, ...clerkUser }
+    })
+
+    return mergedUsers
+  }),
 })

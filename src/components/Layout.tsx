@@ -22,7 +22,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
   const [, setUserMetadata] = useAtom(userMetadataAtom)
   const { isSignedIn } = useUser()
 
-  api.userMetadata.get.useQuery(undefined, {
+  api.user.getMetadata.useQuery(undefined, {
     refetchOnWindowFocus: false,
     onSuccess(data) {
       setUserMetadata(data)
