@@ -32,7 +32,7 @@ const SquealDialog = (props: ComponentProps<typeof Modal>) => {
         />
         <label className='label'>
           <span className='label-text-alt'>
-            Ruota remaining: {userMetadata.quota - editorLength}
+            Quota remaining: {userMetadata.quota - editorLength}
           </span>
           <span className='label-text-alt'>
             {editorLength} / {userMetadata.quota}

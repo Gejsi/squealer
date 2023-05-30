@@ -9,13 +9,14 @@ import {
   MdFormatListNumbered,
   MdFormatQuote,
   MdFormatStrikethrough,
+  MdLink,
   MdMap,
 } from 'react-icons/md'
 import { BsYoutube } from 'react-icons/bs'
 import { BiCodeBlock } from 'react-icons/bi'
 import { useCallback, useRef, useState } from 'react'
 import { useAutoAnimate } from '@formkit/auto-animate/react'
-import { cn, isImage, isValidYoutubeUrl } from '../../utils/misc'
+import { cn, isImage, isLink, isYoutubeUrl } from '../../utils/misc'
 import { toast } from 'react-hot-toast'
 import useDebouncedCallback from '../../hooks/use-debounced-callback'
 
@@ -24,9 +25,9 @@ const VerticalDivider = () => (
 )
 
 const Toolbar = ({ editor }: { editor: Editor | null }) => {
-  const [showInput, setShowInput] = useState<'image' | 'youtube' | undefined>(
-    undefined
-  )
+  const [showInput, setShowInput] = useState<
+    'image' | 'youtube' | 'link' | undefined
+  >(undefined)
   const inputRef = useRef<HTMLInputElement>(null)
   const [autoAnimate] = useAutoAnimate()
 
@@ -47,7 +48,7 @@ const Toolbar = ({ editor }: { editor: Editor | null }) => {
   const addYoutubeVideo = useDebouncedCallback(() => {
     const url = inputRef.current?.value
 
-    if (!url || !isValidYoutubeUrl(url)) {
+    if (!url || !isYoutubeUrl(url)) {
       toast.error('Provide a valid youtube URL.', {
         position: 'top-right',
       })
@@ -55,6 +56,20 @@ const Toolbar = ({ editor }: { editor: Editor | null }) => {
     }
 
     editor && editor.chain().focus().setYoutubeVideo({ src: url }).run()
+    setShowInput(undefined)
+  }, 500)
+
+  const addLink = useDebouncedCallback(() => {
+    const url = inputRef.current?.value
+
+    if (!url || !isLink(url)) {
+      toast.error('Provide a valid link.', {
+        position: 'top-right',
+      })
+      return
+    }
+
+    editor && editor.chain().focus().setLink({ href: url }).run()
     setShowInput(undefined)
   }, 500)
 
@@ -181,21 +196,30 @@ const Toolbar = ({ editor }: { editor: Editor | null }) => {
           </button>
 
           <button
-            onClick={addLocation}
-            className={cn('btn-icon', {
-              'btn-active': editor?.isActive('link'),
-            })}
-          >
-            <MdMap className='h-6 w-6' />
-          </button>
-
-          <button
             onClick={() => setShowInput('youtube')}
             className={cn('btn-icon', {
               'btn-active': editor?.isActive('youtube'),
             })}
           >
             <BsYoutube className='h-5 w-5' />
+          </button>
+
+          <button
+            onClick={addLocation}
+            className={cn('btn-icon', {
+              'btn-active': editor?.isActive('location'),
+            })}
+          >
+            <MdMap className='h-6 w-6' />
+          </button>
+
+          <button
+            onClick={() => setShowInput('link')}
+            className={cn('btn-icon', {
+              'btn-active': editor?.isActive('link'),
+            })}
+          >
+            <MdLink className='h-6 w-6' />
           </button>
         </div>
       </div>
@@ -210,10 +234,18 @@ const Toolbar = ({ editor }: { editor: Editor | null }) => {
                 placeholder={
                   showInput === 'image'
                     ? 'Image url ending in png, jpg...'
-                    : 'Youtube url video...'
+                    : showInput === 'youtube'
+                    ? 'Youtube url video...'
+                    : 'https://www.wikipedia.org/'
                 }
                 className='input-bordered input w-full'
-                onChange={showInput === 'image' ? addImage : addYoutubeVideo}
+                onChange={
+                  showInput === 'image'
+                    ? addImage
+                    : showInput === 'youtube'
+                    ? addYoutubeVideo
+                    : addLink
+                }
                 autoFocus
               />
               <button
