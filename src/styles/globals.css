@@ -69,9 +69,12 @@
     @apply pointer-events-none absolute opacity-40;
   }
 
-  .ProseMirror.prose img:not(.leaflet-marker-icon),
+  .ProseMirror.prose img:not(.leaflet-marker-icon) {
+    @apply aspect-square h-full w-2/5 cursor-pointer;
+  }
+
   .ProseMirror.prose iframe {
-    @apply h-full w-2/5 cursor-pointer;
+    @apply aspect-video h-full w-2/5 cursor-pointer;
   }
 
   .ProseMirror.prose img.ProseMirror-selectednode,

@@ -1,6 +1,7 @@
 import type { Editor } from '@tiptap/react'
 import {
   MdAddPhotoAlternate,
+  MdClose,
   MdCode,
   MdFormatBold,
   MdFormatItalic,
@@ -23,14 +24,14 @@ const VerticalDivider = () => (
 )
 
 const Toolbar = ({ editor }: { editor: Editor | null }) => {
-  const [showImageInput, setShowImageInput] = useState(false)
-  const [showYoutubeInput, setShowYoutubeInput] = useState(false)
-  const imageInputRef = useRef<HTMLInputElement>(null)
-  const youtubeInputRef = useRef<HTMLInputElement>(null)
+  const [showInput, setShowInput] = useState<'image' | 'youtube' | undefined>(
+    undefined
+  )
+  const inputRef = useRef<HTMLInputElement>(null)
   const [autoAnimate] = useAutoAnimate()
 
   const addImage = useDebouncedCallback(() => {
-    const url = imageInputRef.current?.value
+    const url = inputRef.current?.value
 
     if (!url || !isImage(url)) {
       toast.error('Provide a valid image:\ncheck the URL extension.', {
@@ -40,11 +41,11 @@ const Toolbar = ({ editor }: { editor: Editor | null }) => {
     }
 
     editor && editor.chain().focus().setImage({ src: url }).run()
-    setShowImageInput(false)
+    setShowInput(undefined)
   }, 500)
 
   const addYoutubeVideo = useDebouncedCallback(() => {
-    const url = youtubeInputRef.current?.value
+    const url = inputRef.current?.value
 
     if (!url || !isValidYoutubeUrl(url)) {
       toast.error('Provide a valid youtube URL.', {
@@ -54,7 +55,7 @@ const Toolbar = ({ editor }: { editor: Editor | null }) => {
     }
 
     editor && editor.chain().focus().setYoutubeVideo({ src: url }).run()
-    setShowYoutubeInput(false)
+    setShowInput(undefined)
   }, 500)
 
   const addLocation = useCallback(() => {
@@ -171,7 +172,7 @@ const Toolbar = ({ editor }: { editor: Editor | null }) => {
           <VerticalDivider />
 
           <button
-            onClick={() => setShowImageInput((prev) => !prev)}
+            onClick={() => setShowInput('image')}
             className={cn('btn-icon', {
               'btn-active': editor?.isActive('image'),
             })}
@@ -189,7 +190,7 @@ const Toolbar = ({ editor }: { editor: Editor | null }) => {
           </button>
 
           <button
-            onClick={() => setShowYoutubeInput((prev) => !prev)}
+            onClick={() => setShowInput('youtube')}
             className={cn('btn-icon', {
               'btn-active': editor?.isActive('youtube'),
             })}
@@ -200,26 +201,29 @@ const Toolbar = ({ editor }: { editor: Editor | null }) => {
       </div>
 
       <div className='form-control w-full' ref={autoAnimate}>
-        {showImageInput && (
-          <input
-            ref={imageInputRef}
-            type='text'
-            placeholder='Image url'
-            className='input-bordered input-info input w-full'
-            onChange={addImage}
-            onBlur={() => setShowImageInput(false)}
-          />
-        )}
-
-        {showYoutubeInput && (
-          <input
-            ref={youtubeInputRef}
-            type='text'
-            placeholder='Youtube video url'
-            className='input-bordered input-info input w-full'
-            onChange={addYoutubeVideo}
-            onBlur={() => setShowYoutubeInput(false)}
-          />
+        {showInput && (
+          <div className='form-control'>
+            <div className='input-group'>
+              <input
+                ref={inputRef}
+                type='text'
+                placeholder={
+                  showInput === 'image'
+                    ? 'Image url ending in png, jpg...'
+                    : 'Youtube url video...'
+                }
+                className='input-bordered input w-full'
+                onChange={showInput === 'image' ? addImage : addYoutubeVideo}
+                autoFocus
+              />
+              <button
+                className='btn-square btn'
+                onClick={() => setShowInput(undefined)}
+              >
+                <MdClose className='h-6 w-6' />
+              </button>
+            </div>
+          </div>
         )}
       </div>
     </div>
