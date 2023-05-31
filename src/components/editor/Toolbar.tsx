@@ -149,6 +149,15 @@ const Toolbar = ({ editor }: { editor: Editor | null }) => {
             <MdCode className='h-6 w-6' />
           </button>
 
+          <button
+            onClick={() => setShowInput('link')}
+            className={cn('btn-icon', {
+              'btn-active': editor?.isActive('link'),
+            })}
+          >
+            <MdLink className='h-6 w-6' />
+          </button>
+
           <VerticalDivider />
 
           <button
@@ -211,15 +220,6 @@ const Toolbar = ({ editor }: { editor: Editor | null }) => {
             })}
           >
             <MdMap className='h-6 w-6' />
-          </button>
-
-          <button
-            onClick={() => setShowInput('link')}
-            className={cn('btn-icon', {
-              'btn-active': editor?.isActive('link'),
-            })}
-          >
-            <MdLink className='h-6 w-6' />
           </button>
         </div>
       </div>

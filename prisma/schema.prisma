@@ -11,14 +11,16 @@ datasource db {
 model User {
   id String @id
 
-  squeals   Squeal[]
-  receivers Receiver[]
-
   role              UserRole @default(Regular)
   quota             Int      @default(3000)
   dailyQuotaLimit   Int      @default(3000)
   weeklyQuotaLimit  Int      @default(20000)
   monthlyQuotaLimit Int      @default(75000)
+
+  squeals       Squeal[]
+  receivers     Receiver[]
+  ownedChannels Channel[]
+  reactions     Reaction[]
 
   @@map("users")
 }
@@ -33,67 +35,84 @@ model Squeal {
   content   Json
   createdAt DateTime @default(now())
 
-  author     User       @relation(fields: [authorId], references: [id])
-  authorId   String
-  mentions   Mention[]
-  receiver   Receiver   @relation(fields: [receiverId], references: [id])
-  receiverId String
-  channel    Channel    @relation(fields: [channelId], references: [id])
-  channelId  String
-  reactions  Reaction[]
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId String
 
-  @@index([channelId])
+  mentions Mention[]
+
+  receiver   Receiver @relation(fields: [receiverId], references: [id], onDelete: Cascade)
+  receiverId String
+
+  reactions Reaction[]
+
+  replies        Squeal[] @relation("squeal_replies")
+  parentSqueal   Squeal?  @relation("squeal_replies", fields: [parentSquealId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  parentSquealId String?
+
+  channel   Channel? @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  channelId String?
+
   @@index([authorId])
+  @@index([parentSquealId])
   @@index([receiverId])
+  @@index([channelId])
   @@map("squeals")
 }
 
 model Channel {
-  id        String      @id @default(cuid())
-  name      String
-  ownerId   String
-  type      ChannelType
-  squeals   Squeal[]
-  receivers Receiver[]
+  id   String @id @default(cuid())
+  name String
 
+  owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId String
+
+  receivers Receiver[]
+  squeals   Squeal[]
+
+  @@index([ownerId])
   @@map("channels")
 }
 
-enum ChannelType {
-  Private
-  Public
-}
-
 model Receiver {
-  id        String   @id @default(cuid())
-  user      User?    @relation(fields: [userId], references: [id])
+  id   String       @id @default(cuid())
+  type ReceiverType
+
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String?
-  channel   Channel? @relation(fields: [channelId], references: [id])
+  channel   Channel? @relation(fields: [channelId], references: [id], onDelete: Cascade)
   channelId String?
-  Squeal    Squeal[]
+  squeals   Squeal[]
 
   @@index([userId])
   @@index([channelId])
   @@map("receivers")
 }
 
-model Mention {
-  id       Int     @id @default(autoincrement())
-  squeal   Squeal? @relation(fields: [squealId], references: [id])
-  squealId String?
+enum ReceiverType {
+  User
+  Channel
+}
 
+model Mention {
+  id       Int    @default(autoincrement())
+  squeal   Squeal @relation(fields: [squealId], references: [id], onDelete: Cascade)
+  squealId String
+
+  @@id([id, squealId])
   @@index([squealId])
   @@map("mentions")
 }
 
 model Reaction {
+  user     User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId   String
-  squeal   Squeal       @relation(fields: [squealId], references: [id])
+  squeal   Squeal       @relation(fields: [squealId], references: [id], onDelete: Cascade)
   squealId String
   type     ReactionType
 
   @@id([userId, squealId])
   @@index([squealId])
+  @@index([userId])
   @@map("reactions")
 }
 

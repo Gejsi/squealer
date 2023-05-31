@@ -8,12 +8,15 @@ import { GiBirdTwitter } from 'react-icons/gi'
 import { GiAxeSword } from 'react-icons/gi'
 import {
   MdAllInbox,
+  MdFolder,
+  MdGroups,
   MdKeyboard,
   MdNotifications,
   MdPerson,
   MdShuffle,
   MdToday,
 } from 'react-icons/md'
+import { RiChatPrivateLine } from 'react-icons/ri'
 import SquealDialog from './editor/SquealDialog'
 import { userMetadataAtom } from './Layout'
 
@@ -96,6 +99,26 @@ const Sidebar = () => {
           <div className='divider' />
 
           <li className='menu-title'>
+            <span className='uppercase'>Your chats</span>
+          </li>
+
+          <li>
+            <Link href='/all'>
+              <RiChatPrivateLine className='h-6 w-6' />
+              Private chats
+            </Link>
+          </li>
+
+          <li>
+            <Link href='/all'>
+              <MdGroups className='h-6 w-6' />
+              Your channels
+            </Link>
+          </li>
+
+          <div className='divider' />
+
+          <li className='menu-title'>
             <span className='uppercase'>Public channels</span>
           </li>
 
@@ -117,19 +140,6 @@ const Sidebar = () => {
               News
             </Link>
           </li>
-          <li>
-            <Link href='/random'>
-              <MdShuffle className='h-6 w-6' />
-              Random
-            </Link>
-          </li>
-
-          <div className='divider' />
-
-          <li className='menu-title'>
-            <span className='uppercase'>Private channels</span>
-          </li>
-
           <li>
             <Link href='/random'>
               <MdShuffle className='h-6 w-6' />

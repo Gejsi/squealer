@@ -2,7 +2,7 @@ import { getAuth, withClerkMiddleware } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-const publicPaths = ['/', '/sign-in*', '/sign-up*']
+const publicPaths = ['/', '/sign-in*', '/sign-up*', '/users*']
 
 const isPublic = (path: string) => {
   return publicPaths.find((x) =>
@@ -11,9 +11,8 @@ const isPublic = (path: string) => {
 }
 
 export default withClerkMiddleware((request: NextRequest) => {
-  if (isPublic(request.nextUrl.pathname)) {
-    return NextResponse.next()
-  }
+  if (isPublic(request.nextUrl.pathname)) return NextResponse.next()
+
   const { userId } = getAuth(request)
 
   // if the user is not signed in redirect them to the sign in page.
@@ -32,6 +31,7 @@ export const config = {
   matcher: [
     /*
      * Match all request paths except for the ones starting with:
+     * - trpc
      * - _next
      * - static (static files)
      * - favicon.ico (favicon file)

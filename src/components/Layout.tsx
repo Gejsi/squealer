@@ -19,10 +19,11 @@ export const userMetadataAtom = atom<UserMetadata>(initialMetadata)
 
 const Layout = ({ children }: { children: ReactNode }) => {
   const [sidebarState] = useAtom(sidebarAtom)
-  const [, setUserMetadata] = useAtom(userMetadataAtom)
+  const [userMetadata, setUserMetadata] = useAtom(userMetadataAtom)
   const { isSignedIn } = useUser()
 
   api.user.getMetadata.useQuery(undefined, {
+    retry: () => !userMetadata,
     refetchOnWindowFocus: false,
     onSuccess(data) {
       setUserMetadata(data)
