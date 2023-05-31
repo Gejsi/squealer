@@ -1,4 +1,4 @@
-import { clerkClient } from '@clerk/nextjs/server'
+import type { clerkClient } from '@clerk/nextjs/server'
 import type { User } from '@prisma/client'
 
 export type ClerkUser = Awaited<

@@ -5,7 +5,7 @@ import {
 } from '../../../schemas/user-metadata'
 import { Prisma } from '@prisma/client'
 import { clerkClient } from '@clerk/nextjs/server'
-import { ClerkUser, FullUser } from '../../../types/user'
+import type { ClerkUser, FullUser } from '../../../types/user'
 
 const commonSelector = Prisma.validator<Prisma.UserSelect>()({
   role: true,
