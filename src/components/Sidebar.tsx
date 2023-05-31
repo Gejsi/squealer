@@ -8,7 +8,6 @@ import { GiBirdTwitter } from 'react-icons/gi'
 import { GiAxeSword } from 'react-icons/gi'
 import {
   MdAllInbox,
-  MdFolder,
   MdGroups,
   MdKeyboard,
   MdNotifications,
