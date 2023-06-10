@@ -1,6 +1,5 @@
-import { Prisma } from '@prisma/client'
 import { z } from 'zod'
-import { JsonValue } from '../types/json'
+import type { JsonValue } from '../types/json'
 
 const literalSchema = z.union([z.string(), z.number(), z.boolean(), z.null()])
 
@@ -12,5 +11,3 @@ export const squealSchema = z.object({
   content: jsonSchema,
   receiverId: z.string(),
 })
-
-export type Squeal = z.infer<typeof squealSchema>

@@ -61,7 +61,7 @@ export const userRouter = createRouter({
     const mergedUsers: FullUser[] = dbUsers.map((dbUser) => {
       const clerkUser = clerkUsers.find(
         (user) => user.id === dbUser.id
-      ) as ClerkUser
+      ) as ClerkUser & { username: string }
 
       return { ...dbUser, ...clerkUser }
     })

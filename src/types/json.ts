@@ -3,7 +3,7 @@
  * @link https://github.com/sindresorhus/type-fest/blob/main/source/basic.d.ts
  */
 
-import { Prisma } from '@prisma/client'
+import type { Prisma } from '@prisma/client'
 
 /**
 Matches a JSON object.

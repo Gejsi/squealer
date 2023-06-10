@@ -1,4 +1,3 @@
-import { useUser } from '@clerk/nextjs'
 import { atom, useAtom } from 'jotai'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -9,21 +8,18 @@ import { GiAxeSword } from 'react-icons/gi'
 import {
   MdAllInbox,
   MdGroups,
-  MdKeyboard,
   MdNotifications,
   MdPerson,
   MdShuffle,
   MdToday,
 } from 'react-icons/md'
 import { RiChatPrivateLine } from 'react-icons/ri'
-import SquealDialog from './editor/SquealDialog'
 import { userMetadataAtom } from './Layout'
 
 export const sidebarAtom = atom(false)
 
 const Sidebar = () => {
   const [, setSidebarOpen] = useAtom(sidebarAtom)
-  const { isSignedIn } = useUser()
   const router = useRouter()
   const [userMetadata] = useAtom(userMetadataAtom)
 
@@ -31,15 +27,6 @@ const Sidebar = () => {
   useEffect(() => {
     setSidebarOpen(false)
   }, [router.asPath, setSidebarOpen])
-
-  const handleClick = () => {
-    if (!isSignedIn) {
-      router.push('/sign-in')
-      return
-    }
-
-    setSidebarOpen(false)
-  }
 
   return (
     <>
@@ -87,11 +74,6 @@ const Sidebar = () => {
             </Link>
           </li>
 
-          <button className='btn-primary btn gap-2' onClick={handleClick}>
-            <MdKeyboard className='h-6 w-6' />
-            Write Squeal
-          </button>
-
           <div className='divider' />
 
           <li className='menu-title'>
@@ -99,7 +81,7 @@ const Sidebar = () => {
           </li>
 
           <li>
-            <Link href='/all'>
+            <Link href='/chats'>
               <RiChatPrivateLine className='h-6 w-6' />
               Private chats
             </Link>
