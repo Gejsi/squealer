@@ -6,4 +6,4 @@ export type ClerkUser = Awaited<
 >[0]
 
 /** Contains both database and clerk informations about the user. */
-export type FullUser = ClerkUser & User
+export type FullUser = ClerkUser & User & { username: string }

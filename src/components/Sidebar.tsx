@@ -20,13 +20,11 @@ import SquealDialog from './editor/SquealDialog'
 import { userMetadataAtom } from './Layout'
 
 export const sidebarAtom = atom(false)
-export const squealDialogAtom = atom(false)
 
 const Sidebar = () => {
   const [, setSidebarOpen] = useAtom(sidebarAtom)
   const { isSignedIn } = useUser()
   const router = useRouter()
-  const [dialogOpen, setDialogOpen] = useAtom(squealDialogAtom)
   const [userMetadata] = useAtom(userMetadataAtom)
 
   // close sidebar when route changes
@@ -40,7 +38,6 @@ const Sidebar = () => {
       return
     }
 
-    setDialogOpen(true)
     setSidebarOpen(false)
   }
 
@@ -147,11 +144,6 @@ const Sidebar = () => {
           </li>
         </ul>
       </aside>
-
-      <SquealDialog
-        open={dialogOpen}
-        onOpenChange={(state) => setDialogOpen(state)}
-      />
     </>
   )
 }

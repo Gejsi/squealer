@@ -6,6 +6,7 @@ import Sidebar, { sidebarAtom } from './Sidebar'
 import type { UserMetadata } from '../schemas/user-metadata'
 import { api } from '../utils/api'
 import { useUser } from '@clerk/nextjs'
+import SquealDialog from './editor/SquealDialog'
 
 const initialMetadata = {
   role: 'Regular',
@@ -62,6 +63,8 @@ const Layout = ({ children }: { children: ReactNode }) => {
           toastOptions={{ className: 'notification' }}
         />
       </div>
+
+      <SquealDialog />
     </>
   )
 }
