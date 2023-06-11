@@ -19,7 +19,7 @@ const SquealDialog = (props: ComponentProps<typeof Modal>) => {
   const [receiverData, setReceiverData] = useAtom(squealDialogAtom)
 
   const { mutate: createSqueal, isLoading: isCreating } =
-    api.squeal.create.useMutation({
+    api.chat.create.useMutation({
       onError() {
         toast.error('Unable to create squeal.')
       },

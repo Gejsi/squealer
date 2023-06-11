@@ -1,14 +1,14 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { api } from '../../utils/api'
 import type { Page } from '../_app'
 import { RiChatPrivateFill } from 'react-icons/ri'
+import Spinner from '../../components/Spinner'
+import ErrorTemplate from '../../components/ErrorTemplate'
 
 const AllChats: Page = () => {
-  const { data } = api.squeal.getPersonalChats.useQuery(undefined, {
-    onSuccess(data) {
-      console.log(data)
-    },
-  })
+  const { data, isLoading, isError, error } =
+    api.chat.getAllChats.useQuery(undefined)
 
   return (
     <>
@@ -21,16 +21,42 @@ const AllChats: Page = () => {
         </div>
       </div>
 
-      {(!data || !data.length) && <p>todo: empty</p>}
-
-      <ul className='menu rounded-box bg-base-200'>
-        <li>
-          <a>Item 2</a>
-        </li>
-        <li>
-          <a>Item 3</a>
-        </li>
-      </ul>
+      {isError ? (
+        <ErrorTemplate
+          message='Error while fetching private chats'
+          statusCode={error.data?.httpStatus}
+        />
+      ) : isLoading ? (
+        <Spinner />
+      ) : (
+        <ul className='menu rounded-box bg-base-200'>
+          {data.map((chat) => (
+            <li key={chat.id}>
+              <Link href={'chats/' + chat.id}>
+                <div className='avatar-group -space-x-6'>
+                  {chat.members.map((member) => (
+                    <div className='avatar' key={member.id}>
+                      <div className='w-12'>
+                        <Image
+                          src={member.profileImageUrl}
+                          alt='User profile picture'
+                          fill
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div>
+                  <p>{chat.name}</p>
+                  <p className='text-xs italic'>
+                    Number of squeals: {chat._count.squeals}
+                  </p>
+                </div>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
     </>
   )
 }

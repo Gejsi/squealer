@@ -18,9 +18,9 @@ model User {
   monthlyQuotaLimit Int      @default(75000)
 
   squeals       Squeal[]
-  receivers     Receiver[]
-  ownedChannels Channel[]
+  ownedChannels Channel[]  @relation("owner")
   reactions     Reaction[]
+  channels      Channel[]
 
   @@map("users")
 }
@@ -35,61 +35,41 @@ model Squeal {
   content   Json
   createdAt DateTime @default(now())
 
-  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  authorId String
+  author    User    @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId  String
+  channel   Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  channelId String
 
-  mentions Mention[]
-
-  receiver   Receiver @relation(fields: [receiverId], references: [id], onDelete: Cascade)
-  receiverId String
-
+  mentions  Mention[]
   reactions Reaction[]
 
   replies        Squeal[] @relation("squeal_replies")
   parentSqueal   Squeal?  @relation("squeal_replies", fields: [parentSquealId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   parentSquealId String?
 
-  channel   Channel? @relation(fields: [channelId], references: [id], onDelete: Cascade)
-  channelId String?
-
   @@index([authorId])
   @@index([parentSquealId])
-  @@index([receiverId])
   @@index([channelId])
   @@map("squeals")
 }
 
 model Channel {
-  id   String @id @default(cuid())
+  id   String      @id @default(cuid())
   name String
+  type ChannelType
 
-  owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  owner   User   @relation("owner", fields: [ownerId], references: [id], onDelete: Cascade)
   ownerId String
 
-  receivers Receiver[]
-  squeals   Squeal[]
+  squeals Squeal[]
+  members User[]
 
   @@index([ownerId])
   @@map("channels")
 }
 
-model Receiver {
-  id   String       @id @default(cuid())
-  type ReceiverType
-
-  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String?
-  channel   Channel? @relation(fields: [channelId], references: [id], onDelete: Cascade)
-  channelId String?
-  squeals   Squeal[]
-
-  @@index([userId])
-  @@index([channelId])
-  @@map("receivers")
-}
-
-enum ReceiverType {
-  User
+enum ChannelType {
+  Chat
   Channel
 }
 

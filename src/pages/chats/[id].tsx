@@ -5,7 +5,7 @@ import type { Page } from '../_app'
 const Chat: Page = () => {
   const receiverId = useRouter().query.id as string
 
-  const query = api.squeal.getChat.useQuery(
+  api.chat.getChat.useQuery(
     { receiverId },
     {
       onSuccess(data) {

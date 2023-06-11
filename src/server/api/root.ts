@@ -1,10 +1,10 @@
 import { createRouter } from './trpc'
 import { userRouter } from './routers/user'
-import { squealRouter } from './routers/squeal'
+import { chatRouter } from './routers/chat'
 
 export const appRouter = createRouter({
   user: userRouter,
-  squeal: squealRouter,
+  chat: chatRouter,
 })
 
 // export type definition of API
