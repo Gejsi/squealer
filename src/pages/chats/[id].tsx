@@ -1,34 +1,37 @@
 import { useRouter } from 'next/router'
 import { api } from '../../utils/api'
 import type { Page } from '../_app'
+import Bubble from '../../components/Bubble'
+import ErrorTemplate from '../../components/ErrorTemplate'
+import Spinner from '../../components/Spinner'
 
 const Chat: Page = () => {
-  const receiverId = useRouter().query.id as string
+  const chatId = useRouter().query.id as string
 
-  api.chat.getChat.useQuery(
-    { receiverId },
-    {
-      onSuccess(data) {
-        console.log(data)
-      },
-    }
-  )
+  const { data, isLoading, isError, error } = api.chat.getChat.useQuery({
+    chatId,
+  })
 
   return (
-    <ul className='menu rounded-box bg-base-200'>
-      <li>
-        <a>Item 1</a>
-      </li>
-      <li>
-        <a>Item 2</a>
-      </li>
-      <li>
-        <a>Item 3</a>
-      </li>
-    </ul>
+    <>
+      {isError ? (
+        <ErrorTemplate
+          message='Error while fetching chat'
+          statusCode={error.data?.httpStatus}
+        />
+      ) : isLoading ? (
+        <Spinner />
+      ) : (
+        <div className='flex flex-col gap-4 odd:bg-primary'>
+          {data.map((squeal) => (
+            <Bubble key={squeal.id} squeal={squeal} />
+          ))}
+        </div>
+      )}
+    </>
   )
 }
 
-Chat.title = 'Private chats'
+Chat.title = 'Private chat'
 
 export default Chat

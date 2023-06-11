@@ -1,13 +1,12 @@
 import Image from 'next/image'
 import type { Page } from './_app'
-import { api } from '../utils/api'
-import type { FullUser } from '../types/user'
+import { type RouterOutputs, api } from '../utils/api'
 import { MdEdit } from 'react-icons/md'
 import Link from 'next/link'
 import { useAtom } from 'jotai'
 import { squealDialogAtom } from '../components/editor/SquealDialog'
 
-const UserCard = ({ user }: { user: FullUser }) => {
+const UserCard = ({ user }: { user: RouterOutputs['user']['getAll'][0] }) => {
   const [, setReceiverData] = useAtom(squealDialogAtom)
 
   return (
@@ -42,6 +41,7 @@ const UserCard = ({ user }: { user: FullUser }) => {
           <button
             className='btn-outline btn mt-2 h-fit w-fit gap-2 py-2'
             onClick={() =>
+              user.username &&
               setReceiverData({ username: user.username, id: user.id })
             }
           >

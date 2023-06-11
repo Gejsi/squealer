@@ -63,10 +63,7 @@
   }
 
   .spinner {
-    @apply w-36;
-    pointer-events: none;
-    aspect-ratio: 1/1;
-    background-color: currentColor;
+    @apply pointer-events-none aspect-square w-36 bg-current;
     mask-size: 100%;
     mask-repeat: no-repeat;
     mask-position: center;

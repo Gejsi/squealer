@@ -21,12 +21,22 @@ export const chatRouter = createRouter({
         where: {
           type: 'Chat',
           members: {
-            some: {
-              id: authorId,
+            every: {
+              OR: [
+                {
+                  id: authorId,
+                },
+                {
+                  id: receiverId,
+                },
+              ],
             },
           },
         },
       })
+
+      const author = await clerkClient.users.getUser(authorId)
+      const receiver = await clerkClient.users.getUser(receiverId)
 
       const createdSqueal = await ctx.prisma.squeal.create({
         data: {
@@ -36,7 +46,7 @@ export const chatRouter = createRouter({
             connectOrCreate: {
               where: { id: existingChannel?.id || '' },
               create: {
-                name: 'Chat between two people',
+                name: `Chat between @${author.username} and @${receiver.username}`,
                 type: 'Chat',
                 owner: { connect: { id: authorId } },
                 members: {
@@ -97,13 +107,14 @@ export const chatRouter = createRouter({
   getChat: authedProcedure
     .input(z.object({ chatId: z.string() }))
     .query(async ({ ctx, input }) => {
-      return await ctx.prisma.squeal.findMany({
+      const squeals = await ctx.prisma.squeal.findMany({
         where: {
-          id: input.chatId,
-        },
-        orderBy: {
-          createdAt: 'desc',
+          channel: {
+            id: input.chatId,
+          },
         },
       })
+
+      return squeals
     }),
 })

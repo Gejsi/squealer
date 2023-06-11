@@ -35,7 +35,8 @@ specifiers:
   '@typescript-eslint/parser': ^5.57.1
   autoprefixer: ^10.4.7
   clsx: ^1.2.1
-  daisyui: 2.51.6
+  daisyui: ^2.51.6
+  dayjs: ^1.11.8
   eslint: ^8.38.0
   eslint-config-next: 13.3.0
   eslint-config-prettier: ^8.8.0
@@ -83,6 +84,7 @@ dependencies:
   '@trpc/next': 10.21.2_4fhgwvdnbsplkvupmv6y3nlmey
   '@trpc/react-query': 10.21.2_yis4ksflqju3lworf2usbxdniy
   '@trpc/server': 10.21.2
+  dayjs: 1.11.8
   jotai: 2.0.4_react@18.2.0
   leaflet: 1.9.4
   next: 13.2.4_3j7hb26pwgm6spbxoejtjx6xja
@@ -2356,6 +2358,10 @@ packages:
 
   /dash-get/1.0.2:
     resolution: {integrity: sha512-4FbVrHDwfOASx7uQVxeiCTo7ggSdYZbqs8lH+WU6ViypPlDbe9y6IP5VVUDQBv9DcnyaiPT5XT0UWHgJ64zLeQ==}
+    dev: false
+
+  /dayjs/1.11.8:
+    resolution: {integrity: sha512-LcgxzFoWMEPO7ggRv1Y2N31hUf2R0Vj7fuy/m+Bg1K8rr+KAs1AEy4y9jd5DXe8pbHgX+srkHNS7TH6Q6ZhYeQ==}
     dev: false
 
   /debug/3.2.7:

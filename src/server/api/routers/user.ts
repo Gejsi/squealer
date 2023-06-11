@@ -5,7 +5,6 @@ import {
 } from '../../../schemas/user-metadata'
 import { Prisma } from '@prisma/client'
 import { clerkClient } from '@clerk/nextjs/server'
-import type { ClerkUser, FullUser } from '../../../types/user'
 
 const commonSelector = Prisma.validator<Prisma.UserSelect>()({
   role: true,
@@ -58,10 +57,8 @@ export const userRouter = createRouter({
     const clerkUsers = await clerkClient.users.getUserList()
 
     // merge the info from the database with the info from clerk
-    const mergedUsers: FullUser[] = dbUsers.map((dbUser) => {
-      const clerkUser = clerkUsers.find(
-        (user) => user.id === dbUser.id
-      ) as ClerkUser & { username: string }
+    const mergedUsers = dbUsers.map((dbUser) => {
+      const clerkUser = clerkUsers.find((user) => user.id === dbUser.id)
 
       return { ...dbUser, ...clerkUser }
     })
