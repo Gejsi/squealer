@@ -11,24 +11,25 @@ const AllChats: Page = () => {
   const { data, isLoading, isError, error } =
     api.chat.getAllChats.useQuery(undefined)
 
+  if (isError)
+    return (
+      <ErrorTemplate
+        message='Error while fetching chats'
+        statusCode={error.data?.httpStatus}
+      />
+    )
+
   return (
     <>
-      <div className='alert mb-4 shadow-lg'>
-        <div>
-          <RiChatPrivateFill className='h-8 w-8 flex-shrink-0' />
-          <span>
-            Here are all your private conversations. You can even message
-            yourself.
-          </span>
-        </div>
+      <div className='mb-10 mt-8 flex items-center gap-4'>
+        <RiChatPrivateFill className='h-8 w-8 flex-shrink-0' />
+        <span>
+          Here are all your private conversations. You can even message
+          yourself.
+        </span>
       </div>
 
-      {isError ? (
-        <ErrorTemplate
-          message='Error while fetching private chats'
-          statusCode={error.data?.httpStatus}
-        />
-      ) : isLoading ? (
+      {isLoading ? (
         <Spinner />
       ) : (
         <ul className='menu rounded-box bg-base-200'>

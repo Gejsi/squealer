@@ -80,13 +80,14 @@ export const chatRouter = createRouter({
     })
 
     // update the chats members with their pfp
-    const updatedChats = await Promise.all(
+    const enrichedChats = await Promise.all(
       chats.map(async (chat) => {
         const updatedMembers = await Promise.all(
           chat.members.map(async (member) => {
             // Retrieve additional data from clerkClient based on the member's ID
-            const userData = await clerkClient.users.getUser(member.id)
-            const { profileImageUrl } = userData
+            const { profileImageUrl } = await clerkClient.users.getUser(
+              member.id
+            )
             // Return the updated member object with additional data
             return {
               ...member,
@@ -102,7 +103,7 @@ export const chatRouter = createRouter({
       })
     )
 
-    return updatedChats
+    return enrichedChats
   }),
   getChat: authedProcedure
     .input(z.object({ chatId: z.string() }))
@@ -113,8 +114,27 @@ export const chatRouter = createRouter({
             id: input.chatId,
           },
         },
+        orderBy: {
+          createdAt: 'desc',
+        },
       })
 
-      return squeals
+      const enrichedSqueals = await Promise.all(
+        squeals.map(async (squeal) => {
+          const { profileImageUrl, username } = await clerkClient.users.getUser(
+            squeal.authorId
+          )
+          // Return the updated member object with additional data
+          return {
+            ...squeal,
+            author: {
+              username,
+              profileImageUrl,
+            },
+          }
+        })
+      )
+
+      return enrichedSqueals
     }),
 })

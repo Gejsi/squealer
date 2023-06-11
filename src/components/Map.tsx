@@ -6,7 +6,7 @@ import { icon } from 'leaflet'
 const markerIcon = icon({ iconUrl: '/marker-icon.png' })
 
 const Map = ({ position }: { position: LatLngExpression }) => (
-  <div className='h-56 w-full'>
+  <div className='relative z-[5] h-56 w-full min-w-[15rem]'>
     <MapContainer
       center={position}
       scrollWheelZoom={false}

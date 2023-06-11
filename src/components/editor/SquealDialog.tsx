@@ -59,7 +59,7 @@ const SquealDialog = (props: ComponentProps<typeof Modal>) => {
       <ModalContent>
         <ModalTitle>Write a new squeal</ModalTitle>
         <p className='mb-4 text-sm italic'>
-          This squeal will be received by{' '}
+          This squeal will be sent to{' '}
           <span className='text-info'>@{receiverData?.username}</span>
         </p>
 

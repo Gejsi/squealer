@@ -12,14 +12,17 @@ const Chat: Page = () => {
     chatId,
   })
 
+  if (isError)
+    return (
+      <ErrorTemplate
+        message='Error while fetching chat'
+        statusCode={error.data?.httpStatus}
+      />
+    )
+
   return (
     <>
-      {isError ? (
-        <ErrorTemplate
-          message='Error while fetching chat'
-          statusCode={error.data?.httpStatus}
-        />
-      ) : isLoading ? (
+      {isLoading ? (
         <Spinner />
       ) : (
         <div className='flex flex-col gap-4 odd:bg-primary'>
