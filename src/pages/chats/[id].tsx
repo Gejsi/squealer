@@ -16,9 +16,14 @@ const Chat: Page = () => {
   const chatId = useRouter().query.id as string
   const [autoAnimate] = useAutoAnimate()
 
-  const { data, isLoading, isError, error } = api.chat.getChat.useQuery({
-    chatId,
-  })
+  const { data, isLoading, isError, error } = api.chat.getChat.useQuery(
+    {
+      channelId: chatId,
+    },
+    {
+      retry: false,
+    }
+  )
 
   const setReceiverData = useSetAtom(squealDialogAtom)
 
@@ -39,7 +44,7 @@ const Chat: Page = () => {
   if (isError)
     return (
       <ErrorTemplate
-        message='Error while fetching chat'
+        message={error.message}
         statusCode={error.data?.httpStatus}
       />
     )
@@ -66,7 +71,7 @@ const Chat: Page = () => {
 
       <SquealDialog
         onCreate={(content, chatId) =>
-          content && chatMutation.mutate({ content, chatId })
+          content && chatMutation.mutate({ content, channelId: chatId })
         }
         isCreating={chatMutation.isLoading}
       />

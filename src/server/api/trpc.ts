@@ -3,7 +3,7 @@ import { getAuth } from '@clerk/nextjs/server'
 import { initTRPC, TRPCError } from '@trpc/server'
 import type { CreateNextContextOptions } from '@trpc/server/adapters/next'
 import superjson from 'superjson'
-import { ZodError } from 'zod'
+import { ZodError, z } from 'zod'
 import { prisma } from '../db'
 
 interface AuthContext {
@@ -65,14 +65,45 @@ const isAuthed = t.middleware(({ next, ctx }) => {
   })
 })
 
-const isPremium = t.middleware(({ next, ctx }) => {
-  if (!ctx.auth.userId)
+const isProtected = isAuthed.unstable_pipe(async ({ next, ctx, rawInput }) => {
+  const parsedChannelId = z
+    .object({ channelId: z.string() })
+    .safeParse(rawInput)
+
+  if (!parsedChannelId.success)
     throw new TRPCError({
-      code: 'UNAUTHORIZED',
-      message: 'Only authenticated users can access this feature.',
+      code: 'BAD_REQUEST',
+      message: 'Provide a valid channel id.',
     })
 
-  if (ctx.auth.user && ctx.auth.user.privateMetadata.role !== 'Premium')
+  const isMember =
+    (await ctx.prisma.channel.findFirst({
+      where: {
+        id: parsedChannelId.data.channelId,
+        members: {
+          some: {
+            id: ctx.auth.userId,
+          },
+        },
+      },
+    })) != null
+
+  if (!isMember)
+    throw new TRPCError({
+      code: 'UNAUTHORIZED',
+      message: 'You are not a member of the specified channel',
+    })
+
+  return next({
+    ctx: {
+      ...ctx,
+      auth: ctx.auth,
+    },
+  })
+})
+
+const isPremium = isAuthed.unstable_pipe(({ next, ctx }) => {
+  if (!ctx.auth.user || ctx.auth.user.privateMetadata.role !== 'Premium')
     throw new TRPCError({
       code: 'UNAUTHORIZED',
       message: 'Only premium users can access this feature.',
@@ -89,4 +120,5 @@ const isPremium = t.middleware(({ next, ctx }) => {
 export const createRouter = t.router
 export const publicProcedure = t.procedure
 export const authedProcedure = publicProcedure.use(isAuthed)
-export const premiumProcedure = authedProcedure.use(isPremium)
+export const protectedProcedure = publicProcedure.use(isProtected)
+export const premiumProcedure = publicProcedure.use(isPremium)

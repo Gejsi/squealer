@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import type { PrismaJson } from '../../../types/json'
-import { createRouter, authedProcedure } from '../trpc'
+import { createRouter, authedProcedure, protectedProcedure } from '../trpc'
 import { jsonSchema } from '../../../schemas/json'
 import { clerkClient } from '@clerk/nextjs/server'
 
@@ -105,13 +105,13 @@ export const chatRouter = createRouter({
 
     return enrichedChats
   }),
-  getChat: authedProcedure
-    .input(z.object({ chatId: z.string() }))
+  getChat: protectedProcedure
+    .input(z.object({ channelId: z.string() }))
     .query(async ({ ctx, input }) => {
       const squeals = await ctx.prisma.squeal.findMany({
         where: {
           channel: {
-            id: input.chatId,
+            id: input.channelId,
           },
         },
         orderBy: {
@@ -137,8 +137,8 @@ export const chatRouter = createRouter({
 
       return enrichedSqueals
     }),
-  newSqueal: authedProcedure
-    .input(z.object({ chatId: z.string(), content: jsonSchema }))
+  newSqueal: protectedProcedure
+    .input(z.object({ channelId: z.string(), content: jsonSchema }))
     .mutation(async ({ ctx, input }) => {
       return await ctx.prisma.squeal.create({
         data: {
@@ -147,7 +147,7 @@ export const chatRouter = createRouter({
             connect: { id: ctx.auth.userId },
           },
           channel: {
-            connect: { id: input.chatId },
+            connect: { id: input.channelId },
           },
         },
       })
