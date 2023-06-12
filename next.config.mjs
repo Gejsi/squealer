@@ -26,6 +26,10 @@ const config = {
         protocol: 'https',
         hostname: '**.gravatar.**',
       },
+      {
+        protocol: 'https',
+        hostname: '**google**',
+      },
     ],
   },
 }

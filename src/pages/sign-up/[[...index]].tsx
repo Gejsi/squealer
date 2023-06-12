@@ -11,7 +11,7 @@ const SignUpPage: Page = () => (
       appearance={{
         baseTheme: dark,
         elements: {
-          rootBox: 'w-full lg:w-2/5 flex justify-center',
+          rootBox: 'w-full lg:w-3/5 xl:w-2/5 flex justify-center',
           card: 'w-full',
         },
       }}

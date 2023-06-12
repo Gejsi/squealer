@@ -1,4 +1,4 @@
-import { atom, useAtom } from 'jotai'
+import { atom, useAtom, useSetAtom } from 'jotai'
 import Head from 'next/head'
 import { type ReactNode, useEffect } from 'react'
 import { Toaster } from 'react-hot-toast'
@@ -19,17 +19,21 @@ export const userMetadataAtom = atom<UserMetadata>(initialMetadata)
 
 const Layout = ({ children }: { children: ReactNode }) => {
   const [sidebarState] = useAtom(sidebarAtom)
-  const [userMetadata, setUserMetadata] = useAtom(userMetadataAtom)
+  const setUserMetadata = useSetAtom(userMetadataAtom)
   const { isSignedIn } = useUser()
 
   api.user.getMetadata.useQuery(undefined, {
-    retry: () => !userMetadata,
+    retry: true,
     refetchOnWindowFocus: false,
+    onError() {
+      setUserMetadata(initialMetadata)
+    },
     onSuccess(data) {
       setUserMetadata(data)
     },
   })
 
+  // set initial metadata after logout
   useEffect(() => {
     if (!isSignedIn) setUserMetadata(initialMetadata)
   }, [isSignedIn, setUserMetadata])
