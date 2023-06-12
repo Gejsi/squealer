@@ -35,7 +35,7 @@ const AllChats: Page = () => {
         <ul className='menu rounded-box bg-base-200'>
           {data.map((chat) => (
             <li key={chat.id}>
-              <Link href={'chats/' + chat.id}>
+              <Link href={'/chats/' + chat.id}>
                 <div className='avatar-group -space-x-6'>
                   {chat.members.map((member) => (
                     <div className='avatar' key={member.id}>

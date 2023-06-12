@@ -4,40 +4,33 @@ import Editor from './Editor'
 import { atom, useAtom } from 'jotai'
 import { userMetadataAtom } from '../Layout'
 import { toast } from 'react-hot-toast'
-import { api } from '../../utils/api'
 import { cn } from '../../utils/misc'
 import type { EditorOptions, JSONContent } from '@tiptap/core'
 
 export const squealDialogAtom = atom<
-  { username: string; id: string } | undefined
+  { username: string | undefined; id: string } | undefined
 >(undefined)
 
-const SquealDialog = (props: ComponentProps<typeof Modal>) => {
+export const editorLengthAtom = atom(0)
+
+const SquealDialog = (
+  props: ComponentProps<typeof Modal> & {
+    onCreate: (content: JSONContent | undefined, channelId: string) => void
+    isCreating: boolean
+  }
+) => {
   const [userMetadata] = useAtom(userMetadataAtom)
-  const [editorLength, setEditorLength] = useState(0)
+  const [editorLength, setEditorLength] = useAtom(editorLengthAtom)
   const [content, setContent] = useState<JSONContent | undefined>(undefined)
   const [receiverData, setReceiverData] = useAtom(squealDialogAtom)
 
-  const { mutate: createSqueal, isLoading: isCreating } =
-    api.chat.create.useMutation({
-      onError() {
-        toast.error('Unable to create squeal.')
-      },
-      onSuccess() {
-        toast.success('Squeal has been created.')
-        setReceiverData(undefined)
-        setEditorLength(0)
-      },
-    })
-
   const handleCreate = (): void => {
     if (editorLength === 0) {
-      toast.error('Cannot create an empty squeal.', { position: 'top-right' })
+      toast.error('Cannot create an empty squeal.')
       return
     }
 
-    if (content && receiverData)
-      createSqueal({ content, receiverId: receiverData.id })
+    if (receiverData?.id) props.onCreate(content, receiverData?.id)
   }
 
   const handleEditorUpdate = ({
@@ -49,18 +42,21 @@ const SquealDialog = (props: ComponentProps<typeof Modal>) => {
 
   return (
     <Modal
-      {...props}
       open={!!receiverData}
       onOpenChange={(state) => {
         setReceiverData(state ? receiverData : undefined)
         setEditorLength(0)
       }}
+      {...props}
     >
       <ModalContent>
         <ModalTitle>Write a new squeal</ModalTitle>
         <p className='mb-4 text-sm italic'>
-          This squeal will be sent to{' '}
-          <span className='text-info'>@{receiverData?.username}</span>
+          This squeal will be sent{' '}
+          {receiverData?.username ? 'to ' : 'in this channel'}
+          {receiverData?.username && (
+            <span className='text-info'>@{receiverData.username}</span>
+          )}
         </p>
 
         <Editor onUpdate={handleEditorUpdate} />
@@ -78,7 +74,7 @@ const SquealDialog = (props: ComponentProps<typeof Modal>) => {
             <button className='btn-ghost btn'>Cancel</button>
           </ModalClose>
           <button
-            className={cn('btn-primary btn', { loading: isCreating })}
+            className={cn('btn-primary btn', { loading: props.isCreating })}
             onClick={handleCreate}
           >
             Create

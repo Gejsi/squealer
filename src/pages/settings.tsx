@@ -18,7 +18,7 @@ import type { Page } from './_app'
 const Settings: Page = () => {
   const { user } = useUser()
   const [userMetadata, setUserMetadata] = useAtom(userMetadataAtom)
-  const utils = api.useContext()
+  const context = api.useContext()
   const metadataMutation = api.user.updateMetadata.useMutation({
     onError() {
       toast.error('Unable to save settings.')
@@ -28,7 +28,7 @@ const Settings: Page = () => {
       setUserMetadata(data)
     },
     onSettled() {
-      utils.user.getMetadata.invalidate()
+      context.user.getMetadata.invalidate()
     },
   })
 

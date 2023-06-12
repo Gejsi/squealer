@@ -21,6 +21,10 @@
     @apply capitalize;
   }
 
+  .fab {
+    @apply sticky bottom-0 z-10 lg:bottom-[-3rem] xl:bottom-[-7rem];
+  }
+
   .btn-icon {
     @apply btn-ghost btn-square btn;
   }

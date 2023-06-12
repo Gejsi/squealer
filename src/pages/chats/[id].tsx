@@ -4,12 +4,36 @@ import type { Page } from '../_app'
 import Bubble from '../../components/Bubble'
 import ErrorTemplate from '../../components/ErrorTemplate'
 import Spinner from '../../components/Spinner'
+import { MdEdit } from 'react-icons/md'
+import { toast } from 'react-hot-toast'
+import { useSetAtom } from 'jotai'
+import SquealDialog, {
+  squealDialogAtom,
+} from '../../components/editor/SquealDialog'
+import { useAutoAnimate } from '@formkit/auto-animate/react'
 
 const Chat: Page = () => {
   const chatId = useRouter().query.id as string
+  const [autoAnimate] = useAutoAnimate()
 
   const { data, isLoading, isError, error } = api.chat.getChat.useQuery({
     chatId,
+  })
+
+  const setReceiverData = useSetAtom(squealDialogAtom)
+
+  const context = api.useContext()
+  const chatMutation = api.chat.newSqueal.useMutation({
+    onError() {
+      toast.error('Unable to send squeal.')
+    },
+    onSuccess() {
+      toast.success('Squeal successfully sent.')
+      setReceiverData(undefined)
+    },
+    onSettled() {
+      context.chat.getChat.invalidate()
+    },
   })
 
   if (isError)
@@ -25,12 +49,27 @@ const Chat: Page = () => {
       {isLoading ? (
         <Spinner />
       ) : (
-        <div className='flex flex-col gap-4 odd:bg-primary'>
+        <div className='flex flex-col gap-4' ref={autoAnimate}>
           {data.map((squeal) => (
             <Bubble key={squeal.id} squeal={squeal} />
           ))}
+
+          <button
+            className='fab btn-primary btn h-fit w-fit gap-2 self-end py-2'
+            onClick={() => setReceiverData({ username: undefined, id: chatId })}
+          >
+            <MdEdit className='h-4 w-4' />
+            Write New Squeal
+          </button>
         </div>
       )}
+
+      <SquealDialog
+        onCreate={(content, chatId) =>
+          content && chatMutation.mutate({ content, chatId })
+        }
+        isCreating={chatMutation.isLoading}
+      />
     </>
   )
 }

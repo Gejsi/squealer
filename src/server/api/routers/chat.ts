@@ -124,7 +124,7 @@ export const chatRouter = createRouter({
           const { profileImageUrl, username } = await clerkClient.users.getUser(
             squeal.authorId
           )
-          // Return the updated member object with additional data
+
           return {
             ...squeal,
             author: {
@@ -136,5 +136,20 @@ export const chatRouter = createRouter({
       )
 
       return enrichedSqueals
+    }),
+  newSqueal: authedProcedure
+    .input(z.object({ chatId: z.string(), content: jsonSchema }))
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.prisma.squeal.create({
+        data: {
+          content: input.content as PrismaJson,
+          author: {
+            connect: { id: ctx.auth.userId },
+          },
+          channel: {
+            connect: { id: input.chatId },
+          },
+        },
+      })
     }),
 })

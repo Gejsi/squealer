@@ -3,11 +3,15 @@ import type { Page } from './_app'
 import { type RouterOutputs, api } from '../utils/api'
 import { MdEdit } from 'react-icons/md'
 import Link from 'next/link'
-import { useAtom } from 'jotai'
-import { squealDialogAtom } from '../components/editor/SquealDialog'
+import { useSetAtom } from 'jotai'
+import SquealDialog, {
+  editorLengthAtom,
+  squealDialogAtom,
+} from '../components/editor/SquealDialog'
+import { toast } from 'react-hot-toast'
 
 const UserCard = ({ user }: { user: RouterOutputs['user']['getAll'][0] }) => {
-  const [, setReceiverData] = useAtom(squealDialogAtom)
+  const setReceiverData = useSetAtom(squealDialogAtom)
 
   return (
     <div className='card gap-6 bg-base-200 p-8 shadow-lg'>
@@ -55,14 +59,37 @@ const UserCard = ({ user }: { user: RouterOutputs['user']['getAll'][0] }) => {
 }
 
 const AllUsers: Page = () => {
+  const setReceiverData = useSetAtom(squealDialogAtom)
+  const setEditorLength = useSetAtom(editorLengthAtom)
+
   const { data: users } = api.user.getAll.useQuery()
 
+  const { mutate: createSqueal, isLoading } = api.chat.create.useMutation({
+    onError() {
+      toast.error('Unable to create squeal.')
+    },
+    onSuccess() {
+      toast.success('Squeal has been created.')
+      setReceiverData(undefined)
+      setEditorLength(0)
+    },
+  })
+
   return (
-    <div className='auto-fill grid gap-8'>
-      {users?.map((user) => (
-        <UserCard key={user.id} user={user} />
-      ))}
-    </div>
+    <>
+      <div className='auto-fill grid gap-8'>
+        {users?.map((user) => (
+          <UserCard key={user.id} user={user} />
+        ))}
+      </div>
+
+      <SquealDialog
+        onCreate={(content, receiverId) =>
+          content && createSqueal({ content, receiverId })
+        }
+        isCreating={isLoading}
+      />
+    </>
   )
 }
 

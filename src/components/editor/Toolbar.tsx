@@ -35,9 +35,7 @@ const Toolbar = ({ editor }: { editor: Editor | null }) => {
     const url = inputRef.current?.value
 
     if (!url || !isImage(url)) {
-      toast.error('Provide a valid image:\ncheck the URL extension.', {
-        position: 'top-right',
-      })
+      toast.error('Provide a valid image:\ncheck the URL extension.')
       return
     }
 
@@ -49,9 +47,7 @@ const Toolbar = ({ editor }: { editor: Editor | null }) => {
     const url = inputRef.current?.value
 
     if (!url || !isYoutubeUrl(url)) {
-      toast.error('Provide a valid youtube URL.', {
-        position: 'top-right',
-      })
+      toast.error('Provide a valid youtube URL.')
       return
     }
 
@@ -63,9 +59,7 @@ const Toolbar = ({ editor }: { editor: Editor | null }) => {
     const url = inputRef.current?.value
 
     if (!url || !isLink(url)) {
-      toast.error('Provide a valid link.', {
-        position: 'top-right',
-      })
+      toast.error('Provide a valid link.')
       return
     }
 

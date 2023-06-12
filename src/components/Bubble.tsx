@@ -31,7 +31,7 @@ const Bubble = ({
       </time>
     </div>
 
-    <div className='chat-bubble bg-base-100'>
+    <div className='chat-bubble break-all bg-base-100'>
       <ReadonlyEditor content={squeal.content as EditorOptions['content']} />
     </div>
   </div>
