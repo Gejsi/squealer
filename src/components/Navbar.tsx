@@ -34,7 +34,7 @@ const Navbar = ({ title }: { title: string }) => {
         {isSignedIn ? (
           <>
             <Link href='/settings' className='hidden sm:inline-flex'>
-              <span className='badge capitalize'>{userMetadata.role}</span>
+              <span className='badge capitalize'>{userMetadata?.role}</span>
             </Link>
             <UserButton
               afterSignOutUrl='/'

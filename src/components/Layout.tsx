@@ -7,15 +7,7 @@ import type { UserMetadata } from '../schemas/user-metadata'
 import { api } from '../utils/api'
 import { useUser } from '@clerk/nextjs'
 
-const initialMetadata = {
-  role: 'Regular',
-  quota: 0,
-  dailyQuotaLimit: 0,
-  weeklyQuotaLimit: 0,
-  monthlyQuotaLimit: 0,
-} as const
-
-export const userMetadataAtom = atom<UserMetadata>(initialMetadata)
+export const userMetadataAtom = atom<UserMetadata | undefined>(undefined)
 
 const Layout = ({ children }: { children: ReactNode }) => {
   const [sidebarState] = useAtom(sidebarAtom)
@@ -26,7 +18,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
     retry: true,
     refetchOnWindowFocus: false,
     onError() {
-      setUserMetadata(initialMetadata)
+      setUserMetadata(undefined)
     },
     onSuccess(data) {
       setUserMetadata(data)
@@ -35,7 +27,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
 
   // set initial metadata after logout
   useEffect(() => {
-    if (!isSignedIn) setUserMetadata(initialMetadata)
+    if (!isSignedIn) setUserMetadata(undefined)
   }, [isSignedIn, setUserMetadata])
 
   return (

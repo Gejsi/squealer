@@ -15,22 +15,25 @@ const commonSelector = Prisma.validator<Prisma.UserSelect>()({
 })
 
 export const userRouter = createRouter({
-  getMetadata: authedProcedure.query(async ({ ctx }) => {
-    let user
-    user = await ctx.prisma.user.findUnique({
+  upsertUser: authedProcedure.query(async ({ ctx }) => {
+    const user = await ctx.prisma.user.upsert({
       where: { id: ctx.auth.userId },
+      update: {},
+      create: { id: ctx.auth.userId },
       select: commonSelector,
     })
-
-    if (!user) {
-      user = await ctx.prisma.user.create({
-        data: { id: ctx.auth.userId },
-      })
-    }
 
     // makes the premium middleware work without re-fetching the current user
     await clerkClient.users.updateUserMetadata(ctx.auth.userId, {
       privateMetadata: { role: user.role },
+    })
+
+    return user as UserMetadata
+  }),
+  getMetadata: authedProcedure.query(async ({ ctx }) => {
+    const user = await ctx.prisma.user.findUnique({
+      where: { id: ctx.auth.userId },
+      select: commonSelector,
     })
 
     return user as UserMetadata

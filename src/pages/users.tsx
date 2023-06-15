@@ -9,6 +9,7 @@ import SquealDialog, {
   squealDialogAtom,
 } from '../components/editor/SquealDialog'
 import { toast } from 'react-hot-toast'
+import { useRouter } from 'next/router'
 
 const UserCard = ({ user }: { user: RouterOutputs['user']['getAll'][0] }) => {
   const setReceiverData = useSetAtom(squealDialogAtom)
@@ -59,6 +60,7 @@ const UserCard = ({ user }: { user: RouterOutputs['user']['getAll'][0] }) => {
 }
 
 const AllUsers: Page = () => {
+  const router = useRouter()
   const setReceiverData = useSetAtom(squealDialogAtom)
   const setEditorLength = useSetAtom(editorLengthAtom)
 
@@ -68,10 +70,11 @@ const AllUsers: Page = () => {
     onError() {
       toast.error('Unable to create squeal.')
     },
-    onSuccess() {
+    onSuccess(data) {
       toast.success('Squeal has been created.')
       setReceiverData(undefined)
       setEditorLength(0)
+      router.push('/chats/' + data.channelId)
     },
   })
 

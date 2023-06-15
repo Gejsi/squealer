@@ -62,10 +62,10 @@ const SquealDialog = (
         <Editor onUpdate={handleEditorUpdate} />
         <label className='label'>
           <span className='label-text-alt'>
-            Quota remaining: {userMetadata.quota - editorLength}
+            Quota remaining: {userMetadata && userMetadata.quota - editorLength}
           </span>
           <span className='label-text-alt'>
-            {editorLength} / {userMetadata.quota}
+            {editorLength} / {userMetadata?.quota}
           </span>
         </label>
 

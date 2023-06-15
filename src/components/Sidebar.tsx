@@ -54,7 +54,8 @@ const Sidebar = () => {
                   Daily Quota
                 </div>
                 <span className='text-sm'>
-                  {userMetadata.quota} / {userMetadata.dailyQuotaLimit}
+                  {userMetadata &&
+                    userMetadata.quota + ' / ' + userMetadata.dailyQuotaLimit}
                 </span>
               </Link>
             </li>

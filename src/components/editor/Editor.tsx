@@ -30,7 +30,7 @@ const Editor = ({ onUpdate }: { onUpdate?: EditorOptions['onUpdate'] }) => {
           },
         }),
         CharacterCount.configure({
-          limit: userMetadata.quota,
+          limit: userMetadata?.quota,
         }),
         Typography,
         Placeholder.configure({

@@ -8,6 +8,8 @@ const SignInPage: Page = () => (
       path='/sign-in'
       routing='path'
       signUpUrl='/sign-up'
+      afterSignInUrl='/auth-confirmation'
+      afterSignUpUrl='/auth-confirmation'
       appearance={{
         baseTheme: dark,
         elements: {
