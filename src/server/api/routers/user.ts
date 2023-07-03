@@ -56,7 +56,11 @@ export const userRouter = createRouter({
       return userMetadata
     }),
   getAll: authedProcedure.query(async ({ ctx }) => {
-    const dbUsers = await ctx.prisma.user.findMany()
+    const dbUsers = await ctx.prisma.user.findMany({
+      where: {
+        NOT: { id: ctx.auth.userId },
+      },
+    })
     const clerkUsers = await clerkClient.users.getUserList()
 
     // merge the info from the database with the info from clerk

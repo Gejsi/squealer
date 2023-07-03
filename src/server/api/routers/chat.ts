@@ -3,6 +3,7 @@ import type { PrismaJson } from '../../../types/json'
 import { createRouter, authedProcedure, protectedProcedure } from '../trpc'
 import { jsonSchema } from '../../../schemas/json'
 import { clerkClient } from '@clerk/nextjs/server'
+import { TRPCError } from '@trpc/server'
 
 export const chatRouter = createRouter({
   create: authedProcedure
@@ -16,20 +17,19 @@ export const chatRouter = createRouter({
       const authorId = ctx.auth.userId
       const receiverId = input.receiverId
 
+      if (authorId === receiverId)
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'You cannot message yourself.',
+        })
+
       // Check if a chat channel already exists between the author and receiver
       const existingChannel = await ctx.prisma.channel.findFirst({
         where: {
           type: 'Chat',
           members: {
             every: {
-              OR: [
-                {
-                  id: authorId,
-                },
-                {
-                  id: receiverId,
-                },
-              ],
+              OR: [{ id: authorId }, { id: receiverId }],
             },
           },
         },

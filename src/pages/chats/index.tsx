@@ -5,7 +5,6 @@ import type { Page } from '../_app'
 import { RiChatPrivateFill } from 'react-icons/ri'
 import Spinner from '../../components/Spinner'
 import ErrorTemplate from '../../components/ErrorTemplate'
-import { cn } from '../../utils/misc'
 
 const AllChats: Page = () => {
   const { data, isLoading, isError, error } =
@@ -49,14 +48,8 @@ const AllChats: Page = () => {
                     </div>
                   ))}
                 </div>
-                <div
-                  className={cn({
-                    'pl-8 text-info': chat.members.length == 1,
-                  })}
-                >
-                  <p>
-                    {chat.members.length == 1 ? 'Chat with myself' : chat.name}
-                  </p>
+                <div>
+                  <p>{chat.name}</p>
                   <p className='text-xs italic'>
                     Number of squeals: {chat._count.squeals}
                   </p>

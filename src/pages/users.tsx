@@ -10,6 +10,9 @@ import SquealDialog, {
 } from '../components/editor/SquealDialog'
 import { toast } from 'react-hot-toast'
 import { useRouter } from 'next/router'
+import { Suspense } from 'react'
+import Spinner from '../components/Spinner'
+import ErrorTemplate from '../components/ErrorTemplate'
 
 const UserCard = ({ user }: { user: RouterOutputs['user']['getAll'][0] }) => {
   const setReceiverData = useSetAtom(squealDialogAtom)
@@ -64,33 +67,46 @@ const AllUsers: Page = () => {
   const setReceiverData = useSetAtom(squealDialogAtom)
   const setEditorLength = useSetAtom(editorLengthAtom)
 
-  const { data: users } = api.user.getAll.useQuery()
+  const { data: users, isLoading, error, isError } = api.user.getAll.useQuery()
 
-  const { mutate: createSqueal, isLoading } = api.chat.create.useMutation({
-    onError() {
-      toast.error('Unable to create squeal.')
-    },
-    onSuccess(data) {
-      toast.success('Squeal has been created.')
-      setReceiverData(undefined)
-      setEditorLength(0)
-      router.push('/chats/' + data.channelId)
-    },
-  })
+  const { mutate: createSqueal, isLoading: isCreating } =
+    api.chat.create.useMutation({
+      onError() {
+        toast.error('Unable to create squeal.')
+      },
+      onSuccess(data) {
+        toast.success('Squeal has been created.')
+        setReceiverData(undefined)
+        setEditorLength(0)
+        router.push('/chats/' + data.channelId)
+      },
+    })
+
+  if (isError)
+    return (
+      <ErrorTemplate
+        message='Error while fetching chats'
+        statusCode={error.data?.httpStatus}
+      />
+    )
 
   return (
     <>
-      <div className='auto-fill grid gap-8'>
-        {users?.map((user) => (
-          <UserCard key={user.id} user={user} />
-        ))}
-      </div>
+      {isLoading ? (
+        <Spinner />
+      ) : (
+        <div className='auto-fill grid gap-8'>
+          {users?.map((user) => (
+            <UserCard key={user.id} user={user} />
+          ))}
+        </div>
+      )}
 
       <SquealDialog
         onCreate={(content, receiverId) =>
           content && createSqueal({ content, receiverId })
         }
-        isCreating={isLoading}
+        isCreating={isCreating}
       />
     </>
   )
