@@ -6,11 +6,9 @@ import ErrorTemplate from '../../components/ErrorTemplate'
 import Spinner from '../../components/Spinner'
 import { MdEdit } from 'react-icons/md'
 import { toast } from 'react-hot-toast'
-import { useSetAtom } from 'jotai'
-import SquealDialog, {
-  squealDialogAtom,
-} from '../../components/editor/SquealDialog'
+import SquealDialog from '../../components/editor/SquealDialog'
 import { useAutoAnimate } from '@formkit/auto-animate/react'
+import useSquealDialog from '../../hooks/use-squeal-dialog'
 
 const Chat: Page = () => {
   const chatId = useRouter().query.id as string
@@ -25,7 +23,7 @@ const Chat: Page = () => {
     }
   )
 
-  const setReceiverData = useSetAtom(squealDialogAtom)
+  const { openDialog, closeDialog } = useSquealDialog()
 
   const context = api.useContext()
   const chatMutation = api.chat.newSqueal.useMutation({
@@ -34,7 +32,7 @@ const Chat: Page = () => {
     },
     onSuccess() {
       toast.success('Squeal successfully sent.')
-      setReceiverData(undefined)
+      closeDialog()
     },
     onSettled() {
       context.chat.getChat.invalidate()
@@ -61,7 +59,7 @@ const Chat: Page = () => {
 
           <button
             className='fab btn-primary btn h-fit w-fit gap-2 self-end py-2'
-            onClick={() => setReceiverData({ username: undefined, id: chatId })}
+            onClick={() => openDialog({ id: chatId, type: 'chat' })}
           >
             <MdEdit className='h-4 w-4' />
             Write New Squeal

@@ -6,10 +6,7 @@ import { userMetadataAtom } from '../Layout'
 import { toast } from 'react-hot-toast'
 import { cn } from '../../utils/misc'
 import type { EditorOptions, JSONContent } from '@tiptap/core'
-
-export const squealDialogAtom = atom<
-  { username: string | undefined; id: string } | undefined
->(undefined)
+import { squealDialogAtom } from '../../hooks/use-squeal-dialog'
 
 export const editorLengthAtom = atom(0)
 
@@ -53,7 +50,11 @@ const SquealDialog = (
         <ModalTitle>Write a new squeal</ModalTitle>
         <p className='mb-4 text-sm italic'>
           This squeal will be sent{' '}
-          {receiverData?.username ? 'to ' : 'in this channel'}
+          {receiverData?.username
+            ? 'to '
+            : receiverData?.type === 'chat'
+            ? 'in this chat'
+            : 'in this channel'}
           {receiverData?.username && (
             <span className='text-info'>@{receiverData.username}</span>
           )}
@@ -69,16 +70,19 @@ const SquealDialog = (
           </span>
         </label>
 
-        <div className='modal-action'>
-          <ModalClose>
-            <button className='btn-ghost btn'>Cancel</button>
-          </ModalClose>
+        <div className='modal-action gap-2'>
           <button
-            className={cn('btn-primary btn', { loading: props.isCreating })}
+            className={cn('btn-primary btn order-1', {
+              loading: props.isCreating,
+            })}
             onClick={handleCreate}
           >
             Create
           </button>
+
+          <ModalClose>
+            <button className='btn-ghost btn'>Cancel</button>
+          </ModalClose>
         </div>
       </ModalContent>
     </Modal>

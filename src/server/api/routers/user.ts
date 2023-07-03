@@ -15,7 +15,7 @@ const commonSelector = Prisma.validator<Prisma.UserSelect>()({
 })
 
 export const userRouter = createRouter({
-  upsertUser: authedProcedure.query(async ({ ctx }) => {
+  upsert: authedProcedure.query(async ({ ctx }) => {
     const user = await ctx.prisma.user.upsert({
       where: { id: ctx.auth.userId },
       update: {},

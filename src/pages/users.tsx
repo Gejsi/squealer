@@ -6,16 +6,15 @@ import Link from 'next/link'
 import { useSetAtom } from 'jotai'
 import SquealDialog, {
   editorLengthAtom,
-  squealDialogAtom,
 } from '../components/editor/SquealDialog'
 import { toast } from 'react-hot-toast'
 import { useRouter } from 'next/router'
-import { Suspense } from 'react'
 import Spinner from '../components/Spinner'
 import ErrorTemplate from '../components/ErrorTemplate'
+import useSquealDialog from '../hooks/use-squeal-dialog'
 
 const UserCard = ({ user }: { user: RouterOutputs['user']['getAll'][0] }) => {
-  const setReceiverData = useSetAtom(squealDialogAtom)
+  const { openDialog } = useSquealDialog()
 
   return (
     <div className='card gap-6 bg-base-200 p-8 shadow-lg'>
@@ -50,7 +49,7 @@ const UserCard = ({ user }: { user: RouterOutputs['user']['getAll'][0] }) => {
             className='btn-outline btn mt-2 h-fit w-fit gap-2 py-2'
             onClick={() =>
               user.username &&
-              setReceiverData({ username: user.username, id: user.id })
+              openDialog({ username: user.username, id: user.id, type: 'chat' })
             }
           >
             <MdEdit className='h-4 w-4' />
@@ -64,7 +63,7 @@ const UserCard = ({ user }: { user: RouterOutputs['user']['getAll'][0] }) => {
 
 const AllUsers: Page = () => {
   const router = useRouter()
-  const setReceiverData = useSetAtom(squealDialogAtom)
+  const { closeDialog } = useSquealDialog()
   const setEditorLength = useSetAtom(editorLengthAtom)
 
   const { data: users, isLoading, error, isError } = api.user.getAll.useQuery()
@@ -76,7 +75,7 @@ const AllUsers: Page = () => {
       },
       onSuccess(data) {
         toast.success('Squeal has been created.')
-        setReceiverData(undefined)
+        closeDialog()
         setEditorLength(0)
         router.push('/chats/' + data.channelId)
       },

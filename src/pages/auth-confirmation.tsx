@@ -10,7 +10,7 @@ const Confirmation: Page = () => {
   const router = useRouter()
   const setUserMetadata = useSetAtom(userMetadataAtom)
 
-  const { isError, error } = api.user.upsertUser.useQuery(undefined, {
+  const { isError, error } = api.user.upsert.useQuery(undefined, {
     retry: true,
     onSuccess(data) {
       router.push('/')
