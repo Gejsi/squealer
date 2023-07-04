@@ -31,9 +31,10 @@ enum UserRole {
 }
 
 model Squeal {
-  id        String   @id @default(cuid())
-  content   Json
-  createdAt DateTime @default(now())
+  id          String   @id @default(cuid())
+  content     Json
+  createdAt   DateTime @default(now())
+  impressions Int?
 
   author    User    @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId  String
@@ -42,6 +43,7 @@ model Squeal {
 
   mentions  Mention[]
   reactions Reaction[]
+  intensity SquealIntensity?
 
   replies        Squeal[] @relation("squeal_replies")
   parentSqueal   Squeal?  @relation("squeal_replies", fields: [parentSquealId], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -51,6 +53,12 @@ model Squeal {
   @@index([parentSquealId])
   @@index([channelId])
   @@map("squeals")
+}
+
+enum SquealIntensity {
+  Popular
+  Unpopular
+  Controversial
 }
 
 model Channel {

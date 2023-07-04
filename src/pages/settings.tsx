@@ -67,7 +67,9 @@ const Settings: Page = () => {
           </div>
         </div>
         <p className='text-lg font-medium'>
-          {user?.username ?? user?.primaryEmailAddress?.emailAddress}
+          {user?.username
+            ? '@' + user.username
+            : user?.primaryEmailAddress?.emailAddress}
         </p>
       </div>
 

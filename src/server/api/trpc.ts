@@ -67,13 +67,13 @@ const isAuthed = t.middleware(({ next, ctx }) => {
 
 const isProtected = isAuthed.unstable_pipe(async ({ next, ctx, rawInput }) => {
   const parsedChannelId = z
-    .object({ channelId: z.string() })
+    .object({ channelId: z.string().cuid() })
     .safeParse(rawInput)
 
   if (!parsedChannelId.success)
     throw new TRPCError({
       code: 'BAD_REQUEST',
-      message: 'Provide a valid channel id.',
+      message: 'Provide a valid channel ID.',
     })
 
   const isMember =

@@ -1,17 +1,17 @@
 import Image from 'next/image'
-import type { Page } from './_app'
-import { type RouterOutputs, api } from '../utils/api'
+import type { Page } from '../_app'
+import { type RouterOutputs, api } from '../../utils/api'
 import { MdEdit } from 'react-icons/md'
 import Link from 'next/link'
 import { useSetAtom } from 'jotai'
 import SquealDialog, {
   editorLengthAtom,
-} from '../components/editor/SquealDialog'
+} from '../../components/editor/SquealDialog'
 import { toast } from 'react-hot-toast'
 import { useRouter } from 'next/router'
-import Spinner from '../components/Spinner'
-import ErrorTemplate from '../components/ErrorTemplate'
-import useSquealDialog from '../hooks/use-squeal-dialog'
+import Spinner from '../../components/Spinner'
+import ErrorTemplate from '../../components/ErrorTemplate'
+import useSquealDialog from '../../hooks/use-squeal-dialog'
 
 const UserCard = ({ user }: { user: RouterOutputs['user']['getAll'][0] }) => {
   const { openDialog } = useSquealDialog()
@@ -30,7 +30,7 @@ const UserCard = ({ user }: { user: RouterOutputs['user']['getAll'][0] }) => {
       </div>
       <div className='card-body p-0'>
         <h2 className='card-title self-center'>
-          <Link href={`/users/${user.id}`} className='link-hover link'>
+          <Link href={`/users/${user.username}`} className='link-hover link'>
             @{user.username}
           </Link>
         </h2>

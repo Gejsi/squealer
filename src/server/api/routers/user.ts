@@ -5,6 +5,7 @@ import {
 } from '../../../schemas/user-metadata'
 import { Prisma } from '@prisma/client'
 import { clerkClient } from '@clerk/nextjs/server'
+import { z } from 'zod'
 
 const commonSelector = Prisma.validator<Prisma.UserSelect>()({
   role: true,
@@ -72,4 +73,28 @@ export const userRouter = createRouter({
 
     return mergedUsers
   }),
+  get: authedProcedure
+    .input(z.object({ username: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const clerkUser = (
+        await clerkClient.users.getUserList({ username: [input.username] })
+      )[0]
+
+      const user = await ctx.prisma.user.findUnique({
+        where: { id: clerkUser?.id },
+        include: {
+          squeals: true,
+          _count: {
+            select: { squeals: true, reactions: true },
+          },
+        },
+      })
+
+      const mergedUser = {
+        ...clerkUser,
+        ...user,
+      }
+
+      return mergedUser
+    }),
 })

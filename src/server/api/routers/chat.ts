@@ -95,6 +95,7 @@ export const chatRouter = createRouter({
             }
           })
         )
+
         // Return the updated chat object with updated members
         return {
           ...chat,
@@ -106,7 +107,7 @@ export const chatRouter = createRouter({
     return enrichedChats
   }),
   getChat: protectedProcedure
-    .input(z.object({ channelId: z.string() }))
+    .input(z.object({ channelId: z.string().cuid() }))
     .query(async ({ ctx, input }) => {
       const squeals = await ctx.prisma.squeal.findMany({
         where: {
@@ -138,7 +139,7 @@ export const chatRouter = createRouter({
       return enrichedSqueals
     }),
   newSqueal: protectedProcedure
-    .input(z.object({ channelId: z.string(), content: jsonSchema }))
+    .input(z.object({ channelId: z.string().cuid(), content: jsonSchema }))
     .mutation(async ({ ctx, input }) => {
       return await ctx.prisma.squeal.create({
         data: {
