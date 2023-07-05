@@ -61,14 +61,18 @@ const SquealDialog = (
         </p>
 
         <Editor onUpdate={handleEditorUpdate} />
-        <label className='label'>
-          <span className='label-text-alt'>
-            Quota remaining: {userMetadata && userMetadata.quota - editorLength}
-          </span>
-          <span className='label-text-alt'>
-            {editorLength} / {userMetadata?.quota}
-          </span>
-        </label>
+
+        {receiverData?.type !== 'chat' && (
+          <label className='label'>
+            <span className='label-text-alt'>
+              Quota remaining:{' '}
+              {userMetadata && userMetadata.quota - editorLength}
+            </span>
+            <span className='label-text-alt'>
+              {editorLength} / {userMetadata?.quota}
+            </span>
+          </label>
+        )}
 
         <div className='modal-action gap-2'>
           <button

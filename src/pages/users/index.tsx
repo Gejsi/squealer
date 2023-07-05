@@ -12,8 +12,10 @@ import { useRouter } from 'next/router'
 import Spinner from '../../components/Spinner'
 import ErrorTemplate from '../../components/ErrorTemplate'
 import useSquealDialog from '../../hooks/use-squeal-dialog'
+import { useUser } from '@clerk/nextjs'
 
 const UserCard = ({ user }: { user: RouterOutputs['user']['getAll'][0] }) => {
+  const { user: authedUser } = useUser()
   const { openDialog } = useSquealDialog()
 
   return (
@@ -47,6 +49,7 @@ const UserCard = ({ user }: { user: RouterOutputs['user']['getAll'][0] }) => {
         <div className='card-actions justify-center'>
           <button
             className='btn-outline btn mt-2 h-fit w-fit gap-2 py-2'
+            disabled={authedUser?.id === user.id}
             onClick={() =>
               user.username &&
               openDialog({ username: user.username, id: user.id, type: 'chat' })

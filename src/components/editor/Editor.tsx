@@ -5,15 +5,17 @@ import Image from '@tiptap/extension-image'
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Toolbar from './Toolbar'
-import { useAtom } from 'jotai'
+import { useAtomValue } from 'jotai'
 import { userMetadataAtom } from '../Layout'
 import type { EditorOptions } from '@tiptap/core'
 import Youtube from '@tiptap/extension-youtube'
 import Link from '@tiptap/extension-link'
 import Location from './Location'
+import { squealDialogAtom } from '../../hooks/use-squeal-dialog'
 
 const Editor = ({ onUpdate }: { onUpdate?: EditorOptions['onUpdate'] }) => {
-  const [userMetadata] = useAtom(userMetadataAtom)
+  const userMetadata = useAtomValue(userMetadataAtom)
+  const receiverData = useAtomValue(squealDialogAtom)
 
   const editor = useEditor(
     {
@@ -30,7 +32,8 @@ const Editor = ({ onUpdate }: { onUpdate?: EditorOptions['onUpdate'] }) => {
           },
         }),
         CharacterCount.configure({
-          limit: userMetadata?.quota,
+          limit:
+            receiverData?.type === 'chat' ? undefined : userMetadata?.quota,
         }),
         Typography,
         Placeholder.configure({
