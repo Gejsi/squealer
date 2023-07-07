@@ -12,11 +12,18 @@ import Youtube from '@tiptap/extension-youtube'
 import Link from '@tiptap/extension-link'
 import Location from './Location'
 import { squealDialogAtom } from '../../hooks/use-squeal-dialog'
-import { mentionSuggestionOptions } from './Suggestion'
-import { UserMention } from './UserMention'
+import { createSuggestionList } from './Suggestion'
+import { ChannelMention, UserMention } from './Mention'
 import { useRouter } from 'next/router'
+import type { RouterOutputs } from '../../utils/api'
 
-const Editor = ({ onUpdate }: { onUpdate?: EditorOptions['onUpdate'] }) => {
+const Editor = ({
+  onUpdate,
+  userSuggestions,
+}: {
+  onUpdate?: EditorOptions['onUpdate']
+  userSuggestions: RouterOutputs['user']['getAllRandom']
+}) => {
   const userMetadata = useAtomValue(userMetadataAtom)
   const receiverData = useAtomValue(squealDialogAtom)
   const router = useRouter()
@@ -56,7 +63,12 @@ const Editor = ({ onUpdate }: { onUpdate?: EditorOptions['onUpdate'] }) => {
           HTMLAttributes: {
             class: 'link',
           },
-          suggestion: mentionSuggestionOptions,
+          suggestion: createSuggestionList(userSuggestions),
+        }),
+        ChannelMention.configure({
+          HTMLAttributes: {
+            class: 'link text-red-400',
+          },
         }),
       ],
       editorProps: {

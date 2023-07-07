@@ -7,6 +7,7 @@ import { toast } from 'react-hot-toast'
 import { cn } from '../../utils/misc'
 import type { EditorOptions, JSONContent } from '@tiptap/core'
 import { squealDialogAtom } from '../../hooks/use-squeal-dialog'
+import { api } from '../../utils/api'
 
 export const editorLengthAtom = atom(0)
 
@@ -20,6 +21,11 @@ const SquealDialog = (
   const [editorLength, setEditorLength] = useAtom(editorLengthAtom)
   const [content, setContent] = useState<JSONContent | undefined>(undefined)
   const [receiverData, setReceiverData] = useAtom(squealDialogAtom)
+
+  const { data: randomUsers } = api.user.getAllRandom.useQuery(undefined, {
+    retry: false,
+    refetchOnWindowFocus: false,
+  })
 
   const handleCreate = (): void => {
     if (editorLength === 0) {
@@ -60,7 +66,9 @@ const SquealDialog = (
           )}
         </p>
 
-        <Editor onUpdate={handleEditorUpdate} />
+        {randomUsers && (
+          <Editor onUpdate={handleEditorUpdate} userSuggestions={randomUsers} />
+        )}
 
         {receiverData?.type !== 'chat' && (
           <label className='label'>

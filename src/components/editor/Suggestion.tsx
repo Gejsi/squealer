@@ -12,98 +12,76 @@ export type MentionSuggestion = {
   mentionLabel: string
 }
 
-export const mentionSuggestionOptions: MentionOptions['suggestion'] = {
-  items: async ({ query }): Promise<MentionSuggestion[]> =>
-    [
-      'Lea Thompson',
-      'Cyndi Lauper',
-      'Tom Cruise',
-      'Madonna',
-      'Jerry Hall',
-      'Joan Collins',
-      'Winona Ryder',
-      'Christina Applegate',
-      'Alyssa Milano',
-      'Molly Ringwald',
-      'Ally Sheedy',
-      'Debbie Harry',
-      'Olivia Newton-John',
-      'Elton John',
-      'Michael J. Fox',
-      'Axl Rose',
-      'Emilio Estevez',
-      'Ralph Macchio',
-      'Rob Lowe',
-      'Jennifer Grey',
-      'Mickey Rourke',
-      'John Cusack',
-      'Matthew Broderick',
-      'Justine Bateman',
-      'Lisa Bonet',
-    ]
-      .map((name, index) => ({ mentionLabel: name, id: index.toString() }))
-      .filter((item) =>
-        item.mentionLabel.toLowerCase().startsWith(query.toLowerCase())
-      )
-      .slice(0, 5),
+export const createSuggestionList = (names: string[]) => {
+  const mentionSuggestionOptions: MentionOptions['suggestion'] = {
+    items: ({ query }): MentionSuggestion[] =>
+      names
+        .map((name, index) => ({ mentionLabel: name, id: index.toString() }))
+        .filter((item) =>
+          item.mentionLabel.toLowerCase().startsWith(query.toLowerCase())
+        )
+        .slice(0, 5),
 
-  render: () => {
-    let component: ReactRenderer<MentionRef> | undefined
-    let popup: TippyInstance | undefined
+    render: () => {
+      let component: ReactRenderer<MentionRef> | undefined
+      let popup: TippyInstance | undefined
 
-    return {
-      onStart: (props) => {
-        component = new ReactRenderer(MentionList, {
-          props,
-          editor: props.editor,
-        })
+      return {
+        onStart: (props) => {
+          component = new ReactRenderer(MentionList, {
+            props,
+            editor: props.editor,
+          })
 
-        popup = tippy('body', {
-          getReferenceClientRect: props.clientRect as any,
-          appendTo: () => document.body,
-          content: component.element,
-          showOnCreate: true,
-          interactive: true,
-          trigger: 'manual',
-          placement: 'bottom-start',
-        })[0]
-      },
+          popup = tippy('body', {
+            getReferenceClientRect: props.clientRect as any,
+            appendTo: () => document.body,
+            content: component.element,
+            showOnCreate: true,
+            interactive: true,
+            trigger: 'manual',
+            placement: 'bottom-start',
+          })[0]
+        },
 
-      onUpdate(props) {
-        component?.updateProps(props)
+        onUpdate(props) {
+          component?.updateProps(props)
 
-        popup?.setProps({
-          getReferenceClientRect: props.clientRect as any,
-        })
-      },
+          popup?.setProps({
+            getReferenceClientRect: props.clientRect as any,
+          })
+        },
 
-      onKeyDown(props) {
-        if (props.event.key === 'Escape') {
-          popup?.hide()
-          return true
-        }
+        onKeyDown(props) {
+          if (props.event.key === 'Escape') {
+            popup?.hide()
+            return true
+          }
 
-        if (!component?.ref) {
-          return false
-        }
+          if (!component?.ref) {
+            return false
+          }
 
-        return component?.ref.onKeyDown(props)
-      },
+          return component?.ref.onKeyDown(props)
+        },
 
-      onExit() {
-        popup?.destroy()
-        component?.destroy()
+        onExit() {
+          popup?.destroy()
+          component?.destroy()
 
-        // Remove references to the old popup and component upon destruction/exit.
-        // (This should prevent redundant calls to `popup.destroy()`, which Tippy
-        // warns in the console is a sign of a memory leak, as the `suggestion`
-        // plugin seems to call `onExit` both when a suggestion menu is closed after
-        // a user chooses an option, *and* when the editor itself is destroyed.)
-        popup = undefined
-        component = undefined
-      },
-    }
-  },
+          // Remove references to the old popup and component upon destruction/exit.
+          // (This should prevent redundant calls to `popup.destroy()`, which Tippy
+          // warns in the console is a sign of a memory leak, as the `suggestion`
+          // plugin seems to call `onExit` both when a suggestion menu is closed after
+          // a user chooses an option, *and* when the editor itself is destroyed.)
+          popup = undefined
+          component = undefined
+        },
+      }
+    },
+  }
+
+  return mentionSuggestionOptions
 }
 
 type MentionRef = {
@@ -182,7 +160,7 @@ const MentionList = forwardRef<MentionRef, MentionProps>((props, ref) => {
       {props.items.map((item, index) => (
         <li key={index} onClick={() => selectItem(index)}>
           <a className={`${index === selectedIndex ? 'active' : ''}`}>
-            @{item.mentionLabel}
+            {item.mentionLabel}
           </a>
         </li>
       ))}

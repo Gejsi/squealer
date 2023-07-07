@@ -1,4 +1,4 @@
-import { createRouter, authedProcedure, publicProcedure } from '../trpc'
+import { createRouter, authedProcedure } from '../trpc'
 import {
   type UserMetadata,
   userMetadataSchema,
@@ -7,6 +7,7 @@ import { Prisma } from '@prisma/client'
 import { clerkClient } from '@clerk/nextjs/server'
 import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
+import { shuffleArray } from '../../../utils/misc'
 
 const commonSelector = Prisma.validator<Prisma.UserSelect>()({
   role: true,
@@ -32,6 +33,7 @@ export const userRouter = createRouter({
 
     return user as UserMetadata
   }),
+
   getMetadata: authedProcedure.query(async ({ ctx }) => {
     const user = await ctx.prisma.user.findUnique({
       where: { id: ctx.auth.userId },
@@ -40,6 +42,7 @@ export const userRouter = createRouter({
 
     return user as UserMetadata
   }),
+
   updateMetadata: authedProcedure
     .input(userMetadataSchema)
     .mutation(async ({ ctx, input }) => {
@@ -57,6 +60,7 @@ export const userRouter = createRouter({
 
       return userMetadata
     }),
+
   getAll: authedProcedure.query(async ({ ctx }) => {
     const dbUsers = await ctx.prisma.user.findMany()
     const clerkUsers = await clerkClient.users.getUserList()
@@ -70,7 +74,16 @@ export const userRouter = createRouter({
 
     return mergedUsers
   }),
-  get: publicProcedure
+
+  getAllRandom: authedProcedure.query(async () => {
+    const clerkUsers = await clerkClient.users.getUserList()
+    shuffleArray(clerkUsers)
+    return clerkUsers
+      .map((user) => user.username)
+      .filter((username): username is string => !!username)
+  }),
+
+  get: authedProcedure
     .input(z.object({ username: z.string() }))
     .query(async ({ ctx, input }) => {
       const clerkUser = (
