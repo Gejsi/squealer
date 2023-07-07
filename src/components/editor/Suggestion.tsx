@@ -35,7 +35,9 @@ export const createSuggestionList = (names: string[]) => {
 
           popup = tippy('body', {
             getReferenceClientRect: props.clientRect as any,
-            appendTo: () => document.body,
+            appendTo: () =>
+              props.editor.view.dom.parentElement?.parentElement
+                ?.parentElement as any,
             content: component.element,
             showOnCreate: true,
             interactive: true,
