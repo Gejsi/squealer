@@ -1,4 +1,4 @@
-import { createRouter, authedProcedure } from '../trpc'
+import { createRouter, authedProcedure, publicProcedure } from '../trpc'
 import {
   type UserMetadata,
   userMetadataSchema,
@@ -6,6 +6,7 @@ import {
 import { Prisma } from '@prisma/client'
 import { clerkClient } from '@clerk/nextjs/server'
 import { z } from 'zod'
+import { TRPCError } from '@trpc/server'
 
 const commonSelector = Prisma.validator<Prisma.UserSelect>()({
   role: true,
@@ -69,12 +70,18 @@ export const userRouter = createRouter({
 
     return mergedUsers
   }),
-  get: authedProcedure
+  get: publicProcedure
     .input(z.object({ username: z.string() }))
     .query(async ({ ctx, input }) => {
       const clerkUser = (
         await clerkClient.users.getUserList({ username: [input.username] })
       )[0]
+
+      if (!clerkUser)
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'User not found.',
+        })
 
       const user = await ctx.prisma.user.findUnique({
         where: { id: clerkUser?.id },

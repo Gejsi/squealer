@@ -25,6 +25,7 @@
     "@tiptap/extension-character-count": "^2.0.3",
     "@tiptap/extension-image": "^2.0.3",
     "@tiptap/extension-link": "^2.0.3",
+    "@tiptap/extension-mention": "^2.0.3",
     "@tiptap/extension-paragraph": "^2.0.3",
     "@tiptap/extension-placeholder": "^2.0.3",
     "@tiptap/extension-typography": "^2.0.3",
@@ -32,6 +33,7 @@
     "@tiptap/pm": "^2.0.3",
     "@tiptap/react": "^2.0.3",
     "@tiptap/starter-kit": "^2.0.3",
+    "@tiptap/suggestion": "^2.0.3",
     "@trpc/client": "^10.16.0",
     "@trpc/next": "^10.19.1",
     "@trpc/react-query": "^10.16.0",
@@ -47,6 +49,7 @@
     "react-icons": "^4.8.0",
     "react-leaflet": "^4.2.1",
     "superjson": "1.12.2",
+    "tippy.js": "^6.3.7",
     "zod": "^3.21.4"
   },
   "devDependencies": {

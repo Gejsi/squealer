@@ -12,10 +12,14 @@ import Youtube from '@tiptap/extension-youtube'
 import Link from '@tiptap/extension-link'
 import Location from './Location'
 import { squealDialogAtom } from '../../hooks/use-squeal-dialog'
+import { mentionSuggestionOptions } from './Suggestion'
+import { UserMention } from './UserMention'
+import { useRouter } from 'next/router'
 
 const Editor = ({ onUpdate }: { onUpdate?: EditorOptions['onUpdate'] }) => {
   const userMetadata = useAtomValue(userMetadataAtom)
   const receiverData = useAtomValue(squealDialogAtom)
+  const router = useRouter()
 
   const editor = useEditor(
     {
@@ -35,25 +39,35 @@ const Editor = ({ onUpdate }: { onUpdate?: EditorOptions['onUpdate'] }) => {
           limit:
             receiverData?.type === 'chat' ? undefined : userMetadata?.quota,
         }),
-        Typography,
         Placeholder.configure({
           placeholder: 'Keep squealing...',
           showOnlyWhenEditable: false,
         }),
-        Image,
         Link.configure({
           HTMLAttributes: {
             class: 'link',
           },
         }),
+        Typography,
+        Image,
         Youtube,
         Location,
+        UserMention.configure({
+          HTMLAttributes: {
+            class: 'link',
+          },
+          suggestion: mentionSuggestionOptions,
+        }),
       ],
       editorProps: {
         attributes: {
           class:
             'prose outline-none max-h-96 min-h-[6rem] overflow-y-auto textarea textarea-bordered text-base',
           spellcheck: 'false',
+        },
+        handleClickOn: (_, __, node) => {
+          if (node.type.name === 'user-mention')
+            router.push('/users/' + node.attrs.label)
         },
       },
       content: {
