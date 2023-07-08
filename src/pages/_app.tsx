@@ -6,6 +6,7 @@ import Layout from '../components/Layout'
 import type { NextPage } from 'next'
 import Navbar from '../components/Navbar'
 import '../styles/globals.css'
+import Head from 'next/head'
 
 export type Page = NextPage & { title: string }
 
@@ -17,6 +18,10 @@ const App = ({ Component, pageProps }: AppWithNavbar) => {
   return (
     <ClerkProvider {...pageProps}>
       <Layout>
+        <Head>
+          <title>{Component.title}</title>
+        </Head>
+
         <Navbar title={Component.title} />
         <Component {...pageProps} />
       </Layout>

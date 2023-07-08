@@ -16,7 +16,7 @@ import { useUser } from '@clerk/nextjs'
 
 const UserCard = ({ user }: { user: RouterOutputs['user']['getAll'][0] }) => {
   const { user: authedUser } = useUser()
-  const { openDialog } = useSquealDialog()
+  const { openSquealDialog } = useSquealDialog()
 
   return (
     <div className='card gap-6 bg-base-200 p-8 shadow-lg'>
@@ -52,7 +52,11 @@ const UserCard = ({ user }: { user: RouterOutputs['user']['getAll'][0] }) => {
             disabled={authedUser?.id === user.id}
             onClick={() =>
               user.username &&
-              openDialog({ username: user.username, id: user.id, type: 'chat' })
+              openSquealDialog({
+                username: user.username,
+                id: user.id,
+                type: 'chat',
+              })
             }
           >
             <MdEdit className='h-4 w-4' />
@@ -66,7 +70,7 @@ const UserCard = ({ user }: { user: RouterOutputs['user']['getAll'][0] }) => {
 
 const AllUsers: Page = () => {
   const router = useRouter()
-  const { closeDialog } = useSquealDialog()
+  const { closeSquealDialog: closeDialog } = useSquealDialog()
   const setEditorLength = useSetAtom(editorLengthAtom)
 
   const { data: users, isLoading, error, isError } = api.user.getAll.useQuery()

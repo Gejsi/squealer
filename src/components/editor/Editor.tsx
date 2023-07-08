@@ -17,6 +17,29 @@ import { ChannelMention, UserMention } from './Mention'
 import { useRouter } from 'next/router'
 import type { RouterOutputs } from '../../utils/api'
 
+export const commonEditorOptions = [
+  StarterKit.configure({
+    heading: false,
+    horizontalRule: false,
+    gapcursor: false,
+    dropcursor: false,
+    code: {
+      HTMLAttributes: {
+        class: 'rounded-xl text-info bg-base-content/10 p-[0.5ch]',
+      },
+    },
+  }),
+  Link.configure({
+    HTMLAttributes: {
+      class: 'link',
+    },
+  }),
+  Typography,
+  Image,
+  Youtube,
+  Location,
+]
+
 const Editor = ({
   onUpdate,
   userSuggestions,
@@ -31,17 +54,7 @@ const Editor = ({
   const editor = useEditor(
     {
       extensions: [
-        StarterKit.configure({
-          heading: false,
-          horizontalRule: false,
-          gapcursor: false,
-          dropcursor: false,
-          code: {
-            HTMLAttributes: {
-              class: 'rounded-xl text-info bg-base-content/10 p-[0.5ch]',
-            },
-          },
-        }),
+        ...commonEditorOptions,
         CharacterCount.configure({
           limit:
             receiverData?.type === 'chat' ? undefined : userMetadata?.quota,
@@ -50,15 +63,6 @@ const Editor = ({
           placeholder: 'Keep squealing...',
           showOnlyWhenEditable: false,
         }),
-        Link.configure({
-          HTMLAttributes: {
-            class: 'link',
-          },
-        }),
-        Typography,
-        Image,
-        Youtube,
-        Location,
         UserMention.configure({
           HTMLAttributes: {
             class: 'link',

@@ -22,10 +22,7 @@ const AllChats: Page = () => {
     <>
       <div className='mb-10 mt-8 flex items-center gap-4'>
         <RiChatPrivateFill className='h-8 w-8 flex-shrink-0' />
-        <span>
-          Here are all your private conversations. You can even message
-          yourself.
-        </span>
+        <span>Here are all your private conversations.</span>
       </div>
 
       {isLoading ? (

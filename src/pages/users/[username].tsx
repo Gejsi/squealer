@@ -13,7 +13,13 @@ const UserPage: Page = () => {
     isLoading,
     error,
     isError,
-  } = api.user.get.useQuery({ username })
+  } = api.user.get.useQuery(
+    { username },
+    {
+      retry: false,
+      refetchOnWindowFocus: false,
+    }
+  )
 
   if (isError)
     return (
@@ -80,6 +86,6 @@ const UserPage: Page = () => {
   )
 }
 
-UserPage.title = 'User page'
+UserPage.title = 'User details'
 
 export default UserPage

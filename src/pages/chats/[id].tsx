@@ -23,7 +23,7 @@ const Chat: Page = () => {
     }
   )
 
-  const { openDialog, closeDialog } = useSquealDialog()
+  const { openSquealDialog, closeSquealDialog } = useSquealDialog()
 
   const context = api.useContext()
   const chatMutation = api.chat.newSqueal.useMutation({
@@ -32,7 +32,7 @@ const Chat: Page = () => {
     },
     onSuccess() {
       toast.success('Squeal successfully sent.')
-      closeDialog()
+      closeSquealDialog()
     },
     onSettled() {
       context.chat.getChat.invalidate()
@@ -59,7 +59,7 @@ const Chat: Page = () => {
 
           <button
             className='fab btn-primary btn h-fit w-fit gap-2 self-end py-2'
-            onClick={() => openDialog({ id: chatId, type: 'chat' })}
+            onClick={() => openSquealDialog({ id: chatId, type: 'chat' })}
           >
             <MdEdit className='h-4 w-4' />
             Write New Squeal

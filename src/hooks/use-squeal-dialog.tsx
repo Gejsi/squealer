@@ -7,7 +7,10 @@ export const squealDialogAtom = atom<
 const useSquealDialog = () => {
   const setDialog = useSetAtom(squealDialogAtom)
 
-  return { openDialog: setDialog, closeDialog: () => setDialog(undefined) }
+  return {
+    openSquealDialog: setDialog,
+    closeSquealDialog: () => setDialog(undefined),
+  }
 }
 
 export default useSquealDialog

@@ -4,17 +4,11 @@ import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import { TbDiamond } from 'react-icons/tb'
 import { GiBirdTwitter } from 'react-icons/gi'
-import { GiAxeSword } from 'react-icons/gi'
-import {
-  MdAllInbox,
-  MdGroups,
-  MdNotifications,
-  MdPerson,
-  MdShuffle,
-  MdToday,
-} from 'react-icons/md'
+import { MdGroups, MdInbox, MdPerson, MdShuffle, MdToday } from 'react-icons/md'
+import { TbGift } from 'react-icons/tb'
 import { RiChatPrivateLine } from 'react-icons/ri'
 import { userMetadataAtom } from './Layout'
+import { BsYinYang } from 'react-icons/bs'
 
 export const sidebarAtom = atom(false)
 
@@ -62,23 +56,23 @@ const Sidebar = () => {
           </div>
 
           <li>
+            <Link href='/feed'>
+              <TbGift className='h-6 w-6' />
+              Feed
+            </Link>
+          </li>
+
+          <li>
             <Link href='/users'>
               <MdPerson className='h-6 w-6' />
               Users
             </Link>
           </li>
 
-          <li>
-            <Link href='/notifications'>
-              <MdNotifications className='h-6 w-6' />
-              Notifications
-            </Link>
-          </li>
-
           <div className='divider' />
 
           <li className='menu-title'>
-            <span className='uppercase'>Your chats</span>
+            <span className='uppercase'>Groups and chats</span>
           </li>
 
           <li>
@@ -91,7 +85,7 @@ const Sidebar = () => {
           <li>
             <Link href='/all'>
               <MdGroups className='h-6 w-6' />
-              Your channels
+              Private channels
             </Link>
           </li>
 
@@ -103,13 +97,13 @@ const Sidebar = () => {
 
           <li>
             <Link href='/all'>
-              <MdAllInbox className='h-6 w-6' />
+              <MdInbox className='h-6 w-6' />
               All squeals
             </Link>
           </li>
           <li>
             <Link href='/controversial'>
-              <GiAxeSword className='h-6 w-6' />
+              <BsYinYang className='h-5 w-5' />
               Controversial
             </Link>
           </li>
