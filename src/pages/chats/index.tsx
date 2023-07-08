@@ -7,13 +7,12 @@ import Spinner from '../../components/Spinner'
 import ErrorTemplate from '../../components/ErrorTemplate'
 
 const AllChats: Page = () => {
-  const { data, isLoading, isError, error } =
-    api.chat.getAllChats.useQuery(undefined)
+  const { data, isLoading, isError, error } = api.chat.getAllChats.useQuery()
 
   if (isError)
     return (
       <ErrorTemplate
-        message='Error while fetching chats'
+        message={error.message}
         statusCode={error.data?.httpStatus}
       />
     )

@@ -58,6 +58,11 @@ export const userRouter = createRouter({
         select: commonSelector,
       })
 
+      // makes the premium middleware work without re-fetching the current user
+      await clerkClient.users.updateUserMetadata(ctx.auth.userId, {
+        privateMetadata: { role: input.role },
+      })
+
       return userMetadata
     }),
 
@@ -113,4 +118,9 @@ export const userRouter = createRouter({
 
       return mergedUser
     }),
+
+  isPremium: authedProcedure.query(async ({ ctx }) => {
+    const clerkUser = await clerkClient.users.getUser(ctx.auth.userId)
+    return clerkUser.privateMetadata.role === 'Premium'
+  }),
 })

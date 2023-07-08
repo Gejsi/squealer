@@ -4,7 +4,14 @@ import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import { TbDiamond } from 'react-icons/tb'
 import { GiBirdTwitter } from 'react-icons/gi'
-import { MdGroups, MdInbox, MdPerson, MdShuffle, MdToday } from 'react-icons/md'
+import {
+  MdGroups,
+  MdInbox,
+  MdOutlineGroupAdd,
+  MdPerson,
+  MdShuffle,
+  MdToday,
+} from 'react-icons/md'
 import { TbGift } from 'react-icons/tb'
 import { RiChatPrivateLine } from 'react-icons/ri'
 import { userMetadataAtom } from './Layout'
@@ -69,6 +76,13 @@ const Sidebar = () => {
             </Link>
           </li>
 
+          <li>
+            <Link href='/groups'>
+              <MdOutlineGroupAdd className='h-6 w-6' />
+              Groups
+            </Link>
+          </li>
+
           <div className='divider' />
 
           <li className='menu-title'>
@@ -83,9 +97,9 @@ const Sidebar = () => {
           </li>
 
           <li>
-            <Link href='/all'>
+            <Link href='/channels'>
               <MdGroups className='h-6 w-6' />
-              Private channels
+              Your channels
             </Link>
           </li>
 

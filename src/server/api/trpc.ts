@@ -1,5 +1,5 @@
 import type { SignedInAuthObject, SignedOutAuthObject } from '@clerk/nextjs/api'
-import { getAuth } from '@clerk/nextjs/server'
+import { clerkClient, getAuth } from '@clerk/nextjs/server'
 import { initTRPC, TRPCError } from '@trpc/server'
 import type { CreateNextContextOptions } from '@trpc/server/adapters/next'
 import superjson from 'superjson'
@@ -94,27 +94,19 @@ const isProtected = isAuthed.unstable_pipe(async ({ next, ctx, rawInput }) => {
       message: 'You are not a member of the specified channel',
     })
 
-  return next({
-    ctx: {
-      ...ctx,
-      auth: ctx.auth,
-    },
-  })
+  return next()
 })
 
-const isPremium = isAuthed.unstable_pipe(({ next, ctx }) => {
-  if (!ctx.auth.user || ctx.auth.user.privateMetadata.role !== 'Premium')
+const isPremium = isAuthed.unstable_pipe(async ({ next, ctx }) => {
+  const clerkUser = await clerkClient.users.getUser(ctx.auth.userId)
+
+  if (clerkUser.privateMetadata.role !== 'Premium')
     throw new TRPCError({
       code: 'UNAUTHORIZED',
       message: 'Only premium users can access this feature.',
     })
 
-  return next({
-    ctx: {
-      ...ctx,
-      auth: ctx.auth,
-    },
-  })
+  return next()
 })
 
 export const createRouter = t.router

@@ -227,7 +227,7 @@ const Toolbar = ({ editor }: { editor: Editor | null }) => {
                 type='text'
                 placeholder={
                   showInput === 'image'
-                    ? 'Image url ending in png, jpg...'
+                    ? 'Image url ending in .png, .jpg...'
                     : showInput === 'youtube'
                     ? 'Youtube url video...'
                     : 'https://www.wikipedia.org/'

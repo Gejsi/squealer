@@ -26,7 +26,7 @@ const Chat: Page = () => {
   const { openSquealDialog, closeSquealDialog } = useSquealDialog()
 
   const context = api.useContext()
-  const chatMutation = api.chat.newSqueal.useMutation({
+  const chatMutation = api.chat.createNewSqueal.useMutation({
     onError() {
       toast.error('Unable to send squeal.')
     },

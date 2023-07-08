@@ -138,7 +138,7 @@ export const chatRouter = createRouter({
 
       return enrichedSqueals
     }),
-  newSqueal: protectedProcedure
+  createNewSqueal: protectedProcedure
     .input(z.object({ channelId: z.string().cuid(), content: jsonSchema }))
     .mutation(async ({ ctx, input }) => {
       return await ctx.prisma.squeal.create({
