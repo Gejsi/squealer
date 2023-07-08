@@ -1,11 +1,18 @@
 import { useRouter } from 'next/router'
+import Image from 'next/image'
 import { api } from '../../utils/api'
 import type { Page } from '../_app'
 import ErrorTemplate from '../../components/ErrorTemplate'
 import Spinner from '../../components/Spinner'
+import { toast } from 'react-hot-toast'
+import { cn } from '../../utils/misc'
+import { MdEdit } from 'react-icons/md'
+import SquealDialog from '../../components/editor/SquealDialog'
+import useSquealDialog from '../../hooks/use-squeal-dialog'
 
 const Channel: Page = () => {
   const channelId = useRouter().query.id as string
+  const { openSquealDialog, closeSquealDialog } = useSquealDialog()
 
   const { data, isLoading, isError, error } = api.channel.get.useQuery(
     {
@@ -13,8 +20,40 @@ const Channel: Page = () => {
     },
     {
       retry: false,
+      refetchOnWindowFocus: false,
+      onSuccess(data) {
+        console.log(data.squeals)
+      },
     }
   )
+
+  const context = api.useContext()
+  const { mutate: joinChannel, isLoading: isJoining } =
+    api.channel.join.useMutation({
+      onError() {
+        toast.error('Unable to join channel.')
+      },
+      onSuccess(data) {
+        toast.success(`${data.name} joined successfully.`)
+      },
+      onSettled() {
+        context.channel.get.invalidate()
+      },
+    })
+
+  const { mutate: createSqueal, isLoading: isCreating } =
+    api.chat.createNewSqueal.useMutation({
+      onError() {
+        toast.error('Unable to send squeal.')
+      },
+      onSuccess() {
+        toast.success('Squeal successfully sent.')
+        closeSquealDialog()
+      },
+      onSettled() {
+        context.channel.get.invalidate()
+      },
+    })
 
   if (isError)
     if (error.data && error.data.code === 'UNAUTHORIZED')
@@ -25,7 +64,14 @@ const Channel: Page = () => {
               You are not a member of this channel yet.
             </h1>
             <p className='mb-8 text-lg'>Would you like to join?</p>
-            <button className='btn'>Join</button>
+            <button
+              className={cn('btn', {
+                loading: isJoining,
+              })}
+              onClick={() => joinChannel({ channelId })}
+            >
+              Join
+            </button>
           </div>
         </div>
       )
@@ -42,8 +88,67 @@ const Channel: Page = () => {
       {isLoading ? (
         <Spinner />
       ) : (
-        <div className='flex flex-col gap-4'>{data?.name}</div>
+        <div className='flex flex-col gap-4'>
+          <div className='my-4 flex flex-col items-center justify-around gap-4 md:flex-row'>
+            <div className='flex flex-col items-center gap-2'>
+              <div className='avatar-group -space-x-10'>
+                {data.members.slice(0, 3).map((member) => (
+                  <div className='avatar' key={member.id}>
+                    <div className='relative w-14 md:w-20'>
+                      <Image
+                        src={member.profileImageUrl}
+                        alt='User profile picture'
+                        fill
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <p className='text-xl font-medium'>§{data.name}</p>
+            </div>
+
+            <div className='flex max-w-full flex-col gap-4'>
+              <div className='stats bg-base-200 shadow'>
+                <div className='stat'>
+                  <div className='stat-title'>Owner</div>
+                  <div className='stat-value text-lg'>
+                    @{data.owner.username}
+                  </div>
+                </div>
+                <div className='stat'>
+                  <div className='stat-title'>Members count</div>
+                  <div className='stat-value text-lg'>
+                    {data.members.length}
+                  </div>
+                </div>
+                <div className='stat'>
+                  <div className='stat-title'>Squeals count</div>
+                  <div className='stat-value text-lg'>
+                    {data.squeals.length}
+                  </div>
+                </div>
+              </div>
+
+              <button
+                className='btn-primary btn h-fit w-fit gap-2 self-end'
+                onClick={() =>
+                  openSquealDialog({ id: channelId, type: 'channel' })
+                }
+              >
+                <MdEdit className='h-4 w-4' />
+                Write New Squeal
+              </button>
+            </div>
+          </div>
+        </div>
       )}
+
+      <SquealDialog
+        onCreate={(content, chatId) =>
+          content && createSqueal({ content, channelId: chatId })
+        }
+        isCreating={isCreating}
+      />
     </>
   )
 }

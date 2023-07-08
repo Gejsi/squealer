@@ -60,6 +60,7 @@ export const chatRouter = createRouter({
 
       return createdSqueal
     }),
+
   getAllChats: authedProcedure.query(async ({ ctx }) => {
     const userId = ctx.auth.userId
     const chats = await ctx.prisma.channel.findMany({
@@ -106,6 +107,7 @@ export const chatRouter = createRouter({
 
     return enrichedChats
   }),
+
   get: protectedProcedure
     .input(z.object({ channelId: z.string().cuid() }))
     .query(async ({ ctx, input }) => {
@@ -138,6 +140,7 @@ export const chatRouter = createRouter({
 
       return enrichedSqueals
     }),
+
   createNewSqueal: protectedProcedure
     .input(z.object({ channelId: z.string().cuid(), content: jsonSchema }))
     .mutation(async ({ ctx, input }) => {

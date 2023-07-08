@@ -47,7 +47,7 @@ const UserPage: Page = () => {
               )}
             </div>
           </div>
-          <p className='text-lg font-medium'>@{user.username}</p>
+          <p className='text-xl font-medium'>@{user.username}</p>
         </div>
 
         <div className='flex max-w-full flex-col gap-4'>

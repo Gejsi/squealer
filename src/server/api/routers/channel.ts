@@ -120,13 +120,54 @@ export const channelRouter = createRouter({
 
   get: protectedProcedure
     .input(z.object({ channelId: z.string().cuid() }))
-    .query(async ({ ctx, input }) => {
-      const channel = await ctx.prisma.channel.findUnique({
-        where: {
-          id: input.channelId,
+    .query(async ({ ctx }) => {
+      const clerkOwner = await clerkClient.users.getUser(ctx.channel.ownerId)
+
+      const enrichedMembers = await Promise.all(
+        ctx.channel.members.map(async (member) => {
+          const { profileImageUrl } = await clerkClient.users.getUser(member.id)
+
+          return {
+            ...member,
+            profileImageUrl,
+          }
+        })
+      )
+
+      const enrichedSqueals = await Promise.all(
+        ctx.channel.squeals.map(async (squeal) => {
+          const { profileImageUrl, username } = await clerkClient.users.getUser(
+            squeal.authorId
+          )
+
+          return {
+            ...squeal,
+            author: {
+              username,
+              profileImageUrl,
+            },
+          }
+        })
+      )
+
+      return {
+        ...ctx.channel,
+        squeals: enrichedSqueals,
+        members: enrichedMembers,
+        owner: clerkOwner,
+      }
+    }),
+
+  join: authedProcedure
+    .input(z.object({ channelId: z.string().cuid() }))
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.prisma.channel.update({
+        where: { id: input.channelId },
+        data: {
+          members: {
+            connect: { id: ctx.auth.userId },
+          },
         },
       })
-
-      return channel
     }),
 })

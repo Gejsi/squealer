@@ -76,12 +76,14 @@ const isProtected = isAuthed.unstable_pipe(async ({ next, ctx, rawInput }) => {
       message: 'Provide a valid channel ID.',
     })
 
-  const channel = await ctx.prisma.channel.findFirst({
+  const channel = await ctx.prisma.channel.findUnique({
     where: {
       id: parsedChannelId.data.channelId,
     },
     include: {
-      members: { select: { id: true } },
+      members: true,
+      owner: true,
+      squeals: true,
     },
   })
 
@@ -101,7 +103,12 @@ const isProtected = isAuthed.unstable_pipe(async ({ next, ctx, rawInput }) => {
       message: 'You are not a member of the specified channel',
     })
 
-  return next()
+  return next({
+    ctx: {
+      ...ctx,
+      channel,
+    },
+  })
 })
 
 const isPremium = isAuthed.unstable_pipe(async ({ next, ctx }) => {
