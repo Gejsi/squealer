@@ -7,11 +7,7 @@ import type { EditorOptions } from '@tiptap/core'
 
 dayjs.extend(relativeTime)
 
-const Bubble = ({
-  squeal,
-}: {
-  squeal: RouterOutputs['chat']['getChat'][0]
-}) => (
+const Bubble = ({ squeal }: { squeal: RouterOutputs['chat']['get'][0] }) => (
   <div className='chat chat-start rounded-box bg-base-200 p-4'>
     <div className='chat-image avatar'>
       <div className='w-12'>
