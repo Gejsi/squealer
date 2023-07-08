@@ -28,7 +28,7 @@ const ChannelsPage: Page = () => {
     })
 
   const { data, isLoading, isError, error } =
-    api.channel.getAllChannels.useQuery()
+    api.channel.getSubscribedChannels.useQuery()
 
   const { mutate: createChannel, isLoading: isCreating } =
     api.channel.create.useMutation({
@@ -40,7 +40,7 @@ const ChannelsPage: Page = () => {
         setDialogOpen(() => false)
       },
       onSettled() {
-        context.channel.getAllChannels.invalidate()
+        context.channel.getSubscribedChannels.invalidate()
       },
     })
 
@@ -65,7 +65,10 @@ const ChannelsPage: Page = () => {
     <>
       <div className='mb-10 mt-8 flex items-center gap-4'>
         <MdGroup className='h-8 w-8 flex-shrink-0' />
-        <span>Here are all the channels you own or are subscribed to.</span>
+        <span>
+          Here are all the channels you are subscribed to.
+          <br /> Premium users can even create new ones.
+        </span>
       </div>
 
       {isLoading ? (
@@ -75,13 +78,13 @@ const ChannelsPage: Page = () => {
           <ul className='menu rounded-box bg-base-200' ref={autoAnimate}>
             {data.map((channel) => (
               <li key={channel.id}>
-                <Link href={'/chats/' + channel.id}>
+                <Link href={'/channels/' + channel.id}>
                   <div className='avatar-group -space-x-6'>
                     <div className='avatar' key={channel.id}>
                       <div className='w-12'>
                         <Image
                           src={channel.owner.profileImageUrl}
-                          alt='User profile picture'
+                          alt='Owner profile picture'
                           fill
                         />
                       </div>
@@ -117,6 +120,7 @@ const ChannelsPage: Page = () => {
             type='text'
             placeholder='Write a cool name...'
             className='input-bordered input w-full'
+            minLength={1}
             maxLength={100}
             onChange={(e) => setText(() => e.target.value)}
           />

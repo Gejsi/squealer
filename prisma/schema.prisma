@@ -34,14 +34,13 @@ model Squeal {
   id          String   @id @default(cuid())
   content     Json
   createdAt   DateTime @default(now())
-  impressions Int?
+  impressions Int      @default(0)
 
   author    User    @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId  String
   channel   Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
   channelId String
 
-  mentions  Mention[]
   reactions Reaction[]
   intensity SquealIntensity?
 
@@ -79,16 +78,6 @@ model Channel {
 enum ChannelType {
   Chat
   Channel
-}
-
-model Mention {
-  id       Int    @default(autoincrement())
-  squeal   Squeal @relation(fields: [squealId], references: [id], onDelete: Cascade)
-  squealId String
-
-  @@id([id, squealId])
-  @@index([squealId])
-  @@map("mentions")
 }
 
 model Reaction {

@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import type { Page } from '../_app'
 import { type RouterOutputs, api } from '../../utils/api'
-import { MdEdit } from 'react-icons/md'
+import { MdEdit, MdPerson2 } from 'react-icons/md'
 import Link from 'next/link'
 import { useSetAtom } from 'jotai'
 import SquealDialog, {
@@ -81,7 +81,7 @@ const AllUsers: Page = () => {
         toast.error('Unable to create squeal.')
       },
       onSuccess(data) {
-        toast.success('Squeal has been created.')
+        toast.success('Squeal has been sent.')
         closeDialog()
         setEditorLength(0)
         router.push('/chats/' + data.channelId)
@@ -91,13 +91,18 @@ const AllUsers: Page = () => {
   if (isError)
     return (
       <ErrorTemplate
-        message='Error while fetching chats'
+        message={error.message}
         statusCode={error.data?.httpStatus}
       />
     )
 
   return (
     <>
+      <div className='mb-10 mt-8 flex items-center gap-4'>
+        <MdPerson2 className='h-8 w-8 flex-shrink-0' />
+        <span>Look for some friends.</span>
+      </div>
+
       {isLoading ? (
         <Spinner />
       ) : (

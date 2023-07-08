@@ -106,7 +106,7 @@ export const chatRouter = createRouter({
 
     return enrichedChats
   }),
-  getChat: protectedProcedure
+  get: protectedProcedure
     .input(z.object({ channelId: z.string().cuid() }))
     .query(async ({ ctx, input }) => {
       const squeals = await ctx.prisma.squeal.findMany({

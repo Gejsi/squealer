@@ -76,17 +76,24 @@ const isProtected = isAuthed.unstable_pipe(async ({ next, ctx, rawInput }) => {
       message: 'Provide a valid channel ID.',
     })
 
-  const isMember =
-    (await ctx.prisma.channel.findFirst({
-      where: {
-        id: parsedChannelId.data.channelId,
-        members: {
-          some: {
-            id: ctx.auth.userId,
-          },
-        },
-      },
-    })) != null
+  const channel = await ctx.prisma.channel.findFirst({
+    where: {
+      id: parsedChannelId.data.channelId,
+    },
+    include: {
+      members: { select: { id: true } },
+    },
+  })
+
+  if (!channel)
+    throw new TRPCError({
+      code: 'NOT_FOUND',
+      message: "This channel doesn't exist",
+    })
+
+  const isMember = channel.members.some(
+    (member) => member.id === ctx.auth.userId
+  )
 
   if (!isMember)
     throw new TRPCError({

@@ -14,7 +14,7 @@ const Chat: Page = () => {
   const chatId = useRouter().query.id as string
   const [autoAnimate] = useAutoAnimate()
 
-  const { data, isLoading, isError, error } = api.chat.getChat.useQuery(
+  const { data, isLoading, isError, error } = api.chat.get.useQuery(
     {
       channelId: chatId,
     },
@@ -35,7 +35,7 @@ const Chat: Page = () => {
       closeSquealDialog()
     },
     onSettled() {
-      context.chat.getChat.invalidate()
+      context.chat.get.invalidate()
     },
   })
 
