@@ -110,20 +110,9 @@ export const chatRouter = createRouter({
 
   get: protectedProcedure
     .input(z.object({ channelId: z.string().cuid() }))
-    .query(async ({ ctx, input }) => {
-      const squeals = await ctx.prisma.squeal.findMany({
-        where: {
-          channel: {
-            id: input.channelId,
-          },
-        },
-        orderBy: {
-          createdAt: 'desc',
-        },
-      })
-
+    .query(async ({ ctx }) => {
       const enrichedSqueals = await Promise.all(
-        squeals.map(async (squeal) => {
+        ctx.channel.squeals.map(async (squeal) => {
           const { profileImageUrl, username } = await clerkClient.users.getUser(
             squeal.authorId
           )

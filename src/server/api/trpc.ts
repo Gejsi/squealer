@@ -83,7 +83,11 @@ const isProtected = isAuthed.unstable_pipe(async ({ next, ctx, rawInput }) => {
     include: {
       members: true,
       owner: true,
-      squeals: true,
+      squeals: {
+        orderBy: {
+          createdAt: 'desc',
+        },
+      },
     },
   })
 
