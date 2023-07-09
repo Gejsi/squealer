@@ -48,7 +48,15 @@ const ChannelSqueal: Page = () => {
       </div>
 
       <div className='flex flex-col gap-4'>
-        <Bubble squeal={squeal} />
+        <Bubble
+          squeal={squeal}
+          onLike={() => console.log('liked')}
+          onDislike={() => console.log('disliked')}
+          onReply={() => console.log('replied')}
+          impressions={0}
+        />
+
+        {/* <Bubble squeal={squeal} isResponse /> */}
       </div>
     </>
   )
