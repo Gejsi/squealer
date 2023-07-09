@@ -14,7 +14,9 @@ const Bubble = ({
   squeal,
   href,
 }: {
-  squeal: RouterOutputs['chat']['get'][0]
+  squeal:
+    | RouterOutputs['chat']['get'][0]
+    | RouterOutputs['squeal']['getFromChannel']
   href?: Url
 }) => (
   <div className='chat chat-start rounded-box bg-base-200 p-4'>

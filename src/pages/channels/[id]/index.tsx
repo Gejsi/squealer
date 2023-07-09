@@ -1,19 +1,20 @@
 import { useRouter } from 'next/router'
 import Image from 'next/image'
-import { api } from '../../utils/api'
-import type { Page } from '../_app'
-import ErrorTemplate from '../../components/ErrorTemplate'
-import Spinner from '../../components/Spinner'
+import { api } from '../../../utils/api'
+import type { Page } from '../../_app'
+import ErrorTemplate from '../../../components/ErrorTemplate'
+import Spinner from '../../../components/Spinner'
 import { toast } from 'react-hot-toast'
-import { cn } from '../../utils/misc'
+import { cn } from '../../../utils/misc'
 import { MdEdit } from 'react-icons/md'
-import SquealDialog from '../../components/editor/SquealDialog'
-import useSquealDialog from '../../hooks/use-squeal-dialog'
-import Bubble from '../../components/Bubble'
+import SquealDialog from '../../../components/editor/SquealDialog'
+import useSquealDialog from '../../../hooks/use-squeal-dialog'
+import Bubble from '../../../components/Bubble'
 import { useAutoAnimate } from '@formkit/auto-animate/react'
 
 const Channel: Page = () => {
-  const channelId = useRouter().query.id as string
+  const router = useRouter()
+  const channelId = router.query.id as string
   const { openSquealDialog, closeSquealDialog } = useSquealDialog()
   const [autoAnimate] = useAutoAnimate()
 
@@ -42,7 +43,7 @@ const Channel: Page = () => {
     })
 
   const { mutate: createSqueal, isLoading: isCreating } =
-    api.chat.createNewSqueal.useMutation({
+    api.squeal.create.useMutation({
       onError() {
         toast.error('Unable to send squeal.')
       },
@@ -138,7 +139,7 @@ const Channel: Page = () => {
           <Bubble
             key={squeal.id}
             squeal={squeal}
-            href={'/squeals/' + squeal.id}
+            href={'/channels/' + channelId + '/' + squeal.id}
           />
         ))}
       </div>

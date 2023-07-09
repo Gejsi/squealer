@@ -129,20 +129,4 @@ export const chatRouter = createRouter({
 
       return enrichedSqueals
     }),
-
-  createNewSqueal: protectedProcedure
-    .input(z.object({ channelId: z.string().cuid(), content: jsonSchema }))
-    .mutation(async ({ ctx, input }) => {
-      return await ctx.prisma.squeal.create({
-        data: {
-          content: input.content as PrismaJson,
-          author: {
-            connect: { id: ctx.auth.userId },
-          },
-          channel: {
-            connect: { id: input.channelId },
-          },
-        },
-      })
-    }),
 })
