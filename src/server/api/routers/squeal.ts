@@ -78,15 +78,39 @@ export const squealRouter = createRouter({
     }),
 
   create: protectedProcedure
-    .input(z.object({ channelId: z.string().cuid(), content: jsonSchema }))
+    .input(
+      z.object({
+        channelId: z.string().cuid(),
+        content: jsonSchema,
+        contentLength: z.number().nullish(),
+      })
+    )
     .mutation(async ({ ctx, input }) => {
-      return await ctx.prisma.squeal.create({
+      const squeal = await ctx.prisma.squeal.create({
         data: {
           content: input.content as PrismaJson,
           author: { connect: { id: ctx.auth.userId } },
           channel: { connect: { id: input.channelId } },
         },
       })
+
+      const user = await ctx.prisma.user.findUnique({
+        where: { id: ctx.auth.userId },
+      })
+
+      if (input.contentLength && user) {
+        await ctx.prisma.user.update({
+          where: { id: ctx.auth.userId },
+          data: {
+            quota: input.contentLength,
+            dailyQuotaLimit: user.dailyQuotaLimit - input.contentLength,
+            weeklyQuotaLimit: user.weeklyQuotaLimit - input.contentLength,
+            monthlyQuotaLimit: user.monthlyQuotaLimit - input.contentLength,
+          },
+        })
+      }
+
+      return squeal
     }),
 
   reply: protectedProcedure

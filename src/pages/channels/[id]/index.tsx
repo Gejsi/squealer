@@ -7,15 +7,19 @@ import Spinner from '../../../components/Spinner'
 import { toast } from 'react-hot-toast'
 import { cn } from '../../../utils/misc'
 import { MdEdit } from 'react-icons/md'
-import SquealDialog from '../../../components/editor/SquealDialog'
+import SquealDialog, {
+  editorLengthAtom,
+} from '../../../components/editor/SquealDialog'
 import useSquealDialog from '../../../hooks/use-squeal-dialog'
 import Bubble from '../../../components/Bubble'
 import { useAutoAnimate } from '@formkit/auto-animate/react'
+import { useAtomValue } from 'jotai'
 
 const Channel: Page = () => {
   const router = useRouter()
   const channelId = router.query.id as string
   const { openSquealDialog, closeSquealDialog } = useSquealDialog()
+  const contentLength = useAtomValue(editorLengthAtom)
   const [autoAnimate] = useAutoAnimate()
 
   const { data, isLoading, isError, error } = api.channel.get.useQuery(
@@ -113,11 +117,11 @@ const Channel: Page = () => {
               <div className='stat-value text-lg'>@{data.owner.username}</div>
             </div>
             <div className='stat'>
-              <div className='stat-title'>Members count</div>
+              <div className='stat-title'>Members</div>
               <div className='stat-value text-lg'>{data.members.length}</div>
             </div>
             <div className='stat'>
-              <div className='stat-title'>Squeals count</div>
+              <div className='stat-title'>Squeals</div>
               <div className='stat-value text-lg'>{data.squeals.length}</div>
             </div>
           </div>
@@ -146,7 +150,12 @@ const Channel: Page = () => {
 
       <SquealDialog
         onCreate={(content, selectedChannelId) =>
-          content && createSqueal({ content, channelId: selectedChannelId })
+          content &&
+          createSqueal({
+            content,
+            channelId: selectedChannelId,
+            contentLength,
+          })
         }
         isCreating={isCreating}
       />

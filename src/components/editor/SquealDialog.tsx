@@ -17,7 +17,7 @@ const SquealDialog = (
     isCreating: boolean
   }
 ) => {
-  const [userMetadata] = useAtom(userMetadataAtom)
+  const [userMetadata, setUserMetadata] = useAtom(userMetadataAtom)
   const [editorLength, setEditorLength] = useAtom(editorLengthAtom)
   const [content, setContent] = useState<JSONContent | undefined>(undefined)
   const [receiverData, setReceiverData] = useAtom(squealDialogAtom)
@@ -34,6 +34,10 @@ const SquealDialog = (
     }
 
     if (receiverData?.id) props.onCreate(content, receiverData?.id)
+    setUserMetadata(
+      (prev) => prev && { ...prev, quota: prev.quota - editorLength }
+    )
+    setEditorLength(0)
   }
 
   const handleEditorUpdate = ({
@@ -71,15 +75,50 @@ const SquealDialog = (
         )}
 
         {receiverData?.type !== 'chat' && (
-          <label className='label'>
-            <span className='label-text-alt'>
-              Quota remaining:{' '}
-              {userMetadata && userMetadata.quota - editorLength}
-            </span>
-            <span className='label-text-alt'>
-              {editorLength} / {userMetadata?.quota}
-            </span>
-          </label>
+          <>
+            <label className='label'>
+              <span className='label-text-alt'>
+                Daily quota remaining:{' '}
+                {userMetadata &&
+                  userMetadata.dailyQuotaLimit -
+                    userMetadata.quota -
+                    editorLength}
+              </span>
+              <span className='label-text-alt'>
+                {editorLength} /{' '}
+                {userMetadata &&
+                  userMetadata.dailyQuotaLimit - userMetadata.quota}
+              </span>
+            </label>
+            <label className='label pt-0'>
+              <span className='label-text-alt'>
+                Weekly quota remaining:{' '}
+                {userMetadata &&
+                  userMetadata.weeklyQuotaLimit -
+                    userMetadata.quota -
+                    editorLength}
+              </span>
+              <span className='label-text-alt'>
+                {editorLength} /{' '}
+                {userMetadata &&
+                  userMetadata.weeklyQuotaLimit - userMetadata.quota}
+              </span>
+            </label>
+            <label className='label pt-0'>
+              <span className='label-text-alt'>
+                Monthly quota remaining:{' '}
+                {userMetadata &&
+                  userMetadata.monthlyQuotaLimit -
+                    userMetadata.quota -
+                    editorLength}
+              </span>
+              <span className='label-text-alt'>
+                {editorLength} /{' '}
+                {userMetadata &&
+                  userMetadata.monthlyQuotaLimit - userMetadata.quota}
+              </span>
+            </label>
+          </>
         )}
 
         <div className='modal-action gap-2'>

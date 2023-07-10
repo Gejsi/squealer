@@ -57,7 +57,23 @@ const Editor = ({
         ...commonEditorOptions,
         CharacterCount.configure({
           limit:
-            receiverData?.type === 'chat' ? undefined : userMetadata?.quota,
+            receiverData?.type === 'chat'
+              ? undefined
+              : userMetadata?.dailyQuotaLimit === 0 ||
+                userMetadata?.weeklyQuotaLimit === 0 ||
+                userMetadata?.monthlyQuotaLimit === 0
+              ? -1
+              : Math.min(
+                  (userMetadata &&
+                    userMetadata.dailyQuotaLimit - userMetadata.quota) ??
+                    -1,
+                  (userMetadata &&
+                    userMetadata.weeklyQuotaLimit - userMetadata.quota) ??
+                    -1,
+                  (userMetadata &&
+                    userMetadata.monthlyQuotaLimit - userMetadata.quota) ??
+                    -1
+                ),
         }),
         Placeholder.configure({
           placeholder: 'Keep squealing...',
@@ -86,6 +102,7 @@ const Editor = ({
             router.push('/users/' + node.attrs.label)
         },
       },
+      autofocus: true,
       content: {
         type: 'doc',
         content: [

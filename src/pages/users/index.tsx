@@ -3,10 +3,7 @@ import type { Page } from '../_app'
 import { type RouterOutputs, api } from '../../utils/api'
 import { MdEdit, MdPerson2 } from 'react-icons/md'
 import Link from 'next/link'
-import { useSetAtom } from 'jotai'
-import SquealDialog, {
-  editorLengthAtom,
-} from '../../components/editor/SquealDialog'
+import SquealDialog from '../../components/editor/SquealDialog'
 import { toast } from 'react-hot-toast'
 import { useRouter } from 'next/router'
 import Spinner from '../../components/Spinner'
@@ -70,8 +67,7 @@ const UserCard = ({ user }: { user: RouterOutputs['user']['getAll'][0] }) => {
 
 const AllUsers: Page = () => {
   const router = useRouter()
-  const { closeSquealDialog: closeDialog } = useSquealDialog()
-  const setEditorLength = useSetAtom(editorLengthAtom)
+  const { closeSquealDialog } = useSquealDialog()
 
   const { data: users, isLoading, error, isError } = api.user.getAll.useQuery()
 
@@ -82,8 +78,7 @@ const AllUsers: Page = () => {
       },
       onSuccess(data) {
         toast.success('Squeal has been sent.')
-        closeDialog()
-        setEditorLength(0)
+        closeSquealDialog()
         router.push('/chats/' + data.channelId)
       },
     })
