@@ -46,6 +46,12 @@ export const squealRouter = createRouter({
         })
       )
 
+      // increment squeal impressions
+      await ctx.prisma.squeal.update({
+        where: { id: input.squealId },
+        data: { impressions: squeal.impressions + 1 },
+      })
+
       return {
         ...squeal,
         author: {

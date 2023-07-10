@@ -9,6 +9,7 @@ import { toast } from 'react-hot-toast'
 import useSquealDialog from '../../../hooks/use-squeal-dialog'
 import SquealDialog from '../../../components/editor/SquealDialog'
 import { useAutoAnimate } from '@formkit/auto-animate/react'
+import Link from 'next/link'
 
 const ChannelSqueal: Page = () => {
   const router = useRouter()
@@ -65,7 +66,10 @@ const ChannelSqueal: Page = () => {
         <MdSend className='h-8 w-8 flex-shrink-0' />
         <span>
           Checkout all this squeals' responses sent on{' '}
-          <span className='font-bold'>§{squeal.channel.name}</span>.
+          <span className='link font-bold'>
+            <Link href={'/channels/' + channelId}>§{squeal.channel.name}</Link>
+          </span>
+          .
         </span>
       </div>
 

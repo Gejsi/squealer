@@ -139,7 +139,7 @@ const Channel: Page = () => {
           <Bubble
             key={squeal.id}
             squeal={squeal}
-            href={'/channels/' + channelId + '/' + squeal.id}
+            href={channelId + '/' + squeal.id}
           />
         ))}
       </div>
