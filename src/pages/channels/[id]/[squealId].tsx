@@ -10,6 +10,7 @@ import useSquealDialog from '../../../hooks/use-squeal-dialog'
 import SquealDialog from '../../../components/editor/SquealDialog'
 import { useAutoAnimate } from '@formkit/auto-animate/react'
 import Link from 'next/link'
+import { useUser } from '@clerk/nextjs'
 
 const ChannelSqueal: Page = () => {
   const router = useRouter()
@@ -17,6 +18,7 @@ const ChannelSqueal: Page = () => {
   const squealId = router.query.squealId as string
   const { openSquealDialog, closeSquealDialog } = useSquealDialog()
   const [autoAnimate] = useAutoAnimate()
+  const { user } = useUser()
 
   const {
     data: squeal,
@@ -35,6 +37,7 @@ const ChannelSqueal: Page = () => {
   )
 
   const context = api.useContext()
+
   const { mutate: reply, isLoading: isReplying } = api.squeal.reply.useMutation(
     {
       onError() {
@@ -50,16 +53,49 @@ const ChannelSqueal: Page = () => {
     }
   )
 
-  // TODO: improve UX with optimistic updates
   const { mutate: react } = api.squeal.react.useMutation({
-    onError() {
-      toast.error('Unable to react.')
+    async onMutate(input) {
+      await context.squeal.getFromChannel.cancel()
+
+      const prevData = context.squeal.getFromChannel.getData({
+        channelId,
+        squealId,
+      })
+
+      if (prevData && user) {
+        context.squeal.getFromChannel.setData({ channelId, squealId }, () => ({
+          ...prevData,
+          properties: {
+            likesCount:
+              input.type === 'Like'
+                ? prevData.properties.likesCount + 1
+                : prevData.properties.userReactionType
+                ? prevData.properties.likesCount - 1
+                : prevData.properties.likesCount,
+            dislikesCount:
+              input.type === 'Dislike'
+                ? prevData.properties.dislikesCount + 1
+                : prevData.properties.userReactionType
+                ? prevData.properties.dislikesCount - 1
+                : prevData.properties.dislikesCount,
+            userReactionType: input.type,
+          },
+        }))
+      }
+
+      return { prevData }
     },
-    onSuccess() {
-      toast.success('Reacted successfully.')
+    onError(_err, _input, snapshot) {
+      toast.error('Unable to react.')
+
+      if (snapshot?.prevData)
+        context.squeal.getFromChannel.setData(
+          { channelId, squealId },
+          snapshot.prevData
+        )
     },
     onSettled() {
-      context.squeal.getFromChannel.invalidate()
+      context.squeal.getFromChannel.invalidate({ channelId, squealId })
     },
   })
 
@@ -90,10 +126,10 @@ const ChannelSqueal: Page = () => {
         <Bubble
           squeal={squeal}
           impressions={squeal.impressions}
-          likes={squeal.reactions.likes}
-          dislikes={squeal.reactions.dislikes}
+          likes={squeal.properties.likesCount}
+          dislikes={squeal.properties.dislikesCount}
           replies={squeal.replies.length}
-          reactionType={squeal.reactions.userReaction}
+          reactionType={squeal.properties.userReactionType}
           onLike={() => react({ channelId, squealId, type: 'Like' })}
           onDislike={() => react({ channelId, squealId, type: 'Dislike' })}
           onReply={() => openSquealDialog({ id: channelId, type: 'channel' })}

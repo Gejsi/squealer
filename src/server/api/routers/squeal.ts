@@ -68,11 +68,11 @@ export const squealRouter = createRouter({
           profileImageUrl,
         },
         replies: enrichedReplies,
-        reactions: {
-          ...squeal.reactions,
-          likes: squeal.reactions.filter((r) => r.type === 'Like').length,
-          dislikes: squeal.reactions.filter((r) => r.type === 'Dislike').length,
-          userReaction: userReaction?.type,
+        properties: {
+          likesCount: squeal.reactions.filter((r) => r.type === 'Like').length,
+          dislikesCount: squeal.reactions.filter((r) => r.type === 'Dislike')
+            .length,
+          userReactionType: userReaction?.type,
         },
       }
     }),
