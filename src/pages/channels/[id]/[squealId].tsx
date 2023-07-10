@@ -50,6 +50,19 @@ const ChannelSqueal: Page = () => {
     }
   )
 
+  // TODO: improve UX with optimistic updates
+  const { mutate: react } = api.squeal.react.useMutation({
+    onError() {
+      toast.error('Unable to react.')
+    },
+    onSuccess() {
+      toast.success('Reacted successfully.')
+    },
+    onSettled() {
+      context.squeal.getFromChannel.invalidate()
+    },
+  })
+
   if (isError)
     return (
       <ErrorTemplate
@@ -80,8 +93,9 @@ const ChannelSqueal: Page = () => {
           likes={squeal.reactions.likes}
           dislikes={squeal.reactions.dislikes}
           replies={squeal.replies.length}
-          onLike={() => console.log('liked')}
-          onDislike={() => console.log('disliked')}
+          reactionType={squeal.reactions.userReaction}
+          onLike={() => react({ channelId, squealId, type: 'Like' })}
+          onDislike={() => react({ channelId, squealId, type: 'Dislike' })}
           onReply={() => openSquealDialog({ id: channelId, type: 'channel' })}
         />
 

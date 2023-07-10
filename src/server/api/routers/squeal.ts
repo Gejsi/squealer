@@ -52,6 +52,15 @@ export const squealRouter = createRouter({
         data: { impressions: squeal.impressions + 1 },
       })
 
+      const userReaction = await ctx.prisma.reaction.findUnique({
+        where: {
+          userId_squealId: {
+            userId: ctx.auth.userId,
+            squealId: input.squealId,
+          },
+        },
+      })
+
       return {
         ...squeal,
         author: {
@@ -63,6 +72,7 @@ export const squealRouter = createRouter({
           ...squeal.reactions,
           likes: squeal.reactions.filter((r) => r.type === 'Like').length,
           dislikes: squeal.reactions.filter((r) => r.type === 'Dislike').length,
+          userReaction: userReaction?.type,
         },
       }
     }),
@@ -108,5 +118,32 @@ export const squealRouter = createRouter({
       })
 
       return reply
+    }),
+
+  react: protectedProcedure
+    .input(
+      z.object({
+        channelId: z.string().cuid(),
+        squealId: z.string().cuid(),
+        type: z.enum(['Like', 'Dislike']),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      return await ctx.prisma.reaction.upsert({
+        where: {
+          userId_squealId: {
+            userId: ctx.auth.userId,
+            squealId: input.squealId,
+          },
+        },
+        create: {
+          type: input.type,
+          squeal: { connect: { id: input.squealId } },
+          user: { connect: { id: ctx.auth.userId } },
+        },
+        update: {
+          type: input.type,
+        },
+      })
     }),
 })

@@ -28,6 +28,7 @@ type BubbleProps = {
   likes?: number
   dislikes?: number
   replies?: number
+  reactionType?: 'Like' | 'Dislike'
   onLike?: MouseEventHandler<HTMLButtonElement>
   onDislike?: MouseEventHandler<HTMLButtonElement>
   onReply?: MouseEventHandler<HTMLButtonElement>
@@ -41,6 +42,7 @@ const Bubble = ({
   likes,
   dislikes,
   replies,
+  reactionType,
   onLike,
   onDislike,
   onReply,
@@ -91,7 +93,13 @@ const Bubble = ({
 
       {onLike && (
         <div className='tooltip' data-tip='Like'>
-          <button className='btn-ghost btn-sm btn gap-1' onClick={onLike}>
+          <button
+            className={cn('btn-sm btn gap-1', {
+              'btn-ghost': reactionType === 'Dislike' || !reactionType,
+              'btn-success': reactionType === 'Like',
+            })}
+            onClick={onLike}
+          >
             <MdThumbUp className='h-4 w-4' />
             {likes}
           </button>
@@ -100,7 +108,13 @@ const Bubble = ({
 
       {onDislike && (
         <div className='tooltip' data-tip='Dislike'>
-          <button className='btn-ghost btn-sm btn gap-1' onClick={onDislike}>
+          <button
+            className={cn('btn-sm btn gap-1', {
+              'btn-ghost': reactionType === 'Like' || !reactionType,
+              'btn-warning': reactionType === 'Dislike',
+            })}
+            onClick={onDislike}
+          >
             <MdThumbDown className='h-4 w-4' />
             {dislikes}
           </button>
