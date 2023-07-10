@@ -17,6 +17,8 @@ export const squealRouter = createRouter({
           channel: {
             select: { name: true },
           },
+          replies: true,
+          reactions: true,
         },
       })
 
@@ -30,11 +32,31 @@ export const squealRouter = createRouter({
         squeal.authorId
       )
 
+      const enrichedReplies = await Promise.all(
+        squeal.replies.map(async (reply) => {
+          const replyAuthor = await clerkClient.users.getUser(reply.authorId)
+
+          return {
+            ...reply,
+            author: {
+              username: replyAuthor.username,
+              profileImageUrl: replyAuthor.profileImageUrl,
+            },
+          }
+        })
+      )
+
       return {
         ...squeal,
         author: {
           username,
           profileImageUrl,
+        },
+        replies: enrichedReplies,
+        reactions: {
+          ...squeal.reactions,
+          likes: squeal.reactions.filter((r) => r.type === 'Like').length,
+          dislikes: squeal.reactions.filter((r) => r.type === 'Dislike').length,
         },
       }
     }),
@@ -45,13 +67,40 @@ export const squealRouter = createRouter({
       return await ctx.prisma.squeal.create({
         data: {
           content: input.content as PrismaJson,
-          author: {
-            connect: { id: ctx.auth.userId },
-          },
-          channel: {
-            connect: { id: input.channelId },
-          },
+          author: { connect: { id: ctx.auth.userId } },
+          channel: { connect: { id: input.channelId } },
         },
       })
+    }),
+
+  reply: protectedProcedure
+    .input(
+      z.object({
+        channelId: z.string().cuid(),
+        squealId: z.string().cuid(),
+        content: jsonSchema,
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const parentSqueal = await ctx.prisma.squeal.findUnique({
+        where: { id: input.squealId },
+      })
+
+      if (!parentSqueal)
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: "This squeal doesn't exist.",
+        })
+
+      const reply = await ctx.prisma.squeal.create({
+        data: {
+          content: input.content as PrismaJson,
+          author: { connect: { id: ctx.auth.userId } },
+          channel: { connect: { id: input.channelId } },
+          parentSqueal: { connect: { id: input.squealId } },
+        },
+      })
+
+      return reply
     }),
 })

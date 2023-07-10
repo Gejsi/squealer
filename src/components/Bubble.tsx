@@ -25,6 +25,9 @@ type BubbleProps = {
   href?: Url
   isResponse?: boolean
   impressions?: number
+  likes?: number
+  dislikes?: number
+  replies?: number
   onLike?: MouseEventHandler<HTMLButtonElement>
   onDislike?: MouseEventHandler<HTMLButtonElement>
   onReply?: MouseEventHandler<HTMLButtonElement>
@@ -35,6 +38,9 @@ const Bubble = ({
   href,
   isResponse,
   impressions,
+  likes,
+  dislikes,
+  replies,
   onLike,
   onDislike,
   onReply,
@@ -55,7 +61,6 @@ const Bubble = ({
         />
       </div>
     </div>
-
     <div className='chat-header mb-1 font-bold'>
       @{squeal.author.username}
       <time className='pl-2 text-xs opacity-50'>
@@ -77,7 +82,7 @@ const Bubble = ({
 
       {impressions !== undefined && (
         <div className='tooltip' data-tip='Impressions'>
-          <div className='flex items-center gap-2 px-2'>
+          <div className='flex items-center gap-1 p-2 font-bold'>
             <MdRemoveRedEye className='h-4 w-4' />
             {impressions}
           </div>
@@ -85,22 +90,30 @@ const Bubble = ({
       )}
 
       {onLike && (
-        <button className='btn-ghost btn-sm btn gap-1' onClick={onLike}>
-          <MdThumbUp className='h-4 w-4' />0
-        </button>
+        <div className='tooltip' data-tip='Like'>
+          <button className='btn-ghost btn-sm btn gap-1' onClick={onLike}>
+            <MdThumbUp className='h-4 w-4' />
+            {likes}
+          </button>
+        </div>
       )}
 
       {onDislike && (
-        <button className='btn-ghost btn-sm btn gap-1' onClick={onDislike}>
-          <MdThumbDown className='h-4 w-4' />0
-        </button>
+        <div className='tooltip' data-tip='Dislike'>
+          <button className='btn-ghost btn-sm btn gap-1' onClick={onDislike}>
+            <MdThumbDown className='h-4 w-4' />
+            {dislikes}
+          </button>
+        </div>
       )}
 
       {onReply && (
-        <button className='btn-ghost btn-sm btn gap-1' onClick={onReply}>
-          <MdReply className='h-4 w-4' />
-          Reply
-        </button>
+        <div className='tooltip' data-tip='Reply'>
+          <button className='btn-ghost btn-sm btn gap-1' onClick={onReply}>
+            <MdReply className='h-4 w-4' />
+            {replies}
+          </button>
+        </div>
       )}
     </div>
   </div>

@@ -84,6 +84,7 @@ const isProtected = isAuthed.unstable_pipe(async ({ next, ctx, rawInput }) => {
       members: true,
       owner: true,
       squeals: {
+        where: { parentSquealId: null }, // filter out replies
         orderBy: {
           createdAt: 'desc',
         },
