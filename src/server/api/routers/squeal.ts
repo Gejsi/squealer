@@ -5,6 +5,8 @@ import { jsonSchema } from '../../../schemas/json'
 import { TRPCError } from '@trpc/server'
 import { clerkClient } from '@clerk/nextjs/server'
 
+const SINGULARITY = 2
+
 export const squealRouter = createRouter({
   getFromChannel: protectedProcedure
     .input(
@@ -170,7 +172,7 @@ export const squealRouter = createRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      return await ctx.prisma.reaction.upsert({
+      const reaction = await ctx.prisma.reaction.upsert({
         where: {
           userId_squealId: {
             userId: ctx.auth.userId,
@@ -186,5 +188,38 @@ export const squealRouter = createRouter({
           type: input.type,
         },
       })
+
+      const squeal = await ctx.prisma.squeal.findUnique({
+        where: { id: input.squealId },
+        select: {
+          reactions: true,
+        },
+      })
+
+      if (squeal) {
+        const likes = squeal.reactions.filter((r) => r.type === 'Like').length
+        const dislikes = squeal.reactions.filter(
+          (r) => r.type === 'Dislike'
+        ).length
+
+        if (likes >= SINGULARITY && dislikes >= SINGULARITY) {
+          await ctx.prisma.squeal.update({
+            where: { id: input.squealId },
+            data: { intensity: 'Controversial' },
+          })
+        } else if (likes >= SINGULARITY) {
+          await ctx.prisma.squeal.update({
+            where: { id: input.squealId },
+            data: { intensity: 'Popular' },
+          })
+        } else if (dislikes >= SINGULARITY) {
+          await ctx.prisma.squeal.update({
+            where: { id: input.squealId },
+            data: { intensity: 'Unpopular' },
+          })
+        }
+      }
+
+      return reaction
     }),
 })
