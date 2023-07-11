@@ -7,15 +7,19 @@ import Bubble from '../../../components/Bubble'
 import { MdSend } from 'react-icons/md'
 import { toast } from 'react-hot-toast'
 import useSquealDialog from '../../../hooks/use-squeal-dialog'
-import SquealDialog from '../../../components/editor/SquealDialog'
+import SquealDialog, {
+  editorLengthAtom,
+} from '../../../components/editor/SquealDialog'
 import { useAutoAnimate } from '@formkit/auto-animate/react'
 import Link from 'next/link'
 import { useUser } from '@clerk/nextjs'
+import { useAtomValue } from 'jotai'
 
 const ChannelSqueal: Page = () => {
   const router = useRouter()
   const channelId = router.query.id as string
   const squealId = router.query.squealId as string
+  const contentLength = useAtomValue(editorLengthAtom)
   const { openSquealDialog, closeSquealDialog } = useSquealDialog()
   const [autoAnimate] = useAutoAnimate()
   const { user } = useUser()
@@ -142,7 +146,7 @@ const ChannelSqueal: Page = () => {
 
       <SquealDialog
         onCreate={(content, channelId) =>
-          content && reply({ content, channelId, squealId })
+          content && reply({ content, channelId, squealId, contentLength })
         }
         isCreating={isReplying}
       />

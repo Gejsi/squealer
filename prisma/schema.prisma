@@ -12,7 +12,7 @@ model User {
   id String @id
 
   role              UserRole @default(Regular)
-  quota             Int      @default(3000)
+  quota             Int      @default(0)
   dailyQuotaLimit   Int      @default(3000)
   weeklyQuotaLimit  Int      @default(20000)
   monthlyQuotaLimit Int      @default(75000)

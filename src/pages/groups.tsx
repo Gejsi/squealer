@@ -7,8 +7,7 @@ import ErrorTemplate from '../components/ErrorTemplate'
 import { MdGroup } from 'react-icons/md'
 
 const GroupsPage: Page = () => {
-  const { data, isLoading, isError, error } =
-    api.channel.getAllChannels.useQuery()
+  const { data, isLoading, isError, error } = api.channel.getAll.useQuery()
 
   if (isError)
     return (

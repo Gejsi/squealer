@@ -74,7 +74,7 @@ const Bubble = ({
       <ReadonlyEditor content={squeal.content as EditorOptions['content']} />
     </div>
 
-    <div className='chat-footer flex w-full items-center justify-end gap-2'>
+    <div className='chat-footer mt-2 flex w-full items-center justify-end gap-2'>
       {href && (
         <Link href={href} className='btn-ghost btn-sm btn gap-1'>
           <MdArrowOutward className='h-4 w-4' />

@@ -6,9 +6,10 @@ import {
   protectedProcedure,
 } from '../trpc'
 import { z } from 'zod'
+import { shuffleArray } from '../../../utils/misc'
 
 export const channelRouter = createRouter({
-  getAllChannels: authedProcedure.query(async ({ ctx }) => {
+  getAll: authedProcedure.query(async ({ ctx }) => {
     const channels = await ctx.prisma.channel.findMany({
       where: {
         type: 'Channel',
@@ -88,6 +89,17 @@ export const channelRouter = createRouter({
     )
 
     return enrichedChannels
+  }),
+
+  getAllRandom: authedProcedure.query(async ({ ctx }) => {
+    const channels = await ctx.prisma.channel.findMany({
+      where: { type: 'Channel' },
+      select: { name: true },
+    })
+
+    shuffleArray(channels)
+
+    return channels.map((channel) => channel.name)
   }),
 
   create: premiumProcedure

@@ -52,11 +52,10 @@ const Sidebar = () => {
               <Link href='/settings'>
                 <div className='flex flex-1 items-center gap-2'>
                   <TbDiamond className='h-6 w-6' />
-                  Daily Quota
+                  Quota used
                 </div>
                 <span className='text-sm'>
-                  {userMetadata &&
-                    userMetadata.quota + ' / ' + userMetadata.dailyQuotaLimit}
+                  {userMetadata && userMetadata.quota}
                 </span>
               </Link>
             </li>

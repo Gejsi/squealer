@@ -102,7 +102,7 @@ export const squealRouter = createRouter({
         await ctx.prisma.user.update({
           where: { id: ctx.auth.userId },
           data: {
-            quota: input.contentLength,
+            quota: user.quota + input.contentLength,
             dailyQuotaLimit: user.dailyQuotaLimit - input.contentLength,
             weeklyQuotaLimit: user.weeklyQuotaLimit - input.contentLength,
             monthlyQuotaLimit: user.monthlyQuotaLimit - input.contentLength,
@@ -119,6 +119,7 @@ export const squealRouter = createRouter({
         channelId: z.string().cuid(),
         squealId: z.string().cuid(),
         content: jsonSchema,
+        contentLength: z.number().nullish(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -140,6 +141,22 @@ export const squealRouter = createRouter({
           parentSqueal: { connect: { id: input.squealId } },
         },
       })
+
+      const user = await ctx.prisma.user.findUnique({
+        where: { id: ctx.auth.userId },
+      })
+
+      if (input.contentLength && user) {
+        await ctx.prisma.user.update({
+          where: { id: ctx.auth.userId },
+          data: {
+            quota: user.quota + input.contentLength,
+            dailyQuotaLimit: user.dailyQuotaLimit - input.contentLength,
+            weeklyQuotaLimit: user.weeklyQuotaLimit - input.contentLength,
+            monthlyQuotaLimit: user.monthlyQuotaLimit - input.contentLength,
+          },
+        })
+      }
 
       return reply
     }),

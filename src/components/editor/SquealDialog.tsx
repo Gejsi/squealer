@@ -27,6 +27,14 @@ const SquealDialog = (
     refetchOnWindowFocus: false,
   })
 
+  const { data: randomChannels } = api.channel.getAllRandom.useQuery(
+    undefined,
+    {
+      retry: false,
+      refetchOnWindowFocus: false,
+    }
+  )
+
   const handleCreate = (): void => {
     if (editorLength === 0) {
       toast.error('Cannot create an empty squeal.')
@@ -35,7 +43,7 @@ const SquealDialog = (
 
     if (receiverData?.id) props.onCreate(content, receiverData?.id)
     setUserMetadata(
-      (prev) => prev && { ...prev, quota: prev.quota - editorLength }
+      (prev) => prev && { ...prev, quota: prev.quota + editorLength }
     )
     setEditorLength(0)
   }
@@ -70,8 +78,12 @@ const SquealDialog = (
           )}
         </p>
 
-        {randomUsers && (
-          <Editor onUpdate={handleEditorUpdate} userSuggestions={randomUsers} />
+        {randomUsers && randomChannels && (
+          <Editor
+            onUpdate={handleEditorUpdate}
+            userSuggestions={randomUsers}
+            channelSuggestions={randomChannels}
+          />
         )}
 
         {receiverData?.type !== 'chat' && (

@@ -43,9 +43,11 @@ export const commonEditorOptions = [
 const Editor = ({
   onUpdate,
   userSuggestions,
+  channelSuggestions,
 }: {
   onUpdate?: EditorOptions['onUpdate']
   userSuggestions: RouterOutputs['user']['getAllRandom']
+  channelSuggestions: RouterOutputs['channel']['getAllRandom']
 }) => {
   const userMetadata = useAtomValue(userMetadataAtom)
   const receiverData = useAtomValue(squealDialogAtom)
@@ -73,7 +75,7 @@ const Editor = ({
                   (userMetadata &&
                     userMetadata.monthlyQuotaLimit - userMetadata.quota) ??
                     -1
-                ),
+                ) || -1,
         }),
         Placeholder.configure({
           placeholder: 'Keep squealing...',
@@ -87,8 +89,9 @@ const Editor = ({
         }),
         ChannelMention.configure({
           HTMLAttributes: {
-            class: 'link text-red-400',
+            class: 'link',
           },
+          suggestion: createSuggestionList(channelSuggestions),
         }),
       ],
       editorProps: {

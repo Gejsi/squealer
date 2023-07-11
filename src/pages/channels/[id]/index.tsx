@@ -39,7 +39,7 @@ const Channel: Page = () => {
         toast.error('Unable to join channel.')
       },
       onSuccess(data) {
-        toast.success(`${data.name} joined successfully.`)
+        toast.success(`§${data.name} joined successfully.`)
       },
       onSettled() {
         context.channel.get.invalidate()
