@@ -59,7 +59,7 @@ const ChannelSqueal: Page = () => {
 
   const { mutate: react } = api.squeal.react.useMutation({
     async onMutate(input) {
-      await context.squeal.getFromChannel.cancel()
+      await context.squeal.getFromChannel.cancel({ channelId, squealId })
 
       const prevData = context.squeal.getFromChannel.getData({
         channelId,
@@ -67,24 +67,29 @@ const ChannelSqueal: Page = () => {
       })
 
       if (prevData && user) {
-        context.squeal.getFromChannel.setData({ channelId, squealId }, () => ({
-          ...prevData,
-          properties: {
-            likesCount:
-              input.type === 'Like'
-                ? prevData.properties.likesCount + 1
-                : prevData.properties.userReactionType
-                ? prevData.properties.likesCount - 1
-                : prevData.properties.likesCount,
-            dislikesCount:
-              input.type === 'Dislike'
-                ? prevData.properties.dislikesCount + 1
-                : prevData.properties.userReactionType
-                ? prevData.properties.dislikesCount - 1
-                : prevData.properties.dislikesCount,
-            userReactionType: input.type,
-          },
-        }))
+        context.squeal.getFromChannel.setData({ channelId, squealId }, () => {
+          let { likesCount, dislikesCount, userReactionType } =
+            prevData.properties
+
+          if (input.type === 'Like') {
+            if (!userReactionType || userReactionType === 'Dislike')
+              likesCount++
+            if (userReactionType === 'Dislike') dislikesCount--
+          } else if (input.type === 'Dislike') {
+            if (!userReactionType || userReactionType === 'Like')
+              dislikesCount++
+            if (userReactionType === 'Like') likesCount--
+          }
+
+          return {
+            ...prevData,
+            properties: {
+              likesCount,
+              dislikesCount,
+              userReactionType: input.type,
+            },
+          }
+        })
       }
 
       return { prevData }

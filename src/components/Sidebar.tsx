@@ -52,7 +52,7 @@ const Sidebar = () => {
               <Link href='/settings'>
                 <div className='flex flex-1 items-center gap-2'>
                   <TbDiamond className='h-6 w-6' />
-                  Quota used
+                  Quota
                 </div>
                 <span className='text-sm'>
                   {userMetadata && userMetadata.quota}
