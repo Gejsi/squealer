@@ -1,4 +1,4 @@
-import { createRouter, authedProcedure } from '../trpc'
+import { createRouter, authedProcedure, publicProcedure } from '../trpc'
 import {
   type UserMetadata,
   userMetadataSchema,
@@ -66,7 +66,7 @@ export const userRouter = createRouter({
       return userMetadata
     }),
 
-  getAll: authedProcedure.query(async ({ ctx }) => {
+  getAll: publicProcedure.query(async ({ ctx }) => {
     const dbUsers = await ctx.prisma.user.findMany()
     const clerkUsers = await clerkClient.users.getUserList()
 
@@ -88,7 +88,7 @@ export const userRouter = createRouter({
       .filter((username): username is string => !!username)
   }),
 
-  get: authedProcedure
+  get: publicProcedure
     .input(z.object({ username: z.string() }))
     .query(async ({ ctx, input }) => {
       const clerkUser = (

@@ -68,6 +68,7 @@ const ChannelSqueal: Page = () => {
 
       if (prevData && user) {
         context.squeal.getFromChannel.setData({ channelId, squealId }, () => {
+          // eslint-disable-next-line prefer-const
           let { likesCount, dislikesCount, userReactionType } =
             prevData.properties
 

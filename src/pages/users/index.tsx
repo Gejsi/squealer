@@ -12,7 +12,7 @@ import useSquealDialog from '../../hooks/use-squeal-dialog'
 import { useUser } from '@clerk/nextjs'
 
 const UserCard = ({ user }: { user: RouterOutputs['user']['getAll'][0] }) => {
-  const { user: authedUser } = useUser()
+  const { user: authedUser, isSignedIn } = useUser()
   const { openSquealDialog } = useSquealDialog()
 
   return (
@@ -44,21 +44,23 @@ const UserCard = ({ user }: { user: RouterOutputs['user']['getAll'][0] }) => {
           </div>
         </div>
         <div className='card-actions justify-center'>
-          <button
-            className='btn-outline btn mt-2 h-fit w-fit gap-2 py-2'
-            disabled={authedUser?.id === user.id}
-            onClick={() =>
-              user.username &&
-              openSquealDialog({
-                username: user.username,
-                id: user.id,
-                type: 'chat',
-              })
-            }
-          >
-            <MdEdit className='h-4 w-4' />
-            Write Squeal
-          </button>
+          {isSignedIn && (
+            <button
+              className='btn-outline btn mt-2 h-fit w-fit gap-2 py-2'
+              disabled={authedUser.id === user.id}
+              onClick={() =>
+                user.username &&
+                openSquealDialog({
+                  username: user.username,
+                  id: user.id,
+                  type: 'chat',
+                })
+              }
+            >
+              <MdEdit className='h-4 w-4' />
+              Write Squeal
+            </button>
+          )}
         </div>
       </div>
     </div>
@@ -69,7 +71,15 @@ const AllUsers: Page = () => {
   const router = useRouter()
   const { closeSquealDialog } = useSquealDialog()
 
-  const { data: users, isLoading, error, isError } = api.user.getAll.useQuery()
+  const {
+    data: users,
+    isLoading,
+    error,
+    isError,
+  } = api.user.getAll.useQuery(undefined, {
+    retry: false,
+    refetchOnWindowFocus: false,
+  })
 
   const { mutate: createSqueal, isLoading: isCreating } =
     api.chat.create.useMutation({

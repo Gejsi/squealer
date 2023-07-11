@@ -55,7 +55,14 @@ const Sidebar = () => {
                   Quota
                 </div>
                 <span className='text-sm'>
-                  {userMetadata && userMetadata.quota}
+                  {userMetadata &&
+                    userMetadata.quota +
+                      ' / ' +
+                      Math.min(
+                        userMetadata.dailyQuotaLimit,
+                        userMetadata.weeklyQuotaLimit,
+                        userMetadata.monthlyQuotaLimit
+                      )}
                 </span>
               </Link>
             </li>
@@ -109,25 +116,25 @@ const Sidebar = () => {
           </li>
 
           <li>
-            <Link href='/all'>
+            <Link href='/public/all'>
               <MdInbox className='h-6 w-6' />
               All squeals
             </Link>
           </li>
           <li>
-            <Link href='/controversial'>
+            <Link href='/public/controversial'>
               <BsYinYang className='h-5 w-5' />
               Controversial
             </Link>
           </li>
           <li>
-            <Link href='/news'>
+            <Link href='/public/news'>
               <MdToday className='h-6 w-6' />
               News
             </Link>
           </li>
           <li>
-            <Link href='/random'>
+            <Link href='/public/random'>
               <MdShuffle className='h-6 w-6' />
               Random
             </Link>
