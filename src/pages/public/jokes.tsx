@@ -4,12 +4,12 @@ import type { Page } from '../_app'
 import Bubble from '../../components/Bubble'
 import Spinner from '../../components/Spinner'
 import ErrorTemplate from '../../components/ErrorTemplate'
-import { MdToday } from 'react-icons/md'
+import { MdMood } from 'react-icons/md'
 
-const Facts: Page = () => {
+const Jokes: Page = () => {
   const [autoAnimate] = useAutoAnimate()
 
-  const { data, isLoading, isError, error } = api.auto.getFactSqueals.useQuery(
+  const { data, isLoading, isError, error } = api.auto.getJokeSqueals.useQuery(
     undefined,
     {
       retry: false,
@@ -30,8 +30,8 @@ const Facts: Page = () => {
   return (
     <>
       <div className='mb-10 mt-8 flex items-center gap-4'>
-        <MdToday className='h-8 w-8 flex-shrink-0' />
-        <span>All these facts are automatically generated everyday.</span>
+        <MdMood className='h-8 w-8 flex-shrink-0' />
+        <span>All these jokes are automatically generated everyday.</span>
       </div>
 
       <div className='flex flex-col gap-4' ref={autoAnimate}>
@@ -43,6 +43,6 @@ const Facts: Page = () => {
   )
 }
 
-Facts.title = 'Random facts'
+Jokes.title = 'Random facts'
 
-export default Facts
+export default Jokes

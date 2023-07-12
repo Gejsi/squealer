@@ -8,11 +8,19 @@ export default async function handler(
   let data
 
   try {
-    data = await (
+    const fact = await (
       await fetch(`${getBaseUrl()}/api/trpc/auto.createFactSqueal`, {
         method: 'POST',
       })
     ).json()
+
+    const joke = await (
+      await fetch(`${getBaseUrl()}/api/trpc/auto.createJokeSqueal`, {
+        method: 'POST',
+      })
+    ).json()
+
+    data = [fact, joke]
   } catch (error) {
     return response.status(500).json(error)
   }

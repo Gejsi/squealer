@@ -9,6 +9,7 @@ import {
   MdGroups,
   MdHeartBroken,
   MdInbox,
+  MdMood,
   MdOutlineGroupAdd,
   MdPerson,
   MdToday,
@@ -148,6 +149,13 @@ const Sidebar = () => {
             <Link href='/public/facts'>
               <MdToday className='h-6 w-6' />
               Facts
+            </Link>
+          </li>
+
+          <li>
+            <Link href='/public/jokes'>
+              <MdMood className='h-6 w-6' />
+              Jokes
             </Link>
           </li>
         </ul>
