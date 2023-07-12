@@ -2,7 +2,7 @@
   "crons": [
     {
       "path": "/api/cron/ninja",
-      "schedule": "* * * * *"
+      "schedule": "0 2 * * *"
     }
   ]
 }
