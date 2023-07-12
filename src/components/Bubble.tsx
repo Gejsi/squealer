@@ -22,6 +22,7 @@ type BubbleProps = {
   squeal:
     | RouterOutputs['chat']['get'][0]
     | RouterOutputs['squeal']['getFromChannel']
+    | RouterOutputs['squeal']['getControversials'][0]
   href?: Url
   isResponse?: boolean
   impressions?: number

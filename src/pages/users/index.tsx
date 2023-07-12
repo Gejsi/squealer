@@ -39,7 +39,7 @@ const UserCard = ({ user }: { user: RouterOutputs['user']['getAll'][0] }) => {
             <div className='stat-value text-xl'>{user.role}</div>
           </div>
           <div className='stat'>
-            <div className='stat-title'>Quota remaining</div>
+            <div className='stat-title'>Quota used</div>
             <div className='stat-value text-xl'>{user.quota}</div>
           </div>
         </div>

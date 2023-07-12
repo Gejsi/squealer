@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import type { PrismaJson } from '../../../types/json'
-import { createRouter, protectedProcedure } from '../trpc'
+import { createRouter, protectedProcedure, publicProcedure } from '../trpc'
 import { jsonSchema } from '../../../schemas/json'
 import { TRPCError } from '@trpc/server'
 import { clerkClient } from '@clerk/nextjs/server'
@@ -222,4 +222,29 @@ export const squealRouter = createRouter({
 
       return reaction
     }),
+
+  getControversials: publicProcedure.query(async ({ ctx }) => {
+    const squeals = await ctx.prisma.squeal.findMany({
+      where: { intensity: 'Controversial' },
+      orderBy: { createdAt: 'desc' },
+    })
+
+    const enrichedSqueals = await Promise.all(
+      squeals.map(async (squeal) => {
+        const { profileImageUrl, username } = await clerkClient.users.getUser(
+          squeal.authorId
+        )
+
+        return {
+          ...squeal,
+          author: {
+            username,
+            profileImageUrl,
+          },
+        }
+      })
+    )
+
+    return enrichedSqueals
+  }),
 })

@@ -5,7 +5,6 @@ import type { Page } from '../../_app'
 import ErrorTemplate from '../../../components/ErrorTemplate'
 import Spinner from '../../../components/Spinner'
 import { toast } from 'react-hot-toast'
-import { cn } from '../../../utils/misc'
 import { MdEdit } from 'react-icons/md'
 import SquealDialog, {
   editorLengthAtom,
@@ -14,6 +13,7 @@ import useSquealDialog from '../../../hooks/use-squeal-dialog'
 import Bubble from '../../../components/Bubble'
 import { useAutoAnimate } from '@formkit/auto-animate/react'
 import { useAtomValue } from 'jotai'
+import JoinTemplate from '../../../components/JoinTemplate'
 
 const Channel: Page = () => {
   const router = useRouter()
@@ -33,18 +33,6 @@ const Channel: Page = () => {
   )
 
   const context = api.useContext()
-  const { mutate: joinChannel, isLoading: isJoining } =
-    api.channel.join.useMutation({
-      onError() {
-        toast.error('Unable to join channel.')
-      },
-      onSuccess(data) {
-        toast.success(`§${data.name} joined successfully.`)
-      },
-      onSettled() {
-        context.channel.get.invalidate()
-      },
-    })
 
   const { mutate: createSqueal, isLoading: isCreating } =
     api.squeal.create.useMutation({
@@ -62,24 +50,7 @@ const Channel: Page = () => {
 
   if (isError)
     if (error.data && error.data.code === 'UNAUTHORIZED')
-      return (
-        <div className='hero h-full'>
-          <div className='rounded-xl bg-base-200 p-8 md:mx-auto md:w-9/12'>
-            <h1 className='text-xl font-bold md:text-3xl'>
-              You are not a member of this channel yet.
-            </h1>
-            <p className='mb-8 text-lg'>Would you like to join?</p>
-            <button
-              className={cn('btn', {
-                loading: isJoining,
-              })}
-              onClick={() => joinChannel({ channelId })}
-            >
-              Join
-            </button>
-          </div>
-        </div>
-      )
+      return <JoinTemplate channelId={channelId} invalidate='channel' />
     else
       return (
         <ErrorTemplate

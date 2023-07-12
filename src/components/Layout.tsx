@@ -15,7 +15,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
   const { isSignedIn } = useUser()
 
   api.user.getMetadata.useQuery(undefined, {
-    retry: true,
+    retry: isSignedIn,
     refetchOnWindowFocus: false,
     onError() {
       setUserMetadata(undefined)

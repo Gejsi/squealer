@@ -14,6 +14,7 @@ import { useAutoAnimate } from '@formkit/auto-animate/react'
 import Link from 'next/link'
 import { useUser } from '@clerk/nextjs'
 import { useAtomValue } from 'jotai'
+import JoinTemplate from '../../../components/JoinTemplate'
 
 const ChannelSqueal: Page = () => {
   const router = useRouter()
@@ -110,12 +111,15 @@ const ChannelSqueal: Page = () => {
   })
 
   if (isError)
-    return (
-      <ErrorTemplate
-        message={error.message}
-        statusCode={error.data?.httpStatus}
-      />
-    )
+    if (error.data && error.data.code === 'UNAUTHORIZED')
+      return <JoinTemplate channelId={channelId} invalidate='squeal' />
+    else
+      return (
+        <ErrorTemplate
+          message={error.message}
+          statusCode={error.data?.httpStatus}
+        />
+      )
 
   if (isLoading) return <Spinner />
 

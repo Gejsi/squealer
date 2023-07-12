@@ -10,6 +10,7 @@ import {
   MdOutlineGroupAdd,
   MdPerson,
   MdShuffle,
+  MdThumbUp,
   MdToday,
 } from 'react-icons/md'
 import { TbGift } from 'react-icons/tb'
@@ -121,18 +122,28 @@ const Sidebar = () => {
               All squeals
             </Link>
           </li>
+
           <li>
             <Link href='/public/controversial'>
-              <BsYinYang className='h-5 w-5' />
+              <BsYinYang className='h-6 w-6' />
               Controversial
             </Link>
           </li>
+
+          <li>
+            <Link href='/public/popular'>
+              <MdThumbUp className='h-6 w-6' />
+              Popular
+            </Link>
+          </li>
+
           <li>
             <Link href='/public/news'>
               <MdToday className='h-6 w-6' />
               News
             </Link>
           </li>
+
           <li>
             <Link href='/public/random'>
               <MdShuffle className='h-6 w-6' />
