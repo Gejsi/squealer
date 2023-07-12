@@ -247,4 +247,54 @@ export const squealRouter = createRouter({
 
     return enrichedSqueals
   }),
+
+  getPopular: publicProcedure.query(async ({ ctx }) => {
+    const squeals = await ctx.prisma.squeal.findMany({
+      where: { intensity: 'Popular' },
+      orderBy: { createdAt: 'desc' },
+    })
+
+    const enrichedSqueals = await Promise.all(
+      squeals.map(async (squeal) => {
+        const { profileImageUrl, username } = await clerkClient.users.getUser(
+          squeal.authorId
+        )
+
+        return {
+          ...squeal,
+          author: {
+            username,
+            profileImageUrl,
+          },
+        }
+      })
+    )
+
+    return enrichedSqueals
+  }),
+
+  getUnpopular: publicProcedure.query(async ({ ctx }) => {
+    const squeals = await ctx.prisma.squeal.findMany({
+      where: { intensity: 'Unpopular' },
+      orderBy: { createdAt: 'desc' },
+    })
+
+    const enrichedSqueals = await Promise.all(
+      squeals.map(async (squeal) => {
+        const { profileImageUrl, username } = await clerkClient.users.getUser(
+          squeal.authorId
+        )
+
+        return {
+          ...squeal,
+          author: {
+            username,
+            profileImageUrl,
+          },
+        }
+      })
+    )
+
+    return enrichedSqueals
+  }),
 })

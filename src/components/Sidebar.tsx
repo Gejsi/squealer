@@ -5,12 +5,12 @@ import { useEffect } from 'react'
 import { TbDiamond } from 'react-icons/tb'
 import { GiBirdTwitter } from 'react-icons/gi'
 import {
+  MdFavorite,
   MdGroups,
+  MdHeartBroken,
   MdInbox,
   MdOutlineGroupAdd,
   MdPerson,
-  MdShuffle,
-  MdThumbUp,
   MdToday,
 } from 'react-icons/md'
 import { TbGift } from 'react-icons/tb'
@@ -132,8 +132,15 @@ const Sidebar = () => {
 
           <li>
             <Link href='/public/popular'>
-              <MdThumbUp className='h-6 w-6' />
+              <MdFavorite className='h-6 w-6' />
               Popular
+            </Link>
+          </li>
+
+          <li>
+            <Link href='/public/unpopular'>
+              <MdHeartBroken className='h-6 w-6' />
+              Unpopular
             </Link>
           </li>
 
@@ -141,13 +148,6 @@ const Sidebar = () => {
             <Link href='/public/news'>
               <MdToday className='h-6 w-6' />
               News
-            </Link>
-          </li>
-
-          <li>
-            <Link href='/public/random'>
-              <MdShuffle className='h-6 w-6' />
-              Random
             </Link>
           </li>
         </ul>
