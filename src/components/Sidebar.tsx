@@ -99,7 +99,7 @@ const Sidebar = () => {
           <li>
             <Link href='/chats'>
               <RiChatPrivateLine className='h-6 w-6' />
-              Private chats
+              Your chats
             </Link>
           </li>
 
@@ -145,9 +145,9 @@ const Sidebar = () => {
           </li>
 
           <li>
-            <Link href='/public/news'>
+            <Link href='/public/facts'>
               <MdToday className='h-6 w-6' />
-              News
+              Facts
             </Link>
           </li>
         </ul>

@@ -9,6 +9,7 @@ export const serverSchema = z.object({
   DATABASE_URL: z.string().url(),
   CLERK_SECRET_KEY: z.string(),
   NODE_ENV: z.enum(['development', 'test', 'production']),
+  NINJA_KEY: z.string(),
 })
 
 /**
@@ -20,6 +21,7 @@ export const serverEnv = {
   DATABASE_URL: process.env.DATABASE_URL,
   CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY,
   NODE_ENV: process.env.NODE_ENV,
+  NINJA_KEY: process.env.NINJA_KEY,
 }
 
 /**

@@ -4,12 +4,12 @@ import type { Page } from '../_app'
 import Bubble from '../../components/Bubble'
 import Spinner from '../../components/Spinner'
 import ErrorTemplate from '../../components/ErrorTemplate'
-import { MdFavorite } from 'react-icons/md'
+import { MdToday } from 'react-icons/md'
 
-const Controversial: Page = () => {
+const Facts: Page = () => {
   const [autoAnimate] = useAutoAnimate()
 
-  const { data, isLoading, isError, error } = api.squeal.getPopular.useQuery(
+  const { data, isLoading, isError, error } = api.auto.getFactSqueals.useQuery(
     undefined,
     {
       retry: false,
@@ -30,23 +30,19 @@ const Controversial: Page = () => {
   return (
     <>
       <div className='mb-10 mt-8 flex items-center gap-4'>
-        <MdFavorite className='h-8 w-8 flex-shrink-0' />
-        <span>All the popular squeals sent in different channels.</span>
+        <MdToday className='h-8 w-8 flex-shrink-0' />
+        <span>All these facts are automatically generated every 2 hours.</span>
       </div>
 
       <div className='flex flex-col gap-4' ref={autoAnimate}>
         {data.map((squeal) => (
-          <Bubble
-            key={squeal.id}
-            squeal={squeal}
-            href={'/channels/' + squeal.channelId + '/' + squeal.id}
-          />
+          <Bubble key={squeal.id} squeal={squeal} />
         ))}
       </div>
     </>
   )
 }
 
-Controversial.title = 'Popular topics'
+Facts.title = 'Random facts'
 
-export default Controversial
+export default Facts

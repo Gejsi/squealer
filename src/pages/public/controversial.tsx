@@ -29,7 +29,7 @@ const Controversial: Page = () => {
     <>
       <div className='mb-10 mt-8 flex items-center gap-4'>
         <BsYinYang className='h-8 w-8 flex-shrink-0' />
-        <span>All the controversial squeals sent in private channels.</span>
+        <span>All the controversial squeals sent in different channels.</span>
       </div>
 
       <div className='flex flex-col gap-4' ref={autoAnimate}>
