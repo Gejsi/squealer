@@ -1,13 +1,14 @@
-import { clerkClient } from '@clerk/nextjs'
 import { env } from '../../../env/server.mjs'
 import type { PrismaJson } from '../../../types/json'
 import { createRouter, publicProcedure } from '../trpc'
 import { TRPCError } from '@trpc/server'
+import { enrichSqueals } from '../../../utils/api'
 
 const ADMIN_ID = 'user_2STlkJKHQpPKswIo57uD6KLUUyW'
 const FACTS_CHANNEL_ID = 'cljzwly4i0000d2aa996z2qd7'
 const JOKES_CHANNEL_ID = 'cljzzn35c0000d2vwnip9s2r5'
 
+// this router is hacky to say the least
 export const autoRouter = createRouter({
   createFactSqueal: publicProcedure.mutation(async ({ ctx }) => {
     const res = await fetch('https://api.api-ninjas.com/v1/facts', {
@@ -48,23 +49,7 @@ export const autoRouter = createRouter({
 
     if (!channel) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' })
 
-    const enrichedSqueals = await Promise.all(
-      channel.squeals.map(async (squeal) => {
-        const { profileImageUrl, username } = await clerkClient.users.getUser(
-          squeal.authorId
-        )
-
-        return {
-          ...squeal,
-          author: {
-            username,
-            profileImageUrl,
-          },
-        }
-      })
-    )
-
-    return enrichedSqueals
+    return await enrichSqueals(channel.squeals)
   }),
 
   createJokeSqueal: publicProcedure.mutation(async ({ ctx }) => {
@@ -106,22 +91,6 @@ export const autoRouter = createRouter({
 
     if (!channel) throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR' })
 
-    const enrichedSqueals = await Promise.all(
-      channel.squeals.map(async (squeal) => {
-        const { profileImageUrl, username } = await clerkClient.users.getUser(
-          squeal.authorId
-        )
-
-        return {
-          ...squeal,
-          author: {
-            username,
-            profileImageUrl,
-          },
-        }
-      })
-    )
-
-    return enrichedSqueals
+    return await enrichSqueals(channel.squeals)
   }),
 })

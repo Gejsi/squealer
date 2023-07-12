@@ -7,6 +7,7 @@ import {
 } from '../trpc'
 import { z } from 'zod'
 import { shuffleArray } from '../../../utils/misc'
+import { enrichSqueals } from '../../../utils/api'
 
 export const channelRouter = createRouter({
   getAll: authedProcedure.query(async ({ ctx }) => {
@@ -146,21 +147,7 @@ export const channelRouter = createRouter({
         })
       )
 
-      const enrichedSqueals = await Promise.all(
-        ctx.channel.squeals.map(async (squeal) => {
-          const { profileImageUrl, username } = await clerkClient.users.getUser(
-            squeal.authorId
-          )
-
-          return {
-            ...squeal,
-            author: {
-              username,
-              profileImageUrl,
-            },
-          }
-        })
-      )
+      const enrichedSqueals = await enrichSqueals(ctx.channel.squeals)
 
       return {
         ...ctx.channel,

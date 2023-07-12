@@ -4,6 +4,7 @@ import { createRouter, authedProcedure, protectedProcedure } from '../trpc'
 import { jsonSchema } from '../../../schemas/json'
 import { clerkClient } from '@clerk/nextjs/server'
 import { TRPCError } from '@trpc/server'
+import { enrichSqueals } from '../../../utils/api'
 
 export const chatRouter = createRouter({
   create: authedProcedure
@@ -111,22 +112,6 @@ export const chatRouter = createRouter({
   get: protectedProcedure
     .input(z.object({ channelId: z.string().cuid() }))
     .query(async ({ ctx }) => {
-      const enrichedSqueals = await Promise.all(
-        ctx.channel.squeals.map(async (squeal) => {
-          const { profileImageUrl, username } = await clerkClient.users.getUser(
-            squeal.authorId
-          )
-
-          return {
-            ...squeal,
-            author: {
-              username,
-              profileImageUrl,
-            },
-          }
-        })
-      )
-
-      return enrichedSqueals
+      return await enrichSqueals(ctx.channel.squeals)
     }),
 })

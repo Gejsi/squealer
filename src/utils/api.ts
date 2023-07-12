@@ -3,7 +3,9 @@ import { createTRPCNext } from '@trpc/next'
 import { type inferRouterInputs, type inferRouterOutputs } from '@trpc/server'
 import superjson from 'superjson'
 
-import { type AppRouter } from '../server/api/root'
+import type { AppRouter } from '../server/api/root'
+import type { Prisma } from '@prisma/client'
+import { clerkClient } from '@clerk/nextjs'
 
 export const getBaseUrl = () => {
   if (typeof window !== 'undefined') return '' // browser should use relative url
@@ -11,9 +13,6 @@ export const getBaseUrl = () => {
   return `http://localhost:${process.env.PORT ?? 3000}` // dev SSR should use localhost
 }
 
-/**
- * A set of typesafe react-query hooks for your tRPC API
- */
 export const api = createTRPCNext<AppRouter>({
   config() {
     return {
@@ -56,3 +55,23 @@ export type RouterInputs = inferRouterInputs<AppRouter>
  * @example type HelloOutput = RouterOutputs['example']['hello']
  **/
 export type RouterOutputs = inferRouterOutputs<AppRouter>
+
+export async function enrichSqueals(
+  squeals: Prisma.SquealGetPayload<Record<string, never>>[]
+) {
+  return await Promise.all(
+    squeals.map(async (squeal) => {
+      const { profileImageUrl, username } = await clerkClient.users.getUser(
+        squeal.authorId
+      )
+
+      return {
+        ...squeal,
+        author: {
+          username,
+          profileImageUrl,
+        },
+      }
+    })
+  )
+}

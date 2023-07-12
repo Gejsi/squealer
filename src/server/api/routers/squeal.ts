@@ -4,6 +4,7 @@ import { createRouter, protectedProcedure, publicProcedure } from '../trpc'
 import { jsonSchema } from '../../../schemas/json'
 import { TRPCError } from '@trpc/server'
 import { clerkClient } from '@clerk/nextjs/server'
+import { enrichSqueals } from '../../../utils/api'
 
 const SINGULARITY = 2
 
@@ -229,23 +230,7 @@ export const squealRouter = createRouter({
       orderBy: { createdAt: 'desc' },
     })
 
-    const enrichedSqueals = await Promise.all(
-      squeals.map(async (squeal) => {
-        const { profileImageUrl, username } = await clerkClient.users.getUser(
-          squeal.authorId
-        )
-
-        return {
-          ...squeal,
-          author: {
-            username,
-            profileImageUrl,
-          },
-        }
-      })
-    )
-
-    return enrichedSqueals
+    return await enrichSqueals(squeals)
   }),
 
   getPopular: publicProcedure.query(async ({ ctx }) => {
@@ -254,23 +239,7 @@ export const squealRouter = createRouter({
       orderBy: { createdAt: 'desc' },
     })
 
-    const enrichedSqueals = await Promise.all(
-      squeals.map(async (squeal) => {
-        const { profileImageUrl, username } = await clerkClient.users.getUser(
-          squeal.authorId
-        )
-
-        return {
-          ...squeal,
-          author: {
-            username,
-            profileImageUrl,
-          },
-        }
-      })
-    )
-
-    return enrichedSqueals
+    return await enrichSqueals(squeals)
   }),
 
   getUnpopular: publicProcedure.query(async ({ ctx }) => {
@@ -279,22 +248,6 @@ export const squealRouter = createRouter({
       orderBy: { createdAt: 'desc' },
     })
 
-    const enrichedSqueals = await Promise.all(
-      squeals.map(async (squeal) => {
-        const { profileImageUrl, username } = await clerkClient.users.getUser(
-          squeal.authorId
-        )
-
-        return {
-          ...squeal,
-          author: {
-            username,
-            profileImageUrl,
-          },
-        }
-      })
-    )
-
-    return enrichedSqueals
+    return await enrichSqueals(squeals)
   }),
 })
