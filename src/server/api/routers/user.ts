@@ -113,19 +113,33 @@ export const userRouter = createRouter({
       const user = await ctx.prisma.user.findUnique({
         where: { id: clerkUser?.id },
         include: {
-          squeals: true,
+          squeals: {
+            where: {
+              channel: { NOT: { type: 'Chat' } },
+            },
+            include: {
+              channel: true,
+            },
+            orderBy: { createdAt: 'desc' },
+          },
           _count: {
-            select: { squeals: true, reactions: true },
+            select: {
+              reactions: true,
+              ownedChannels: true,
+            },
           },
         },
       })
 
-      const mergedUser = {
+      let userSqueals = user?.squeals
+
+      if (userSqueals) userSqueals = (await enrichSqueals(userSqueals)) as any
+
+      return {
         ...clerkUser,
         ...user,
+        squeals: userSqueals,
       }
-
-      return mergedUser
     }),
 
   getFeed: authedProcedure.query(async ({ ctx }) => {

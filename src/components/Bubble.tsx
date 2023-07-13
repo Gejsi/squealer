@@ -26,6 +26,7 @@ type BubbleProps = {
     | RouterOutputs['squeal']['getControversials'][0]
     | RouterOutputs['user']['getFeed'][0]
     | RouterOutputs['squeal']['getAll'][0]
+    | RouterOutputs['user']['get']['squeals'][0]
   href?: Url
   origin?: string
   isResponse?: boolean
@@ -70,7 +71,14 @@ const Bubble = ({
       </div>
     </div>
     <div className='chat-header mb-1 font-bold'>
-      @{squeal.author.username}
+      {squeal.author.username !== 'admin' && (
+        <Link
+          href={'/users/' + squeal.author.username}
+          className='link-hover link'
+        >
+          @{squeal.author.username}
+        </Link>
+      )}
       <time className='pl-2 text-xs opacity-50'>
         {dayjs(squeal.createdAt).fromNow()}
       </time>

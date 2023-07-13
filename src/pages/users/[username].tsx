@@ -4,9 +4,12 @@ import type { Page } from '../_app'
 import { api } from '../../utils/api'
 import ErrorTemplate from '../../components/ErrorTemplate'
 import Spinner from '../../components/Spinner'
+import { useAutoAnimate } from '@formkit/auto-animate/react'
+import Bubble from '../../components/Bubble'
 
 const UserPage: Page = () => {
   const username = useRouter().query.username as string
+  const [autoAnimate] = useAutoAnimate()
 
   const {
     data: user,
@@ -57,23 +60,17 @@ const UserPage: Page = () => {
               <div className='stat-value text-lg'>{user.role}</div>
             </div>
             <div className='stat'>
-              <div className='stat-title'>Quota remaining</div>
+              <div className='stat-title'>Quota used</div>
               <div className='stat-value text-lg'>{user.quota}</div>
-            </div>
-            <div className='stat'>
-              <div className='stat-title'>Squeals count</div>
-              <div className='stat-value text-lg'>{user._count?.squeals}</div>
             </div>
           </div>
 
           <div className='stats bg-base-200 shadow'>
             <div className='stat'>
               <div className='stat-title'>Owned channels</div>
-              <div className='stat-value text-lg'>0</div>
-            </div>
-            <div className='stat'>
-              <div className='stat-title'>Subscribed channels</div>
-              <div className='stat-value text-lg'>0</div>
+              <div className='stat-value text-lg'>
+                {user._count?.ownedChannels}
+              </div>
             </div>
             <div className='stat'>
               <div className='stat-title'>Reactions</div>
@@ -81,6 +78,18 @@ const UserPage: Page = () => {
             </div>
           </div>
         </div>
+      </div>
+
+      <div className='divider' />
+
+      <div className='flex flex-col gap-4' ref={autoAnimate}>
+        {user.squeals?.map((squeal) => (
+          <Bubble
+            key={squeal.id}
+            squeal={squeal}
+            origin={squeal.channel.name}
+          />
+        ))}
       </div>
     </div>
   )
