@@ -8,6 +8,8 @@ import { clerkClient } from '@clerk/nextjs/server'
 import { z } from 'zod'
 import { TRPCError } from '@trpc/server'
 import { shuffleArray } from '../../../utils/misc'
+import { ADMIN_ID } from './auto'
+import { enrichSqueals } from '../../../utils/api'
 
 const commonSelector = Prisma.validator<Prisma.UserSelect>()({
   role: true,
@@ -67,7 +69,9 @@ export const userRouter = createRouter({
     }),
 
   getAll: publicProcedure.query(async ({ ctx }) => {
-    const dbUsers = await ctx.prisma.user.findMany()
+    const dbUsers = await ctx.prisma.user.findMany({
+      where: { NOT: { id: ADMIN_ID } },
+    })
     const clerkUsers = await clerkClient.users.getUserList()
 
     // merge the info from the database with the info from clerk
@@ -122,5 +126,31 @@ export const userRouter = createRouter({
   isPremium: authedProcedure.query(async ({ ctx }) => {
     const clerkUser = await clerkClient.users.getUser(ctx.auth.userId)
     return clerkUser.privateMetadata.role === 'Premium'
+  }),
+
+  getFeed: authedProcedure.query(async ({ ctx }) => {
+    const subChannels = await ctx.prisma.channel.findMany({
+      where: { members: { some: { id: ctx.auth.userId } } },
+      select: {
+        squeals: {
+          where: { NOT: { authorId: ctx.auth.userId } },
+          orderBy: { createdAt: 'desc' },
+          take: 5,
+          include: { channel: { select: { name: true } }, author: true },
+        },
+      },
+    })
+    // Awaited<ReturnType<typeof enrichSqueals>>
+    const squeals: (typeof subChannels)[0]['squeals'] &
+      Awaited<ReturnType<typeof enrichSqueals>> = []
+
+    for (const channel of subChannels) {
+      const enrichedSqueals = await enrichSqueals(channel.squeals)
+      enrichedSqueals.map((s) => squeals.push(s))
+    }
+
+    shuffleArray(squeals)
+
+    return squeals
   }),
 })

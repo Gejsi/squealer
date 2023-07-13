@@ -4,7 +4,7 @@ import { createRouter, publicProcedure } from '../trpc'
 import { TRPCError } from '@trpc/server'
 import { enrichSqueals } from '../../../utils/api'
 
-const ADMIN_ID = 'user_2STlkJKHQpPKswIo57uD6KLUUyW'
+export const ADMIN_ID = 'user_2STlkJKHQpPKswIo57uD6KLUUyW'
 const FACTS_CHANNEL_ID = 'cljzwly4i0000d2aa996z2qd7'
 const JOKES_CHANNEL_ID = 'cljzzn35c0000d2vwnip9s2r5'
 

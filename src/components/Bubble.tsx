@@ -8,6 +8,7 @@ import Link from 'next/link'
 import type { Url } from 'next/dist/shared/lib/router/router'
 import {
   MdArrowOutward,
+  MdPerson,
   MdRemoveRedEye,
   MdReply,
   MdThumbDown,
@@ -23,7 +24,9 @@ type BubbleProps = {
     | RouterOutputs['chat']['get'][0]
     | RouterOutputs['squeal']['getFromChannel']
     | RouterOutputs['squeal']['getControversials'][0]
+    | RouterOutputs['user']['getFeed'][0]
   href?: Url
+  origin?: string
   isResponse?: boolean
   impressions?: number
   likes?: number
@@ -38,6 +41,7 @@ type BubbleProps = {
 const Bubble = ({
   squeal,
   href,
+  origin,
   isResponse,
   impressions,
   likes,
@@ -81,6 +85,13 @@ const Bubble = ({
           <MdArrowOutward className='h-4 w-4' />
           Visit
         </Link>
+      )}
+
+      {origin && (
+        <span className='flex cursor-default items-center gap-1'>
+          <MdPerson className='h-4 w-4' />
+          {origin}
+        </span>
       )}
 
       {impressions !== undefined && (

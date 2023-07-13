@@ -31,7 +31,7 @@ const Facts: Page = () => {
     <>
       <div className='mb-10 mt-8 flex items-center gap-4'>
         <MdToday className='h-8 w-8 flex-shrink-0' />
-        <span>All these facts are automatically generated everyday.</span>
+        <span>Come everyday to check some new facts!</span>
       </div>
 
       <div className='flex flex-col gap-4' ref={autoAnimate}>

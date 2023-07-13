@@ -18,7 +18,7 @@ const ReadonlyEditor = ({ content }: { content: EditorOptions['content'] }) => {
         }),
         ChannelMention.configure({
           HTMLAttributes: {
-            class: 'link text-red-400',
+            class: 'link',
           },
         }),
       ],
