@@ -8,12 +8,14 @@ import {
 import { z } from 'zod'
 import { shuffleArray } from '../../../utils/misc'
 import { enrichSqueals } from '../../../utils/api'
+import { ADMIN_ID } from './auto'
 
 export const channelRouter = createRouter({
   getAll: authedProcedure.query(async ({ ctx }) => {
     const channels = await ctx.prisma.channel.findMany({
       where: {
         type: 'Channel',
+        NOT: { ownerId: ADMIN_ID },
       },
       include: {
         members: true,

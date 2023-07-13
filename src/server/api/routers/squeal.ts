@@ -5,6 +5,8 @@ import { jsonSchema } from '../../../schemas/json'
 import { TRPCError } from '@trpc/server'
 import { clerkClient } from '@clerk/nextjs/server'
 import { enrichSqueals } from '../../../utils/api'
+import { shuffleArray } from '../../../utils/misc'
+import { ADMIN_ID } from './auto'
 
 const SINGULARITY = 2
 
@@ -249,5 +251,22 @@ export const squealRouter = createRouter({
     })
 
     return await enrichSqueals(squeals)
+  }),
+
+  getAll: publicProcedure.query(async ({ ctx }) => {
+    const squeals = await ctx.prisma.squeal.findMany({
+      where: {
+        channel: { type: 'Channel' },
+        parentSquealId: null,
+        author: { NOT: { id: ADMIN_ID } },
+      },
+      orderBy: { createdAt: 'desc' },
+      include: { channel: { select: { name: true } } },
+    })
+
+    shuffleArray(squeals)
+
+    return (await enrichSqueals(squeals)) as typeof squeals &
+      Awaited<ReturnType<typeof enrichSqueals>>
   }),
 })
