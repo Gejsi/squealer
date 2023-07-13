@@ -26,7 +26,6 @@ type BubbleProps = {
     | RouterOutputs['squeal']['getControversials'][0]
     | RouterOutputs['user']['getFeed'][0]
     | RouterOutputs['squeal']['getAll'][0]
-    | RouterOutputs['user']['get']['squeals'][0]
   href?: Url
   origin?: string
   isResponse?: boolean

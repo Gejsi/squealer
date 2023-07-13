@@ -86,7 +86,7 @@ const UserPage: Page = () => {
         {user.squeals?.map((squeal) => (
           <Bubble
             key={squeal.id}
-            squeal={squeal}
+            squeal={squeal as any}
             origin={squeal.channel.name}
           />
         ))}
