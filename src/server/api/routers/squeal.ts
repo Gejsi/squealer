@@ -196,6 +196,7 @@ export const squealRouter = createRouter({
         where: { id: input.squealId },
         select: {
           reactions: true,
+          authorId: true,
         },
       })
 
@@ -215,10 +216,24 @@ export const squealRouter = createRouter({
             where: { id: input.squealId },
             data: { intensity: 'Popular' },
           })
+
+          await ctx.prisma.user.update({
+            where: { id: squeal.authorId },
+            data: {
+              quota: { decrement: 100 },
+            },
+          })
         } else if (dislikes >= SINGULARITY) {
           await ctx.prisma.squeal.update({
             where: { id: input.squealId },
             data: { intensity: 'Unpopular' },
+          })
+
+          await ctx.prisma.user.update({
+            where: { id: squeal.authorId },
+            data: {
+              quota: { increment: 100 },
+            },
           })
         }
       }

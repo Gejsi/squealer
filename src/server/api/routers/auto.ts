@@ -99,8 +99,6 @@ export const autoRouter = createRouter({
       data: {
         quota: 0,
         dailyQuotaLimit: 3000,
-        weeklyQuotaLimit: 20000,
-        monthlyQuotaLimit: 75000,
       },
     })
   }),
