@@ -15,17 +15,15 @@ import { useState } from 'react'
 import { cn } from '../../utils/misc'
 import { toast } from 'react-hot-toast'
 import { useAutoAnimate } from '@formkit/auto-animate/react'
+import { useAtomValue } from 'jotai'
+import { userMetadataAtom } from '../../components/Layout'
 
 const ChannelsPage: Page = () => {
   const [isDialogOpen, setDialogOpen] = useState(false)
   const [text, setText] = useState('')
   const [autoAnimate] = useAutoAnimate()
   const context = api.useContext()
-
-  const { data: isPremium, isLoading: isPremiumLoading } =
-    api.user.isPremium.useQuery(undefined, {
-      refetchOnWindowFocus: false,
-    })
+  const userMetadata = useAtomValue(userMetadataAtom)
 
   const { data, isLoading, isError, error } =
     api.channel.getSubscribedChannels.useQuery()
@@ -103,7 +101,7 @@ const ChannelsPage: Page = () => {
 
           <button
             className='fab btn-primary btn mt-4 h-fit w-fit gap-2 self-end py-2'
-            disabled={!isPremium || isPremiumLoading}
+            disabled={userMetadata?.role === 'Regular'}
             onClick={() => setDialogOpen(() => true)}
           >
             <MdGroupAdd className='h-4 w-4' />

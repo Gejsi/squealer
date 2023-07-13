@@ -18,6 +18,7 @@ import { TbGift } from 'react-icons/tb'
 import { RiChatPrivateLine } from 'react-icons/ri'
 import { userMetadataAtom } from './Layout'
 import { BsYinYang } from 'react-icons/bs'
+import { BiStats } from 'react-icons/bi'
 
 export const sidebarAtom = atom(false)
 
@@ -39,7 +40,7 @@ const Sidebar = () => {
           className='drawer-overlay'
           onClick={() => setSidebarOpen(false)}
         />
-        <ul className='menu w-72 space-y-2 overflow-y-auto bg-base-200 p-4'>
+        <ul className='menu grid w-72 space-y-2 overflow-y-auto bg-base-200 p-4'>
           <nav className='flex flex-col items-center'>
             <Link href='/' className='flex items-center gap-2'>
               <GiBirdTwitter className='h-6 w-6' />
@@ -59,7 +60,7 @@ const Sidebar = () => {
                 <span className='text-sm'>
                   {userMetadata &&
                     userMetadata.quota +
-                      ' / ' +
+                      ' • ' +
                       Math.min(
                         userMetadata.dailyQuotaLimit,
                         userMetadata.weeklyQuotaLimit,
@@ -90,6 +91,15 @@ const Sidebar = () => {
               Groups
             </Link>
           </li>
+
+          {userMetadata?.role === 'Premium' && (
+            <li>
+              <Link href='/stats'>
+                <BiStats className='h-6 w-6' />
+                Statistics
+              </Link>
+            </li>
+          )}
 
           <div className='divider' />
 

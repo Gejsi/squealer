@@ -1,4 +1,9 @@
-import { createRouter, authedProcedure, publicProcedure } from '../trpc'
+import {
+  createRouter,
+  authedProcedure,
+  publicProcedure,
+  premiumProcedure,
+} from '../trpc'
 import {
   type UserMetadata,
   userMetadataSchema,
@@ -123,11 +128,6 @@ export const userRouter = createRouter({
       return mergedUser
     }),
 
-  isPremium: authedProcedure.query(async ({ ctx }) => {
-    const clerkUser = await clerkClient.users.getUser(ctx.auth.userId)
-    return clerkUser.privateMetadata.role === 'Premium'
-  }),
-
   getFeed: authedProcedure.query(async ({ ctx }) => {
     const subChannels = await ctx.prisma.channel.findMany({
       where: { members: { some: { id: ctx.auth.userId } } },
@@ -140,7 +140,7 @@ export const userRouter = createRouter({
         },
       },
     })
-    // Awaited<ReturnType<typeof enrichSqueals>>
+
     const squeals: (typeof subChannels)[0]['squeals'] &
       Awaited<ReturnType<typeof enrichSqueals>> = []
 
@@ -152,5 +152,42 @@ export const userRouter = createRouter({
     shuffleArray(squeals)
 
     return squeals
+  }),
+
+  getStats: premiumProcedure.query(async ({ ctx }) => {
+    const squeals = await ctx.prisma.squeal.findMany({
+      where: { authorId: ctx.auth.userId, parentSquealId: null },
+      include: {
+        reactions: true,
+        replies: true,
+      },
+    })
+
+    let reactions = 0,
+      replies = 0,
+      impressions = 0,
+      controversial = 0,
+      popular = 0,
+      unpopular = 0
+
+    for (const squeal of squeals) {
+      reactions += squeal.reactions.length
+      replies += squeal.replies.length
+      impressions += squeal.impressions
+
+      if (squeal.intensity === 'Controversial') controversial++
+      else if (squeal.intensity === 'Popular') popular++
+      else if (squeal.intensity === 'Unpopular') unpopular++
+    }
+
+    return {
+      total: squeals.length,
+      reactions,
+      replies,
+      impressions,
+      controversial,
+      popular,
+      unpopular,
+    }
   }),
 })

@@ -4,7 +4,7 @@ import Image from 'next/image'
 
 const Home: Page = () => {
   return (
-    <section className='flex h-full flex-col items-center md:flex-row'>
+    <section className='flex h-full flex-col justify-center gap-8 md:flex-row md:items-center'>
       <div className='prose w-full md:prose-xl lg:w-1/2'>
         <h1>
           The most{' '}
@@ -15,16 +15,19 @@ const Home: Page = () => {
         </h1>
 
         <p>
-          As Twitter's influence fades, Squealer emerges as a dynamic platform,
-          ready to redefine how we connect, engage, and share our lives.
-          Experience the freedom to express yourself, connect with like-minded
-          individuals, and make your voice heard in a digital realm driven by
-          genuine interactions.
+          As Twitter's and Reddit's influence fades,{' '}
+          <span className='bg-gradient-to-r from-violet-500 to-fuchsia-500 bg-clip-text text-transparent'>
+            Squealer
+          </span>{' '}
+          emerges as a dynamic platform, ready to redefine how we connect,
+          engage, and share our lives. Experience the freedom to express
+          yourself, connect with like-minded individuals, and make your voice
+          heard in a digital realm driven by genuine interactions.
         </p>
 
         <div className='flex w-full justify-center'>
-          <Link href='/public/all' className='btn-primary btn-lg btn'>
-            Checkout squeals
+          <Link href='/public/all' className='btn-primary btn md:btn-lg'>
+            Checkout some squeals
           </Link>
         </div>
       </div>

@@ -31,7 +31,7 @@ const Jokes: Page = () => {
     <>
       <div className='mb-10 mt-8 flex items-center gap-4'>
         <MdMood className='h-8 w-8 flex-shrink-0' />
-        <span>Come everyday to check some new jokes!</span>
+        <span>Come everyday to look for some new jokes!</span>
       </div>
 
       <div className='flex flex-col gap-4' ref={autoAnimate}>

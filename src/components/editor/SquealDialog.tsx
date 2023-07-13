@@ -43,7 +43,14 @@ const SquealDialog = (
 
     if (receiverData?.id) props.onCreate(content, receiverData?.id)
     setUserMetadata(
-      (prev) => prev && { ...prev, quota: prev.quota + editorLength }
+      (prev) =>
+        prev && {
+          ...prev,
+          quota: prev.quota + editorLength,
+          dailyQuotaLimit: prev.dailyQuotaLimit - editorLength,
+          weeklyQuotaLimit: prev.weeklyQuotaLimit - editorLength,
+          monthlyQuotaLimit: prev.monthlyQuotaLimit - editorLength,
+        }
     )
     setEditorLength(0)
   }
