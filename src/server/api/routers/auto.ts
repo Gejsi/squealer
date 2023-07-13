@@ -93,4 +93,15 @@ export const autoRouter = createRouter({
 
     return await enrichSqueals(channel.squeals)
   }),
+
+  fill: publicProcedure.mutation(async ({ ctx }) => {
+    return await ctx.prisma.user.updateMany({
+      data: {
+        quota: 0,
+        dailyQuotaLimit: 3000,
+        weeklyQuotaLimit: 20000,
+        monthlyQuotaLimit: 75000,
+      },
+    })
+  }),
 })

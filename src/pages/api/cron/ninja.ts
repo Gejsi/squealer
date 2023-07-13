@@ -20,6 +20,10 @@ export default async function handler(
       })
     ).json()
 
+    await fetch(`${getBaseUrl()}/api/trpc/auto.fill`, {
+      method: 'POST',
+    })
+
     data = [fact, joke]
   } catch (error) {
     return response.status(500).json(error)
